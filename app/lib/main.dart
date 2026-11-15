@@ -8,6 +8,7 @@ import 'data/site_data.dart';
 import 'data/site_registry.dart';
 import 'l10n/app_localizations.dart';
 import 'screens/plan_screen.dart';
+import 'screens/route_calc_screen.dart';
 import 'state/app_model.dart';
 import 'theme/app_theme.dart';
 import 'widgets/sources_dialog.dart';
@@ -119,7 +120,12 @@ class _Home extends StatelessWidget {
     return Scaffold(
       body: Column(children: [
         const TopBar(),
-        const Expanded(child: PlanScreen()),
+        Expanded(
+          child: switch (m.tab) {
+            1 => const RouteCalcScreen(),
+            _ => const PlanScreen(),
+          },
+        ),
         Container(
           height: 24,
           padding: const EdgeInsets.symmetric(horizontal: 14),

@@ -152,6 +152,9 @@ def color_pendiente_rgba(pend, mascara_valida):
     return rgba
 
 
+_MERIDIANI_DCI_TI_512 = {}
+
+
 def generar_transito_rgba(mascara_valida):
     os.makedirs(RAW_ASU, exist_ok=True)
     ruta_dci = os.path.join(RAW_ASU, "dci_16ppd.raw")
@@ -180,17 +183,22 @@ def generar_transito_rgba(mascara_valida):
         200, 240
     )
 
-    ys = np.linspace(LAT1, LAT0, LAYER_PX, endpoint=False)
-    xs = np.linspace(LON0, LON1, LAYER_PX, endpoint=False)
-    lon_grid, lat_grid = np.meshgrid(xs, ys)
+    def _muestrear_dci_ti(n_px):
+        ys = np.linspace(LAT1, LAT0, n_px, endpoint=False)
+        xs = np.linspace(LON0, LON1, n_px, endpoint=False)
+        lon_grid, lat_grid = np.meshgrid(xs, ys)
 
-    row_dci = np.clip(((90.0 - lat_grid) * 16.0).astype(int), 0, 2879)
-    col_dci = np.clip(((lon_grid + 180.0) * 16.0).astype(int), 0, 5759)
-    dci = dci_global[row_dci, col_dci].astype(np.float32)
+        row_dci = np.clip(((90.0 - lat_grid) * 16.0).astype(int), 0, 2879)
+        col_dci = np.clip(((lon_grid + 180.0) * 16.0).astype(int), 0, 5759)
+        dci_m = dci_global[row_dci, col_dci].astype(np.float32)
 
-    row_ti = np.clip(((10.0 - lat_grid) / 0.125).astype(int), 0, 199)
-    col_ti = np.clip((((lon_grid % 360.0) - 330.0) / 0.125).astype(int), 0, 239)
-    ti = ti_global[row_ti, col_ti].astype(np.float32)
+        row_ti = np.clip(((10.0 - lat_grid) / 0.125).astype(int), 0, 199)
+        col_ti = np.clip((((lon_grid % 360.0) - 330.0) / 0.125).astype(int), 0, 239)
+        ti_m = ti_global[row_ti, col_ti].astype(np.float32)
+        return dci_m, ti_m
+
+    dci, ti = _muestrear_dci_ti(LAYER_PX)
+    _MERIDIANI_DCI_TI_512["dci"], _MERIDIANI_DCI_TI_512["ti"] = _muestrear_dci_ti(GRID_N)
 
     verde = (dci > 0.96) & (ti > 300.0)
     amarillo = (~verde) & (dci > 0.95) & (ti >= 180.0) & (ti <= 300.0)
@@ -252,7 +260,7 @@ def generar_termica_noche_rgba(mascara_valida):
     rgba[..., 1] = gris_u8
     rgba[..., 2] = gris_u8
     rgba[..., 3] = np.where(mascara_valida & (gris > 0), 255, 0).astype(np.uint8)
-    return rgba
+    return rgba, est
 
 
 def _a_xy_nuevo(lon, lat):
@@ -409,12 +417,29 @@ def main():
     print(f"Máscara traza CTX: {frac_valida:.1f}% del recuadro de 327,68 km tiene datos CTX")
 
     # 2. DEM y rejilla de ruteo (512x512, celda de 640 m) + capa de Relieve (1024x1024)
+    transit_rgba = generar_transito_rgba(mascara_1024)
+    termica_rgba, est_1024 = generar_termica_noche_rgba(mascara_1024)
+
     ruta_dem = descargar_dem_ventana()
     z_512 = muestrear_dem(ruta_dem, GRID_N)
     z_suave_512 = ndimage.gaussian_filter(z_512, sigma=1.5)
     pend_512 = pendiente_grados(z_suave_512, CELL_M)
-    rug_512 = np.abs(z_512 - ndimage.uniform_filter(z_512, size=5)) * 100.0
-    prohib_512 = ((pend_512 > 25.0) | (~mascara_512)).astype(np.uint8)
+
+    dci_512 = _MERIDIANI_DCI_TI_512["dci"]
+    ti_512 = _MERIDIANI_DCI_TI_512["ti"]
+    f_esc = LAYER_PX // GRID_N
+    est_512 = est_1024.reshape(GRID_N, f_esc, GRID_N, f_esc).mean(axis=(1, 3))
+
+    dci_val = np.where(np.isfinite(dci_512) & (dci_512 > 0.0) & (dci_512 <= 1.2), dci_512, 0.96)
+    ti_val = np.where(np.isfinite(ti_512) & (ti_512 > 0.0), ti_512, 220.0)
+    pen_dci = np.clip((0.98 - dci_val) / (0.98 - 0.92), 0.0, 1.0)
+    pen_ti = np.clip((280.0 - ti_val) / (280.0 - 120.0), 0.0, 1.0)
+    pen_th = 1.0 - np.clip(est_512, 0.0, 1.0)
+    indice_superficie = 0.40 * pen_dci + 0.40 * pen_ti + 0.20 * pen_th
+    rug_512 = np.clip(indice_superficie * 40.0, 0.0, 40.0).astype(np.float32)
+
+    rojo_512 = (dci_val < 0.94) & (ti_val < 150.0)
+    prohib_512 = ((pend_512 > 15.0) | (~mascara_512) | rojo_512).astype(np.uint8)
 
     z_1024 = muestrear_dem(ruta_dem, LAYER_PX)
     z_suave_1024 = ndimage.gaussian_filter(z_1024, sigma=1.5)
@@ -440,10 +465,8 @@ def main():
     slope_rgba = color_pendiente_rgba(pend_1024, mascara_1024)
     Image.fromarray(slope_rgba).save(os.path.join(SITE_DIR, "layers", "slope.png"), optimize=True)
 
-    transit_rgba = generar_transito_rgba(mascara_1024)
     Image.fromarray(transit_rgba).save(os.path.join(SITE_DIR, "layers", "transit.png"), optimize=True)
 
-    termica_rgba = generar_termica_noche_rgba(mascara_1024)
     Image.fromarray(termica_rgba).save(os.path.join(SITE_DIR, "layers", "thermal_night.png"), optimize=True)
 
     # 4. Hábitat (Opportunity landing site) y objetivos trasladados al nuevo origen
@@ -485,7 +508,16 @@ def main():
         "base_cell_m": CELL_M,
     }
     par["site"]["habitat_xy_m"] = [hab_x, hab_y]
+    par["slope"]["caution_max_deg"] = 12.0
+    par["slope"]["forbidden_above_deg"] = 15.0
     par["routing"]["cell_m"] = CELL_M
+    par["routing"]["slope_exponent_ref_deg"] = 15.0
+    par["routing"]["profiles"]["safe"]["slope_limit_deg"] = 15.0
+    hab_col = int(np.clip((hab_x - X0) / CELL_M, 0, GRID_N - 1))
+    hab_row = int(np.clip((Y0 - hab_y) / CELL_M, 0, GRID_N - 1))
+    if prohib_512[hab_row, hab_col] != 0:
+        prohib_512[hab_row, hab_col] = 0
+        prohib_512.tofile(os.path.join(SITE_DIR, "grid", "forbidden.bin"))
     with open(os.path.join(SITE_DIR, "params.json"), "w", encoding="utf-8") as f:
         json.dump(par, f, indent=2, ensure_ascii=False)
 

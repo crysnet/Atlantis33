@@ -1289,4 +1289,105 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routeNoneSelected => '—';
+
+  @override
+  String get navRouteCalc => 'ROUTE CALCULATION';
+
+  @override
+  String get rcTitle => 'Safety model & A* routing criteria';
+
+  @override
+  String get rcSubtitle =>
+      'Real NASA/USGS/ASU datasets and thresholds used by the Meridiani Planum pathfinder to keep astronauts safe.';
+
+  @override
+  String get rcFormulaSection => 'A* COST FUNCTION (SAFEST PROFILE)';
+
+  @override
+  String get rcFormulaDesc =>
+      'Each step between adjacent cells weighs real ground distance in meters, a quadratic slope penalty from the smoothed orbital DEM, and a normalized surface dust-trap index (40% DCI + 40% TI + 20% THEMIS-IR Night). Cells outside the valid CTX footprint, steeper than 15°, or inside critical dust traps are blocked.';
+
+  @override
+  String get rcHardConstraintsSection => 'HARD CONSTRAINTS (NO-GO)';
+
+  @override
+  String get rcHardSlopeTitle =>
+      'Maximum passable slope: ≤ 15.0° (caution ≥ 12.0°)';
+
+  @override
+  String get rcHardSlopeDesc =>
+      'Project safety margin on NASA baseline: NASA operational rover/EVA limits (Apollo LRV & Artemis mobility studies) allow up to ~20° on locally surveyed ground. Because our HRSC+MOLA orbital DEM is 200 m/px and smooths sub-pixel scarps, we apply a conservative 15.0° hard cutoff (caution above 12.0°). Areas outside valid CTX mosaic coverage are also blocked.';
+
+  @override
+  String get rcHardDustTitle =>
+      'Critical dust & soft-soil traps: DCI < 0.94 and TI < 150';
+
+  @override
+  String get rcHardDustDesc =>
+      'Cells combining heavy dust cover (Dust Cover Index < 0.94) and very low thermal inertia (TI < 150 J·m⁻²·K⁻¹·s⁻¹/²) indicate unconsolidated fine silt with high sinkage/entrapment hazard (analogous to Meridiani dunes that bogged MER Opportunity) and are marked impassable.';
+
+  @override
+  String get rcCriteriaSection => 'SCIENTIFIC CRITERIA & DATA SOURCES';
+
+  @override
+  String get rcCritSlopeTitle => 'Topographic slope & elevation (DEM)';
+
+  @override
+  String get rcCritSlopeSource =>
+      'MEASURED · USGS Astrogeology HRSC+MOLA 200 m/px · weight w_slope = 2.5';
+
+  @override
+  String get rcCritSlopeDesc =>
+      'Surface gradient computed with a Gaussian filter (σ = 1.5 cells at 640 m grid spacing) from the 200 m/px HRSC+MOLA orbital DEM. Enters A* cost as (slope / 15°)² × 2.5 and forbids any cell exceeding 15.0°.';
+
+  @override
+  String get rcCritDciTitle => 'Dust Cover Index (DCI)';
+
+  @override
+  String get rcCritDciSource =>
+      'MEASURED · NASA / ASU Mars Global Surveyor TES 16 ppd · 40% of surface index';
+
+  @override
+  String get rcCritDciDesc =>
+      'Ruff & Christensen (2002) spectral emissivity index across 1350–1400 cm⁻¹. Low values (< 0.94) reveal thick mantling dust; high values (≥ 0.98) indicate dust-free bedrock or firm coarse sand.';
+
+  @override
+  String get rcCritTiTitle => 'Thermal Inertia (TI)';
+
+  @override
+  String get rcCritTiSource =>
+      'MEASURED · NASA / ASU TES Meridiani 0.125°/px · 40% of surface index';
+
+  @override
+  String get rcCritTiDesc =>
+      'Bulk thermal inertia of the upper few centimeters (J·m⁻²·K⁻¹·s⁻¹/²). Low inertia (< 150) signals loose fine dust with poor bearing strength; higher inertia (250–350+) reflects indurated regolith or exposed bedrock.';
+
+  @override
+  String get rcCritThemisTitle =>
+      'Nighttime Thermal Infrared brightness (THEMIS-IR)';
+
+  @override
+  String get rcCritThemisSource =>
+      'MEASURED · NASA / Mars Odyssey THEMIS via Mars Trek ~100 m/px · 20% of surface index';
+
+  @override
+  String get rcCritThemisDesc =>
+      'Normalized nighttime infrared mosaic (2–98% stretch). Fine loose dust cools rapidly overnight (dark = higher penalty) whereas competent rock retains daytime heat (bright = lower penalty). Relative brightness only, not calibrated Kelvin temperature.';
+
+  @override
+  String get rcCritMobilityTitle => 'EVA pacing & traversal effort model';
+
+  @override
+  String get rcCritMobilitySource =>
+      'MODELED · Tobler (1993) hiking function + NASA EVA limit · surface weight w_rough = 4.0';
+
+  @override
+  String get rcCritMobilityDesc =>
+      'Estimates sortie travel time using Tobler\'s slope-dependent walking curve anchored at 4.0 km/h flat speed (0.95× uphill) combined with the composite dust/surface index across the 512×512 grid.';
+
+  @override
+  String get rcActiveRouteSection => 'ACTIVE ROUTE AUDIT';
+
+  @override
+  String get rcCellsEvaluated => 'A* cells evaluated';
 }

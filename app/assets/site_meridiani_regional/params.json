@@ -30,8 +30,8 @@
   "slope": {
     "_nota": "Grados, medidos sobre el modelo de elevación a 2 m por celda (diferencias centrales: línea base de 4 m). El tramo de 20 a 25 grados no lo define el plan: se trata como precaución alta y transitable.",
     "nominal_max_deg": 10.0,
-    "caution_max_deg": 20.0,
-    "forbidden_above_deg": 25.0,
+    "caution_max_deg": 12.0,
+    "forbidden_above_deg": 15.0,
     "habitat_max_deg": 5.0,
     "colors": {
       "nominal": "#3DAA5C",
@@ -57,7 +57,7 @@
   "routing": {
     "_nota": "Todo lo de esta sección son supuestos del equipo, no estándares de la NASA. cell_m es el tamaño de celda de la rejilla donde corre A*: 4 m, porque a 2 m el cálculo de las tres rutas tarda 6.7 s en Chrome y a 4 m tarda 1.5 s (medido en la fase 2).",
     "cell_m": 640.0,
-    "slope_exponent_ref_deg": 25.0,
+    "slope_exponent_ref_deg": 15.0,
     "roughness_ref_cm": 40.0,
     "safe_fast_targets": "primary",
     "science_keep_comfort": true,
@@ -67,7 +67,7 @@
         "w_rough": 4.0,
         "w_sand": 0.0,
         "w_time": 0.5,
-        "slope_limit_deg": 22.0
+        "slope_limit_deg": 15.0
       },
       "fast": {
         "w_slope": 0.5,

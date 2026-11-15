@@ -1292,4 +1292,106 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get routeNoneSelected => '—';
+
+  @override
+  String get navRouteCalc => 'CÁLCULO DE RUTAS';
+
+  @override
+  String get rcTitle => 'Modelo de seguridad y criterios de cálculo A*';
+
+  @override
+  String get rcSubtitle =>
+      'Parámetros reales NASA/USGS/ASU usados por el motor de rutas en Meridiani Planum para proteger al astronauta.';
+
+  @override
+  String get rcFormulaSection => 'FUNCIÓN DE COSTO A* (MODO SEGURO)';
+
+  @override
+  String get rcFormulaDesc =>
+      'Cada paso entre celdas vecinas evalúa distancia real en metros, una penalización cuadrática por pendiente suavizada del DEM y un índice normalizado de trampa de polvo superficial (40% DCI + 40% TI + 20% THEMIS-IR noche). Las celdas fuera de huella CTX, con pendiente > 15° o trampa crítica quedan bloqueadas.';
+
+  @override
+  String get rcHardConstraintsSection => 'RESTRICCIONES ESTRICTAS (NO-GO)';
+
+  @override
+  String get rcHardSlopeTitle =>
+      'Pendiente máxima bloqueada: > 15,0° (alerta ≥ 12,0°)';
+
+  @override
+  String get rcHardSlopeDesc =>
+      'Criterio propio sobre línea base NASA: el límite operativo de NASA para rover/EVA (Apolo LRV y estudios Artemis) es ~20° en terreno medido in situ. Como nuestro DEM orbital HRSC+MOLA tiene 200 m/px y suaviza micro-relieves locales, aplicamos un margen conservador de 15,0° como techo infranqueable (y aviso desde 12,0°). Además toda celda fuera del mosaico CTX válido queda bloqueada.';
+
+  @override
+  String get rcHardDustTitle =>
+      'Trampas críticas de polvo y suelo blando: DCI < 0,94 y TI < 150';
+
+  @override
+  String get rcHardDustDesc =>
+      'Celdas donde coinciden alta cubierta de polvo (Dust Cover Index < 0,94) y muy baja inercia térmica (TI < 150 J·m⁻²·K⁻¹·s⁻¹/²) indican regolito suelto con alto riesgo de hundimiento o atascamiento (análogo a las dunas donde quedó atrapado MER Opportunity) y se marcan como infranqueables.';
+
+  @override
+  String get rcCriteriaSection => 'CRITERIOS CIENTÍFICOS Y FUENTES DE DATOS';
+
+  @override
+  String get rcCritSlopeTitle => 'Pendiente topográfica y altimetría (DEM)';
+
+  @override
+  String get rcCritSlopeSource =>
+      'MEDIDO · USGS Astrogeology HRSC+MOLA 200 m/px · peso w_slope = 2,5';
+
+  @override
+  String get rcCritSlopeDesc =>
+      'Pendiente derivada con filtro gaussiano (σ = 1,5 celdas de 640 m) sobre el mosaico DEM orbital HRSC+MOLA de 200 m/px. Entra en el costo A* como (pendiente / 15°)² × 2,5 y prohíbe cualquier celda > 15,0°.';
+
+  @override
+  String get rcCritDciTitle => 'Índice de cubierta de polvo (DCI)';
+
+  @override
+  String get rcCritDciSource =>
+      'MEDIDO · NASA / ASU Mars Global Surveyor TES 16 ppd · 40% del índice superficial';
+
+  @override
+  String get rcCritDciDesc =>
+      'Índice espectral de Ruff & Christensen (2002) que mide emisividad térmica en 1350–1400 cm⁻¹. Valores bajos (< 0,94) revelan mantos de polvo fino; valores altos (≥ 0,98) indican roca expuesta o arena gruesa firme.';
+
+  @override
+  String get rcCritTiTitle => 'Inercia térmica aparente (TI)';
+
+  @override
+  String get rcCritTiSource =>
+      'MEDIDO · NASA / ASU TES Meridiani 0,125°/px · 40% del índice superficial';
+
+  @override
+  String get rcCritTiDesc =>
+      'Resistencia térmica del suelo superficial (J·m⁻²·K⁻¹·s⁻¹/²). Baja inercia (< 150) corresponde a polvo fino poco cohesionado; valores medios/altos (250–350+) indican regolito consolidado o lecho rocoso con buena capacidad portante.';
+
+  @override
+  String get rcCritThemisTitle =>
+      'Brillo térmico infrarrojo nocturno (THEMIS-IR)';
+
+  @override
+  String get rcCritThemisSource =>
+      'MEDIDO · NASA / Mars Odyssey THEMIS vía Mars Trek ~100 m/px · 20% del índice superficial';
+
+  @override
+  String get rcCritThemisDesc =>
+      'Mosaico infrarrojo nocturno normalizado (percentiles 2–98%). Durante la noche marciana el polvo suelto se enfría rápido (oscuro = mayor penalización) mientras la roca firme retiene calor (brillante = menor penalización). Nota: brillo relativo, no temperatura calibrada.';
+
+  @override
+  String get rcCritMobilityTitle =>
+      'Modelo de velocidad EVA y perfil de consumo';
+
+  @override
+  String get rcCritMobilitySource =>
+      'MODELADO · Función Tobler (1993) + límite conservador EVA NASA · peso superficie w_rough = 4,0';
+
+  @override
+  String get rcCritMobilityDesc =>
+      'Estima la duración y el esfuerzo del recorrido combinando marcha en pendiente según la función exponencial de Tobler con velocidad base 4,0 km/h (0,95× en subida) y el costo compuesto por polvo/superficie en la grilla de 512×512 celdas.';
+
+  @override
+  String get rcActiveRouteSection => 'AUDITORÍA DE LA RUTA ACTIVA';
+
+  @override
+  String get rcCellsEvaluated => 'Celdas A* evaluadas';
 }

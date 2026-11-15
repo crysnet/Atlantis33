@@ -33,7 +33,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
     expect(tester.takeException(), isNull, reason: 'capas nuevas');
     expect(find.text('Transit zones (TES, 3.5 km per pixel)'), findsOneWidget);
-    for (final tab in ['PLAN']) {
+    for (final tab in ['PLAN', 'ROUTE CALCULATION']) {
       await tester.tap(find.text(tab));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));

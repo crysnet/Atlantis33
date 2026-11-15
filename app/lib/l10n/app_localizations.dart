@@ -2496,6 +2496,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'—'**
   String get routeNoneSelected;
+
+  /// No description provided for @navRouteCalc.
+  ///
+  /// In en, this message translates to:
+  /// **'ROUTE CALCULATION'**
+  String get navRouteCalc;
+
+  /// No description provided for @rcTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety model & A* routing criteria'**
+  String get rcTitle;
+
+  /// No description provided for @rcSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Real NASA/USGS/ASU datasets and thresholds used by the Meridiani Planum pathfinder to keep astronauts safe.'**
+  String get rcSubtitle;
+
+  /// No description provided for @rcFormulaSection.
+  ///
+  /// In en, this message translates to:
+  /// **'A* COST FUNCTION (SAFEST PROFILE)'**
+  String get rcFormulaSection;
+
+  /// No description provided for @rcFormulaDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Each step between adjacent cells weighs real ground distance in meters, a quadratic slope penalty from the smoothed orbital DEM, and a normalized surface dust-trap index (40% DCI + 40% TI + 20% THEMIS-IR Night). Cells outside the valid CTX footprint, steeper than 15°, or inside critical dust traps are blocked.'**
+  String get rcFormulaDesc;
+
+  /// No description provided for @rcHardConstraintsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'HARD CONSTRAINTS (NO-GO)'**
+  String get rcHardConstraintsSection;
+
+  /// No description provided for @rcHardSlopeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum passable slope: ≤ 15.0° (caution ≥ 12.0°)'**
+  String get rcHardSlopeTitle;
+
+  /// No description provided for @rcHardSlopeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Project safety margin on NASA baseline: NASA operational rover/EVA limits (Apollo LRV & Artemis mobility studies) allow up to ~20° on locally surveyed ground. Because our HRSC+MOLA orbital DEM is 200 m/px and smooths sub-pixel scarps, we apply a conservative 15.0° hard cutoff (caution above 12.0°). Areas outside valid CTX mosaic coverage are also blocked.'**
+  String get rcHardSlopeDesc;
+
+  /// No description provided for @rcHardDustTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical dust & soft-soil traps: DCI < 0.94 and TI < 150'**
+  String get rcHardDustTitle;
+
+  /// No description provided for @rcHardDustDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Cells combining heavy dust cover (Dust Cover Index < 0.94) and very low thermal inertia (TI < 150 J·m⁻²·K⁻¹·s⁻¹/²) indicate unconsolidated fine silt with high sinkage/entrapment hazard (analogous to Meridiani dunes that bogged MER Opportunity) and are marked impassable.'**
+  String get rcHardDustDesc;
+
+  /// No description provided for @rcCriteriaSection.
+  ///
+  /// In en, this message translates to:
+  /// **'SCIENTIFIC CRITERIA & DATA SOURCES'**
+  String get rcCriteriaSection;
+
+  /// No description provided for @rcCritSlopeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Topographic slope & elevation (DEM)'**
+  String get rcCritSlopeTitle;
+
+  /// No description provided for @rcCritSlopeSource.
+  ///
+  /// In en, this message translates to:
+  /// **'MEASURED · USGS Astrogeology HRSC+MOLA 200 m/px · weight w_slope = 2.5'**
+  String get rcCritSlopeSource;
+
+  /// No description provided for @rcCritSlopeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Surface gradient computed with a Gaussian filter (σ = 1.5 cells at 640 m grid spacing) from the 200 m/px HRSC+MOLA orbital DEM. Enters A* cost as (slope / 15°)² × 2.5 and forbids any cell exceeding 15.0°.'**
+  String get rcCritSlopeDesc;
+
+  /// No description provided for @rcCritDciTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dust Cover Index (DCI)'**
+  String get rcCritDciTitle;
+
+  /// No description provided for @rcCritDciSource.
+  ///
+  /// In en, this message translates to:
+  /// **'MEASURED · NASA / ASU Mars Global Surveyor TES 16 ppd · 40% of surface index'**
+  String get rcCritDciSource;
+
+  /// No description provided for @rcCritDciDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Ruff & Christensen (2002) spectral emissivity index across 1350–1400 cm⁻¹. Low values (< 0.94) reveal thick mantling dust; high values (≥ 0.98) indicate dust-free bedrock or firm coarse sand.'**
+  String get rcCritDciDesc;
+
+  /// No description provided for @rcCritTiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Thermal Inertia (TI)'**
+  String get rcCritTiTitle;
+
+  /// No description provided for @rcCritTiSource.
+  ///
+  /// In en, this message translates to:
+  /// **'MEASURED · NASA / ASU TES Meridiani 0.125°/px · 40% of surface index'**
+  String get rcCritTiSource;
+
+  /// No description provided for @rcCritTiDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk thermal inertia of the upper few centimeters (J·m⁻²·K⁻¹·s⁻¹/²). Low inertia (< 150) signals loose fine dust with poor bearing strength; higher inertia (250–350+) reflects indurated regolith or exposed bedrock.'**
+  String get rcCritTiDesc;
+
+  /// No description provided for @rcCritThemisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nighttime Thermal Infrared brightness (THEMIS-IR)'**
+  String get rcCritThemisTitle;
+
+  /// No description provided for @rcCritThemisSource.
+  ///
+  /// In en, this message translates to:
+  /// **'MEASURED · NASA / Mars Odyssey THEMIS via Mars Trek ~100 m/px · 20% of surface index'**
+  String get rcCritThemisSource;
+
+  /// No description provided for @rcCritThemisDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Normalized nighttime infrared mosaic (2–98% stretch). Fine loose dust cools rapidly overnight (dark = higher penalty) whereas competent rock retains daytime heat (bright = lower penalty). Relative brightness only, not calibrated Kelvin temperature.'**
+  String get rcCritThemisDesc;
+
+  /// No description provided for @rcCritMobilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'EVA pacing & traversal effort model'**
+  String get rcCritMobilityTitle;
+
+  /// No description provided for @rcCritMobilitySource.
+  ///
+  /// In en, this message translates to:
+  /// **'MODELED · Tobler (1993) hiking function + NASA EVA limit · surface weight w_rough = 4.0'**
+  String get rcCritMobilitySource;
+
+  /// No description provided for @rcCritMobilityDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimates sortie travel time using Tobler\'s slope-dependent walking curve anchored at 4.0 km/h flat speed (0.95× uphill) combined with the composite dust/surface index across the 512×512 grid.'**
+  String get rcCritMobilityDesc;
+
+  /// No description provided for @rcActiveRouteSection.
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVE ROUTE AUDIT'**
+  String get rcActiveRouteSection;
+
+  /// No description provided for @rcCellsEvaluated.
+  ///
+  /// In en, this message translates to:
+  /// **'A* cells evaluated'**
+  String get rcCellsEvaluated;
 }
 
 class _AppLocalizationsDelegate
