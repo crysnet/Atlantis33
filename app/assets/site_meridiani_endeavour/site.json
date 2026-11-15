@@ -1,0 +1,218 @@
+{
+  "id": "meridiani_endeavour",
+  "name": "Meridiani Planum: Endeavour crater rim",
+  "frame": {
+    "description": "Local plane in metres. x grows east, y grows south, origin at the north-west corner of the box.",
+    "size_m": 4000.0
+  },
+  "georeference": {
+    "projection": "Mars equirectangular, sphere radius 3396190 m, central meridian 0, planetocentric latitude",
+    "radius_m": 3396190.0,
+    "origin_easting_m": -320350.02192614024,
+    "origin_northing_m": -135884.13518831745,
+    "easting_m": "origin_easting_m + x_m",
+    "northing_m": "origin_northing_m - y_m",
+    "lon_deg": "degrees(easting_m / radius_m)",
+    "lat_deg": "degrees(northing_m / radius_m)",
+    "center_lon_deg": -5.370757426488227,
+    "center_lat_deg": -2.3261887609650436
+  },
+  "grid": {
+    "cell_m": 2.0,
+    "width": 2000,
+    "height": 2000,
+    "order": "row-major, north to south, west to east",
+    "components": {
+      "slope": {
+        "file": "slope.bin",
+        "dtype": "uint8",
+        "unit_deg": 0.5,
+        "nodata": 255
+      },
+      "rough": {
+        "file": "rough.bin",
+        "dtype": "uint8",
+        "unit_cm": 0.5,
+        "nodata": 255,
+        "saturates_at": 254
+      },
+      "forbidden": {
+        "file": "forbidden.bin",
+        "dtype": "uint8",
+        "values": {
+          "0": "walkable",
+          "1": "forbidden"
+        }
+      },
+      "elev": {
+        "file": "elev.bin",
+        "dtype": "uint16-le",
+        "unit_m": 0.02,
+        "offset_m": -1688.0,
+        "nodata": 65535
+      }
+    }
+  },
+  "tiles": {
+    "template": "ortho/{z}/{x}/{y}.jpg",
+    "tile_px": 512,
+    "min_zoom": 0,
+    "max_zoom": 4,
+    "world_size_m": 4096.0,
+    "m_per_px": [
+      8.0,
+      4.0,
+      2.0,
+      1.0,
+      0.5
+    ],
+    "covered_size_m": 4000.0
+  },
+  "habitat": {
+    "x_m": 1601.0,
+    "y_m": 3179.0,
+    "col": 800,
+    "row": 1589,
+    "lon": -5.377488797826616,
+    "lat": -2.346079204092762,
+    "elevation_m": -1475.7288208007812,
+    "flat_radius_m": 246.73872821265817,
+    "kind": "assumption",
+    "note": "Notional start point chosen by the team: the cell with the largest flat radius in the main walkable region. Firm ground not verified."
+  },
+  "layers": [
+    {
+      "id": "optical",
+      "kind": "measured",
+      "file": "tiles",
+      "source": "HiRISE (MRO) mosaic of the Opportunity region, via NASA Mars Trek (WMTS level 17, 0.32 m/px)",
+      "resolution_m": 0.32
+    },
+    {
+      "id": "hillshade",
+      "kind": "measured",
+      "file": "layers/hillshade.png",
+      "source": "HiRISE DEM of Endeavour crater at 1 m/px, via NASA Mars Trek (no author in the metadata)",
+      "resolution_m": 2.0
+    },
+    {
+      "id": "slope",
+      "kind": "modeled",
+      "file": "layers/slope.png",
+      "source": "Computed from the DEM above",
+      "resolution_m": 2.0
+    },
+    {
+      "id": "forbidden",
+      "kind": "modeled",
+      "file": "grid/forbidden.bin",
+      "source": "Slope above limit",
+      "resolution_m": 2.0
+    },
+    {
+      "id": "slope15",
+      "kind": "modeled",
+      "file": "layers/slope15.png",
+      "source": "Slope above 15 % (8.5 deg), computed from the DEM above",
+      "resolution_m": 2.0
+    },
+    {
+      "id": "transit",
+      "kind": "modeled",
+      "file": "layers/transit.png",
+      "source": "TES Dust Cover Index (ASU, 3.5 km/px) and TES thermal inertia (ASU, 7.5 km/px) combined with the team's thresholds",
+      "resolution_m": 3500.0,
+      "stats": {
+        "dci_min": 0.9734646081924438,
+        "dci_max": 0.9795275926589966,
+        "ti_min": 219.0,
+        "ti_max": 221.0,
+        "fractions": {
+          "green": 0.0,
+          "yellow": 1.0,
+          "red": 0.0,
+          "none": 0.0
+        }
+      }
+    },
+    {
+      "id": "thermal_night",
+      "kind": "measured",
+      "file": "layers/thermal_night.png",
+      "source": "THEMIS-IR night mosaic (Mars Odyssey) via NASA Mars Trek; relative brightness, a proxy for thermal inertia",
+      "resolution_m": 100.0
+    },
+    {
+      "id": "minerals_pts",
+      "kind": "measured",
+      "file": "vectors.json",
+      "source": "Aqueous mineral distribution and hydrous mineral detections (CRISM, OMEGA) via NASA Mars Trek",
+      "resolution_m": null
+    },
+    {
+      "id": "zones",
+      "kind": "measured",
+      "file": "vectors.json",
+      "source": "Exploration zones, habitation zones, landing sites and regions of interest (NASA EMC workshop, 2015) via NASA Mars Trek",
+      "resolution_m": null
+    },
+    {
+      "id": "names",
+      "kind": "measured",
+      "file": "vectors.json",
+      "source": "IAU place names via NASA Mars Trek",
+      "resolution_m": null
+    },
+    {
+      "id": "craters",
+      "kind": "measured",
+      "file": "vectors.json",
+      "source": "Robbins crater database, craters of 1 km and larger (USGS Astrogeology)",
+      "resolution_m": null
+    },
+    {
+      "id": "geology",
+      "kind": "measured",
+      "file": "vectors.json",
+      "source": "Global geologic map SIM 3292 (USGS Astrogeology) and dune field database (via NASA Mars Trek); global scale",
+      "resolution_m": null
+    }
+  ],
+  "quality": "high",
+  "regional": false,
+  "context": {
+    "x_m": -18000.0,
+    "y_m": -18000.0,
+    "size_m": 40000.0,
+    "template": "context/{z}/{x}/{y}.jpg",
+    "tile_px": 512,
+    "min_zoom": 0,
+    "max_zoom": 2,
+    "world_size_m": 40960.0,
+    "m_per_px": [
+      80.0,
+      40.0,
+      20.0
+    ],
+    "source": "CTX (MRO) mosaic of Meridiani Planum - Sinus Meridiani, via NASA Mars Trek (WMTS level 11, 20 m/px)",
+    "resolution_m": 20.35
+  },
+  "base": {
+    "asset_dir": "base_meridiani",
+    "x_m": -166176.69534515723,
+    "y_m": -136654.70625612044,
+    "size_m": 327680.0,
+    "tile_px": 512,
+    "max_zoom": 4,
+    "world_size_m": 327680.0,
+    "m_per_px": [
+      640.0,
+      320.0,
+      160.0,
+      80.0,
+      40.0
+    ],
+    "source": "CTX (MRO) mosaic of Meridiani Planum - Sinus Meridiani, via NASA Mars Trek (WMTS level 10, 40 m/px)",
+    "resolution_m": 40.7
+  }
+}

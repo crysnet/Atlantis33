@@ -1,0 +1,61 @@
+{
+  "_nota": "Los cuatro objetivos de demostración de Gale (paradas reales de Curiosity; tipo, prioridad, tiempo y transporte son supuestos) desplazados a esta ventana, y un objetivo lejano de ejemplo elegido por reglas sobre el relieve.",
+  "kind": "suggested",
+  "objectives": [
+    {
+      "id": "t1",
+      "name": "Boxwork stop, sol 4548",
+      "type": "sample",
+      "priority": 5,
+      "work_min": 40,
+      "x_m": 11998.0,
+      "y_m": 11697.0,
+      "source": "Curiosity waypoint, sol 4548",
+      "transport": "hybrid"
+    },
+    {
+      "id": "t2",
+      "name": "Boxwork stop, sol 4609",
+      "type": "image",
+      "priority": 3,
+      "work_min": 20,
+      "x_m": 11718.0,
+      "y_m": 12050.0,
+      "source": "Curiosity waypoint, sol 4609",
+      "transport": "foot"
+    },
+    {
+      "id": "t3",
+      "name": "Boxwork stop, sol 4500",
+      "type": "measurement",
+      "priority": 2,
+      "work_min": 25,
+      "x_m": 12326.0,
+      "y_m": 11387.0,
+      "source": "Curiosity waypoint, sol 4500",
+      "transport": "vehicle"
+    },
+    {
+      "id": "t4",
+      "name": "Boxwork stop, sol 4889",
+      "type": "equipment",
+      "priority": 4,
+      "work_min": 30,
+      "x_m": 11867.0,
+      "y_m": 12625.0,
+      "source": "Curiosity waypoint, sol 4889",
+      "transport": "hybrid"
+    },
+    {
+      "id": "f1",
+      "name": "Far plain site (example)",
+      "type": "equipment",
+      "priority": 2,
+      "work_min": 20,
+      "x_m": 4712.0,
+      "y_m": 9480.0,
+      "transport": "vehicle",
+      "source": "Example point chosen by the team from the terrain (not a science target)"
+    }
+  ]
+}

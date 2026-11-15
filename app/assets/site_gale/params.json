@@ -1,0 +1,105 @@
+{
+  "_nota": "Única fuente de parámetros. Los scripts de Python (tools/) y la app de Dart leen este archivo. Los umbrales y pesos son supuestos del equipo, no estándares de la NASA, y se muestran en la interfaz.",
+  "version": 1,
+  "site": {
+    "id": "gale_boxwork",
+    "name": "Gale crater, Mount Sharp: boxwork ridges",
+    "box": { "easting_min": 8141400.0, "northing_max": -282750.0, "size_m": 4000.0 },
+    "habitat_candidate": {
+      "easting": 8142565.0,
+      "northing": -283620.0,
+      "_nota": "Candidato 4 de RECURSOS.md, confirmado por el usuario el 2026-11-14. 03_costos.py lo ajusta como máximo 30 m al centro del disco llano más cercano."
+    },
+    "boxwork_sol_range": [4500, 4899]
+  },
+  "grid": { "cell_m": 2.0 },
+  "slope": {
+    "_nota": "Grados, medidos sobre el modelo de elevación a 2 m por celda (diferencias centrales: línea base de 4 m). El tramo de 20 a 25 grados no lo define el plan: se trata como precaución alta y transitable.",
+    "nominal_max_deg": 10.0,
+    "caution_max_deg": 20.0,
+    "forbidden_above_deg": 25.0,
+    "habitat_max_deg": 5.0,
+    "colors": {
+      "nominal": "#3DAA5C",
+      "caution": "#E6AA28",
+      "high_caution": "#E6702A",
+      "forbidden": "#D23232"
+    }
+  },
+  "roughness": {
+    "_nota": "Raíz del cuadrado medio del relieve local (modelo a 1 m menos su media móvil), en centímetros.",
+    "window_px": 7,
+    "byte_unit_cm": 0.5
+  },
+  "elevation": { "byte_unit_m": 0.02, "nodata_value": 65535 },
+  "tiles": { "tile_px": 512, "max_zoom": 4, "jpeg_quality": 85 },
+  "routing": {
+    "_nota": "Todo lo de esta sección son supuestos del equipo, no estándares de la NASA. cell_m es el tamaño de celda de la rejilla donde corre A*: 4 m, porque a 2 m el cálculo de las tres rutas tarda 6.7 s en Chrome y a 4 m tarda 1.5 s (medido en la fase 2).",
+    "cell_m": 4.0,
+    "slope_exponent_ref_deg": 25.0,
+    "roughness_ref_cm": 40.0,
+    "safe_fast_targets": "primary",
+    "science_keep_comfort": true,
+    "profiles": {
+      "safe": { "w_slope": 12.0, "w_rough": 4.0, "w_sand": 0.0, "w_time": 0.5, "slope_limit_deg": 22.0 },
+      "fast": { "w_slope": 0.5, "w_rough": 0.2, "w_sand": 0.0, "w_time": 1.0, "slope_limit_deg": 25.0 },
+      "science": { "w_slope": 4.0, "w_rough": 1.5, "w_sand": 0.0, "w_time": 0.5, "slope_limit_deg": 25.0 }
+    }
+  },
+  "mobility": {
+    "_nota": "Velocidad = velocidad en llano por exp(-k (|tan(pendiente) + 0.05| - 0.05)), la función de Tobler para caminantes, con la pendiente en el sentido del paso. Es un supuesto: no es una medida de traje.",
+    "flat_speed_kmh": 2.0,
+    "tobler_k": 3.5,
+    "min_speed_factor": 0.1,
+    "max_eva_h": 6.0
+  },
+  "consumables": {
+    "_nota": "Supuestos. El oxígeno se mide en horas de capacidad a ritmo nominal. Subir pendiente gasta más; el trabajo en parada gasta o2_stop_rate del nominal.",
+    "o2_capacity_h": 8.0,
+    "o2_reserve_min_frac": 0.2,
+    "o2_uphill_factor": 3.0,
+    "o2_stop_rate": 0.8
+  },
+  "rover": {
+    "_nota": "Supuestos del equipo para el modo con rover. Referencias de la NASA (verificadas el 2026-11-14): el vehículo lunar de Apolo se diseñó para pendientes de 20 a 23° en condiciones favorables y 25° como máximo, con 9 a 13 km/h teóricos; la velocidad media lograda en Apolo 15 y 16 fue de 2.0 y 1.7 m/s (7.2 y 6.1 km/h) (NTRS 20250011301). El Space Exploration Vehicle (rover presurizado, concepto) viaja a unos 10 km/h con dos tripulantes (ficha técnica de la NASA). El requisito de pendiente del vehículo lunar de Artemis es de 20° (resumen secundario). Ninguna es una especificación de un rover en Marte. El consumo de oxígeno sobre el rover, la rugosidad máxima, el tiempo de subir y bajar y el tiempo de salida del rover de apoyo ante una emergencia (support_dispatch_min) son supuestos sin referencia.",
+    "speed_kmh": 6.0,
+    "slope_limit_deg": 20.0,
+    "rough_max_cm": 30.0,
+    "o2_rate": 0.5,
+    "transfer_min": 5.0,
+    "support_dispatch_min": 10.0
+  },
+  "pair": {
+    "_nota": "Supuestos del equipo para el modo en pareja. Dos astronautas salen juntos del hábitat y se reparten los objetivos; los dos tienen que estar siempre a menos de max_separation_m uno del otro (línea de vista y comunicación). Las salidas reales de la NASA van en pareja y juntas, así que este reparto es una extensión nuestra y el límite de separación es un supuesto sin referencia. Se comprueba cada sample_min minutos.",
+    "max_separation_m": 500.0,
+    "sample_min": 1.0
+  },
+  "radiation": {
+    "_nota": "Tasa de dosis absorbida medida por RAD en Gale (detector E, plástico equivalente a tejido): mediana de las medias diarias de los 60 sols previos al periodo de REMS (sols 4754 a 4813). Dato de la NASA calculado por tools/06_clima_radiacion.py. Es dosis absorbida en uGy por día, no dosis equivalente.",
+    "dose_rate_ugy_per_day": 151.0,
+    "kind": "measured",
+    "source": "NASA SPDF CDAWeb, MSL_RAD_OBS-L2 (DOI 10.48322/20qb-4e17)"
+  },
+  "hazard": {
+    "_nota": "Puntaje de peligro de 0 a 100: suma de peso x componente (0 a 1). La componente de condiciones del día es de ejemplo (0) hasta tener datos de polvo y temperatura en la fase 4.",
+    "weights": { "slope": 30.0, "terrain": 15.0, "walkback": 20.0, "consumables": 20.0, "radiation": 5.0, "day": 10.0 },
+    "slope_exposure_ref_m": 1000.0,
+    "slope_caution_weight": 0.25,
+    "slope_high_weight": 1.0,
+    "walkback_max_h": 0.75,
+    "consumables_margin_good": 0.5,
+    "time_margin_good": 0.25,
+    "day_conditions_component": 0.0
+  },
+  "environment": {
+    "_nota": "Umbrales de GO / NO-GO de la pantalla de seguridad. Son supuestos del equipo, no límites de la NASA: validar con referencias del traje antes de la entrega. La radiación se compara con la línea base medida por RAD; el clima, con la temperatura mínima del aire en la ventana de la salida (datos de REMS).",
+    "eva_start_lmst_h": 9.0,
+    "radiation": { "caution_ratio": 1.5, "nogo_ratio": 3.0 },
+    "weather": { "caution_min_air_c": -60.0, "nogo_min_air_c": -80.0 }
+  },
+  "success": {
+    "_nota": "exito = 100 x valor cientifico x factor tiempo x factor consumibles x (1 - peligro / 200). Cada factor vale 1 con margen holgado y baja lineal hasta 0 cuando el margen se agota.",
+    "time_margin_good": 0.25,
+    "o2_margin_good": 0.3
+  }
+}

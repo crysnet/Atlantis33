@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARES PATH — Safety &amp; Environment // Gale Crater EVA-07</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Space Grotesk, IBM Plex Sans, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with configuration -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary": "#5a1b00",
+            "on-tertiary-container": "#3e2400",
+            "primary-container": "#ec6932",
+            "surface-dim": "#151312",
+            "on-error": "#690005",
+            "primary-fixed": "#ffdbce",
+            "outline-variant": "#584239",
+            "surface-container-lowest": "#100e0d",
+            "on-primary-container": "#4f1700",
+            "secondary-fixed-dim": "#26dcdd",
+            "inverse-on-surface": "#33302e",
+            "secondary-fixed": "#56f9f9",
+            "primary-fixed-dim": "#ffb59a",
+            "surface-bright": "#3c3837",
+            "outline": "#a78b81",
+            "surface-tint": "#ffb59a",
+            "on-secondary-fixed-variant": "#004f50",
+            "tertiary-fixed": "#ffddb9",
+            "on-tertiary-fixed-variant": "#663e00",
+            "error-container": "#93000a",
+            "on-primary-fixed": "#370e00",
+            "surface-container-highest": "#373433",
+            "on-tertiary-fixed": "#2b1700",
+            "on-primary-fixed-variant": "#802a00",
+            "background": "#151312",
+            "on-error-container": "#ffdad6",
+            "tertiary-container": "#cb8000",
+            "on-secondary-fixed": "#002020",
+            "inverse-surface": "#e8e1df",
+            "on-tertiary": "#472a00",
+            "on-surface-variant": "#e0c0b5",
+            "primary": "#ffb59a",
+            "secondary": "#45edee",
+            "on-secondary-container": "#005455",
+            "error": "#ffb4ab",
+            "tertiary": "#ffb961",
+            "inverse-primary": "#a73a00",
+            "on-surface": "#e8e1df",
+            "surface-container": "#221f1e",
+            "on-background": "#e8e1df",
+            "surface-container-high": "#2c2928",
+            "surface": "#151312",
+            "on-secondary": "#003737",
+            "surface-variant": "#373433",
+            "secondary-container": "#00d0d1",
+            "tertiary-fixed-dim": "#ffb961",
+            "surface-container-low": "#1d1b1a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "gutter-tablet": "0.375rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1rem",
+            "margin-desktop": "1rem",
+            "space-xs": "0.25rem",
+            "gutter-desktop": "0.5rem",
+            "space-md": "0.75rem",
+            "margin-mobile": "0.5rem",
+            "space-xl": "1.5rem",
+            "margin": "0.75rem",
+            "gutter": "0.5rem"
+          },
+          "fontFamily": {
+            "headline-lg-mobile": ["Space Grotesk"],
+            "body-md": ["IBM Plex Sans"],
+            "headline-md": ["Space Grotesk"],
+            "mono-sm": ["JetBrains Mono"],
+            "mono-md": ["JetBrains Mono"],
+            "body-sm": ["IBM Plex Sans"],
+            "mono-lg": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "body-lg": ["IBM Plex Sans"],
+            "headline-lg": ["Space Grotesk"],
+            "headline-sm": ["Space Grotesk"],
+            "headline-xl-mobile": ["Space Grotesk"],
+            "label-caps": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "headline-lg-mobile": ["1.25rem", { "lineHeight": "1.5rem", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-md": ["0.8125rem", { "lineHeight": "1.125rem", "fontWeight": "400" }],
+            "headline-md": ["1.125rem", { "lineHeight": "1.375rem", "letterSpacing": "0em", "fontWeight": "600" }],
+            "mono-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "mono-md": ["0.8125rem", { "lineHeight": "1rem", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "body-sm": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "400" }],
+            "mono-lg": ["1rem", { "lineHeight": "1.25rem", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "headline-xl": ["2rem", { "lineHeight": "2.25rem", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-lg": ["0.9375rem", { "lineHeight": "1.375rem", "fontWeight": "400" }],
+            "headline-lg": ["1.5rem", { "lineHeight": "1.75rem", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-sm": ["0.875rem", { "lineHeight": "1.125rem", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "headline-xl-mobile": ["1.5rem", { "lineHeight": "1.75rem", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-caps": ["0.625rem", { "lineHeight": "0.75rem", "letterSpacing": "0.08em", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 16px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+    .pulse-dot {
+      animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse-border {
+      0%, 100% { border-color: #ffb4ab; }
+      50% { border-color: rgba(255, 180, 171, 0.25); }
+    }
+    .pulse-hazard-border {
+      animation: pulse-border 1.5s ease-in-out infinite;
+    }
+    /* Custom pattern for no-go polygon */
+    .hatch-pattern {
+      background-image: repeating-linear-gradient(45deg, rgba(255, 180, 171, 0.15), rgba(255, 180, 171, 0.15) 4px, transparent 4px, transparent 8px);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container antialiased">
+<!-- TOP APP BAR -->
+<header class="w-full bg-surface-container-lowest border-b border-surface-bright sticky top-0 z-50 px-space-md py-space-xs flex items-center justify-between">
+<!-- Branding & Mission Context Chips -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="flex items-center gap-space-xs text-primary font-headline-sm text-headline-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="deployed_code">deployed_code</span>
+<span class="tracking-wider">ARES PATH</span>
+</div>
+<div class="h-4 w-px bg-surface-bright hidden sm:block"></div>
+<div class="flex items-center gap-space-xs">
+<span class="bg-surface-container px-space-xs py-0.5 rounded text-primary font-mono-sm text-mono-sm border border-surface-bright">EVA-07</span>
+<span class="bg-surface-container px-space-xs py-0.5 rounded text-on-surface-variant font-mono-sm text-mono-sm border border-surface-bright hidden md:inline">BOXWORK TRAVERSE</span>
+<span class="bg-surface-container px-space-xs py-0.5 rounded text-secondary font-mono-sm text-mono-sm border border-surface-bright">SOL 4521</span>
+<span class="bg-surface-container px-space-xs py-0.5 rounded text-tertiary font-mono-sm text-mono-sm border border-surface-bright">LMST 09:42:18</span>
+<span class="bg-surface-container px-space-xs py-0.5 rounded text-on-surface-variant font-mono-sm text-mono-sm border border-surface-bright hidden lg:inline">CREW: EV1 + EV2</span>
+</div>
+</div>
+<!-- Center Navigation Tabs -->
+<nav class="hidden lg:flex items-center gap-1 font-mono-sm text-mono-sm">
+<a class="px-space-md py-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" href="#plan">PLAN</a>
+<a class="px-space-md py-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" href="#route">ROUTE</a>
+<a class="px-space-md py-1 border-b-2 border-primary-container text-primary font-semibold bg-surface-container-low rounded-t" href="#safety">SAFETY</a>
+<a class="px-space-md py-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" href="#science">SCIENCE</a>
+<a class="px-space-md py-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors" href="#hud">HUD</a>
+</nav>
+<!-- Right Telemetry & Status Badges -->
+<div class="flex items-center gap-space-sm">
+<div class="hidden xl:flex items-center gap-space-xs text-on-surface-variant font-mono-sm text-mono-sm">
+<span>DTE ORBITER:</span>
+<span class="text-secondary font-semibold">NOMINAL [TGO 28°]</span>
+<span class="text-surface-bright">|</span>
+<span>MW:</span>
+<span class="text-secondary font-semibold">READY</span>
+</div>
+<div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container-low border border-primary-container rounded">
+<span class="w-2 h-2 rounded-full bg-primary-container pulse-dot"></span>
+<span class="text-primary font-mono-sm text-mono-sm font-bold tracking-wider">GO FOR EVA</span>
+</div>
+</div>
+</header>
+<!-- MAIN VIEWPORT CANVAS -->
+<main class="flex-1 p-space-sm space-y-space-sm max-w-[1920px] mx-auto w-full">
+<!-- TOP ROW: LARGE GO / NO-GO DECISION BANNER -->
+<section class="bg-surface-container-lowest border border-surface-bright rounded p-space-sm flex flex-col xl:flex-row items-start xl:items-center justify-between gap-space-sm">
+<!-- Left side: Status & Checks -->
+<div class="flex flex-wrap items-center gap-space-sm w-full xl:w-auto">
+<div class="flex items-center gap-space-xs bg-surface-container-high px-space-md py-1.5 rounded border border-primary-container">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container pulse-dot"></span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold tracking-wider">OVERALL STATUS: GO FOR EVA</span>
+</div>
+<!-- 5 Sub-check chips -->
+<div class="flex flex-wrap items-center gap-1.5">
+<!-- 1. Radiation -->
+<div class="flex items-center gap-1 px-2 py-1 bg-surface-container rounded border border-surface-bright">
+<span class="material-symbols-outlined text-secondary text-[14px]" data-icon="solar_power">solar_power</span>
+<span class="text-on-surface-variant font-mono-sm text-mono-sm">RAD:</span>
+<span class="text-secondary font-mono-sm text-mono-sm font-bold">GO</span>
+</div>
+<!-- 2. Weather -->
+<div class="flex items-center gap-1 px-2 py-1 bg-surface-container rounded border border-surface-bright">
+<span class="material-symbols-outlined text-secondary text-[14px]" data-icon="thermostat">thermostat</span>
+<span class="text-on-surface-variant font-mono-sm text-mono-sm">WEATHER:</span>
+<span class="text-secondary font-mono-sm text-mono-sm font-bold">GO</span>
+</div>
+<!-- 3. Dust (CAUTION) -->
+<div class="flex items-center gap-1 px-2 py-1 bg-surface-container rounded border border-tertiary">
+<span class="material-symbols-outlined text-tertiary text-[14px]" data-icon="warning">warning</span>
+<span class="text-on-surface-variant font-mono-sm text-mono-sm">DUST:</span>
+<span class="text-tertiary font-mono-sm text-mono-sm font-bold">CAUTION</span>
+</div>
+<!-- 4. Terrain -->
+<div class="flex items-center gap-1 px-2 py-1 bg-surface-container rounded border border-surface-bright">
+<span class="material-symbols-outlined text-secondary text-[14px]" data-icon="landscape">landscape</span>
+<span class="text-on-surface-variant font-mono-sm text-mono-sm">TERRAIN:</span>
+<span class="text-secondary font-mono-sm text-mono-sm font-bold">GO</span>
+</div>
+<!-- 5. Consumables -->
+<div class="flex items-center gap-1 px-2 py-1 bg-surface-container rounded border border-surface-bright">
+<span class="material-symbols-outlined text-secondary text-[14px]" data-icon="vital_signs">vital_signs</span>
+<span class="text-on-surface-variant font-mono-sm text-mono-sm">CONSUMABLES:</span>
+<span class="text-secondary font-mono-sm text-mono-sm font-bold">GO</span>
+</div>
+</div>
+</div>
+<!-- Right side: EVA Window & Solar Ephemeris -->
+<div class="flex items-center gap-space-sm text-on-surface-variant font-mono-sm text-mono-sm bg-surface-container px-space-sm py-1.5 rounded border border-surface-bright w-full xl:w-auto justify-between xl:justify-end">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[15px]" data-icon="schedule">schedule</span>
+<span>WINDOW: <strong class="text-on-surface">09:45–14:30 LMST</strong> (4h 45m)</span>
+</div>
+<span class="text-surface-bright hidden md:inline">•</span>
+<div class="flex items-center gap-1 hidden sm:flex">
+<span class="material-symbols-outlined text-tertiary text-[15px]" data-icon="wb_twilight">wb_twilight</span>
+<span>SUNSET: <strong class="text-on-surface">17:52 LMST</strong></span>
+</div>
+<span class="text-surface-bright hidden md:inline">•</span>
+<div class="flex items-center gap-1 hidden md:flex">
+<span class="material-symbols-outlined text-secondary text-[15px]" data-icon="wb_sunny">wb_sunny</span>
+<span>PEAK INSOLATION: <strong class="text-on-surface">12:15</strong></span>
+</div>
+</div>
+</section>
+<!-- MIDDLE ROW (3 PANELS GRID) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-space-sm">
+<!-- Panel 1: RADIATION — MSL RAD -->
+<section class="bg-surface-container-lowest border border-surface-bright rounded flex flex-col justify-between p-space-sm space-y-space-sm">
+<div>
+<!-- Header -->
+<div class="flex items-center justify-between pb-space-xs border-b border-surface-bright">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary" data-icon="satellite_alt">satellite_alt</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold uppercase tracking-wider">RADIATION — MSL RAD</h2>
+</div>
+<span class="text-on-surface-variant font-mono-sm text-mono-sm">SOLS 4491–4521 [30-SOL]</span>
+</div>
+<!-- SVG Line Chart: Surface dose rate 30 sols -->
+<div class="mt-space-sm bg-surface-container-low border border-surface-bright rounded p-space-xs">
+<div class="flex items-center justify-between font-mono-sm text-mono-sm text-on-surface-variant mb-1">
+<span>DOSE RATE HISTORY (mSv/day)</span>
+<span class="text-primary font-bold">SOL 4521: 0.64 mSv/d</span>
+</div>
+<div class="relative w-full h-32">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 340 120">
+<!-- Grid Lines -->
+<line stroke="#3c3837" stroke-dasharray="2 2" stroke-width="0.5" x1="0" x2="340" y1="20" y2="20"></line>
+<text fill="#e0c0b5" font-family="JetBrains Mono" font-size="8" x="5" y="18">1.5 mSv</text>
+<line stroke="#3c3837" stroke-dasharray="2 2" stroke-width="0.5" x1="0" x2="340" y1="60" y2="60"></line>
+<text fill="#e0c0b5" font-family="JetBrains Mono" font-size="8" x="5" y="58">1.0 mSv</text>
+<line stroke="#3c3837" stroke-dasharray="2 2" stroke-width="0.5" x1="0" x2="340" y1="90" y2="90"></line>
+<text fill="#45edee" font-family="JetBrains Mono" font-size="8" x="5" y="88">Nominal ~0.65</text>
+<!-- 30-sol baseline curve with spike at sol 4509 -->
+<path d="M 10 92 
+                         L 30 90 L 50 94 L 70 88 L 90 91 L 110 89 L 130 93 L 150 90 
+                         L 170 88 L 190 28 L 195 24 L 200 48 L 210 75 L 230 89 
+                         L 250 91 L 270 88 L 290 90 L 310 89 L 330 91" fill="none" stroke="#ffb59a" stroke-width="1.75"></path>
+<!-- Spike Flag -->
+<circle cx="195" cy="24" fill="#ffb4ab" r="3"></circle>
+<line stroke="#ffb4ab" stroke-width="1" x1="195" x2="195" y1="24" y2="6"></line>
+<rect fill="#2c2928" height="12" rx="1" stroke="#ffb4ab" stroke-width="0.75" width="170" x="110" y="2"></rect>
+<text fill="#ffb4ab" font-family="JetBrains Mono" font-size="7.5" x="115" y="11">SPE · Sol 4509 (1.42 mSv/d)</text>
+<!-- Current point -->
+<circle cx="330" cy="91" fill="#45edee" r="3"></circle>
+</svg>
+</div>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant mt-1">
+<span>SOL 4491</span>
+<span>SOL 4505</span>
+<span>SOL 4521 (TODAY)</span>
+</div>
+</div>
+<!-- Key Telemetry Stat Readouts -->
+<div class="grid grid-cols-2 gap-space-xs mt-space-sm">
+<div class="p-space-xs bg-surface-container rounded border border-surface-bright">
+<span class="text-on-surface-variant font-mono-sm text-mono-sm block">CURRENT DOSE RATE</span>
+<span class="font-mono-md text-mono-md text-secondary font-bold">0.64 mSv/day</span>
+<span class="text-secondary font-mono-sm text-mono-sm block">STATUS: NOMINAL</span>
+</div>
+<div class="p-space-xs bg-surface-container rounded border border-surface-bright">
+<span class="text-on-surface-variant font-mono-sm text-mono-sm block">PROJECTED EVA DOSE</span>
+<span class="font-mono-md text-mono-md text-primary font-bold">0.21 mSv</span>
+<span class="text-on-surface-variant font-mono-sm text-mono-sm block">4h 10m Traverse Exp</span>
+</div>
+</div>
+<!-- Cumulative Dose Limits -->
+<div class="mt-space-sm space-y-space-xs">
+<div class="space-y-1">
+<div class="flex justify-between font-mono-sm text-mono-sm">
+<span class="text-on-surface">EV1 CUMULATIVE: 148 / 600 mSv</span>
+<span class="text-secondary font-bold">24.6%</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded overflow-hidden">
+<div class="bg-secondary h-full" style="width: 24.6%;"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between font-mono-sm text-mono-sm">
+<span class="text-on-surface">EV2 CUMULATIVE: 139 / 600 mSv</span>
+<span class="text-secondary font-bold">23.1%</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded overflow-hidden">
+<div class="bg-secondary h-full" style="width: 23.1%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Space Weather status -->
+<div class="pt-space-xs border-t border-surface-bright flex items-center justify-between text-on-surface-variant font-mono-sm text-mono-sm">
+<div class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>No active solar proton alerts</span>
+</div>
+<span class="text-outline">SOHO/GOES · Next: 12m</span>
+</div>
+</section>
+<!-- Panel 2: WEATHER — REMS -->
+<section class="bg-surface-container-lowest border border-surface-bright rounded flex flex-col justify-between p-space-sm space-y-space-sm">
+<div>
+<!-- Header -->
+<div class="flex items-center justify-between pb-space-xs border-b border-surface-bright">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary" data-icon="thermostat">thermostat</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold uppercase tracking-wider">WEATHER — REMS</h2>
+</div>
+<span class="text-on-surface-variant font-mono-sm text-mono-sm">DIURNAL METEOROLOGY</span>
+</div>
+<!-- Diurnal Temperature SVG Curve -->
+<div class="mt-space-sm bg-surface-container-low border border-surface-bright rounded p-space-xs">
+<div class="flex items-center justify-between font-mono-sm text-mono-sm text-on-surface-variant mb-1">
+<span>AIR TEMP PROFILE (24-HR DIURNAL)</span>
+<span class="text-tertiary">PEAK: -12°C @ 13:30</span>
+</div>
+<div class="relative w-full h-32">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 340 120">
+<!-- Temperature references -->
+<line stroke="#3c3837" stroke-dasharray="2 2" stroke-width="0.5" x1="0" x2="340" y1="20" y2="20"></line>
+<text fill="#e0c0b5" font-family="JetBrains Mono" font-size="8" x="5" y="18">0°C</text>
+<line stroke="#3c3837" stroke-dasharray="2 2" stroke-width="0.5" x1="0" x2="340" y1="50" y2="50"></line>
+<text fill="#e0c0b5" font-family="JetBrains Mono" font-size="8" x="5" y="48">-40°C</text>
+<line stroke="#3c3837" stroke-dasharray="2 2" stroke-width="0.5" x1="0" x2="340" y1="95" y2="95"></line>
+<text fill="#e0c0b5" font-family="JetBrains Mono" font-size="8" x="5" y="93">-80°C</text>
+<!-- Shaded Planned EVA Window (09:45 to 14:30) roughly x=138 to x=205 -->
+<rect fill="rgba(236, 105, 50, 0.18)" height="100" stroke="#ec6932" stroke-dasharray="2 2" stroke-width="0.75" width="67" x="138" y="10"></rect>
+<text fill="#ec6932" font-family="JetBrains Mono" font-size="7.5" font-weight="bold" x="141" y="22">EVA WINDOW</text>
+<!-- Diurnal Curve: Low of -78°C (around 04:00) to High of -12°C (around 13:30) -->
+<path d="M 0 94 
+                         C 40 96, 60 98, 80 94 
+                         C 110 90, 130 55, 150 40 
+                         C 170 30, 190 28, 205 32 
+                         C 230 42, 260 70, 290 85 
+                         C 315 92, 330 94, 340 95" fill="none" stroke="#45edee" stroke-width="1.75"></path>
+<!-- Current LMST Point 09:42 (x ~= 137) -->
+<circle cx="137" cy="48" fill="#ec6932" r="3.5" stroke="#151312" stroke-width="1"></circle>
+<line stroke="#ec6932" stroke-width="0.75" x1="137" x2="137" y1="10" y2="110"></line>
+<text fill="#ec6932" font-family="JetBrains Mono" font-size="7" x="139" y="112">NOW</text>
+</svg>
+</div>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant mt-1">
+<span>00:00</span>
+<span>06:00</span>
+<span>12:00</span>
+<span>18:00</span>
+<span>24:00 LMST</span>
+</div>
+</div>
+<!-- Clean 2x3 Telemetry Tile Grid -->
+<div class="grid grid-cols-2 md:grid-cols-3 gap-space-xs mt-space-sm font-mono-sm text-mono-sm">
+<div class="p-space-xs bg-surface-container rounded border border-surface-bright">
+<span class="text-on-surface-variant text-[10px] block">ATM PRESSURE</span>
+<span class="font-bold text-on-surface">742 Pa</span>
+<span class="text-secondary text-[10px] block">STABLE</span>
+</div>
+<div class="p-space-xs bg-surface-container rounded border border-surface-bright">
+<span class="text-on-surface-variant text-[10px] block">WIND VELOCITY</span>
+<span class="font-bold text-on-surface">6 m/s NW</span>
+<span class="text-tertiary text-[10px] block">GUSTS 11 m/s</span>
+</div>
+<div class="p-space-xs bg-surface-container rounded border border-surface-bright">
+<span class="text-on-surface-variant text-[10px] block">HUMIDITY</span>
+<span class="font-bold text-on-surface">&lt; 1% RH</span>
+<span class="text-outline text-[10px] block">ULTRA-ARID</span>
+</div>
+<div class="p-space-xs bg-surface-container rounded border border-surface-bright">
+<span class="text-on-surface-variant text-[10px] block">UV FLUX INDEX</span>
+<span class="font-bold text-tertiary">UVM 4.2</span>
+<span class="text-tertiary text-[10px] block">MODERATE</span>
+</div>
+<div class="p-space-xs bg-surface-container rounded border border-surface-bright">
+<span class="text-on-surface-variant text-[10px] block">GROUND TEMP</span>
+<span class="font-bold text-on-surface">-5°C @ NOON</span>
+<span class="text-secondary text-[10px] block">NOMINAL CRUST</span>
+</div>
+<div class="p-space-xs bg-surface-container rounded border border-surface-bright">
+<span class="text-on-surface-variant text-[10px] block">AIR DENSITY</span>
+<span class="font-bold text-on-surface">0.015 kg/m³</span>
+<span class="text-outline text-[10px] block">CO2 RICH</span>
+</div>
+</div>
+</div>
+<div class="pt-space-xs border-t border-surface-bright flex items-center justify-between text-on-surface-variant font-mono-sm text-mono-sm">
+<span>REMS BOOM 1 &amp; 2 ACTIVE</span>
+<span class="text-secondary">SAMPLE RATE 1.0 Hz</span>
+</div>
+</section>
+<!-- Panel 3: DUST & ATMOSPHERIC OPACITY -->
+<section class="bg-surface-container-lowest border border-surface-bright rounded flex flex-col justify-between p-space-sm space-y-space-sm">
+<div>
+<!-- Header -->
+<div class="flex items-center justify-between pb-space-xs border-b border-surface-bright">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-tertiary" data-icon="lens_blur">lens_blur</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold uppercase tracking-wider">DUST &amp; OPACITY</h2>
+</div>
+<span class="text-tertiary font-mono-sm text-mono-sm border border-tertiary px-1 rounded">TAU SENSOR</span>
+</div>
+<!-- Tau Gauge Visualization & 7-Sol Sparkline -->
+<div class="mt-space-sm bg-surface-container-low border border-surface-bright rounded p-space-xs space-y-space-xs">
+<div class="flex items-center justify-between font-mono-sm text-mono-sm">
+<span class="text-on-surface-variant">OPTICAL DEPTH (TAU)</span>
+<span class="text-tertiary font-bold text-mono-md">τ = 0.60</span>
+</div>
+<!-- Gauge Bar with Thresholds -->
+<div class="space-y-1">
+<div class="relative w-full bg-surface-container-highest h-3 rounded overflow-hidden flex">
+<div class="h-full bg-secondary" style="width: 50%;" title="Nominal Tau 0.0 - 0.79"></div>
+<div class="h-full bg-tertiary" style="width: 25%;" title="Caution Tau 0.80 - 1.19"></div>
+<div class="h-full bg-error" style="width: 25%;" title="Abort Tau &gt;= 1.2"></div>
+<!-- Needle Indicator at 0.60 (50% scale based on 0-1.2) -> 0.60/1.2 = 50% -->
+<div class="absolute top-0 bottom-0 w-1 bg-white shadow-none" style="left: 50%;"></div>
+</div>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant text-[10px]">
+<span>0.0 (CLEAR)</span>
+<span class="text-tertiary">0.80 (CAUTION)</span>
+<span class="text-error">1.20 (ABORT)</span>
+</div>
+</div>
+<!-- 7-Sol Trend Sparkline -->
+<div class="pt-1 border-t border-surface-bright flex items-center justify-between font-mono-sm text-mono-sm">
+<span class="text-on-surface-variant">7-SOL TREND:</span>
+<div class="w-32 h-6">
+<svg class="w-full h-full" viewbox="0 0 120 24">
+<polyline fill="none" points="5,18 24,17 43,15 62,16 81,14 100,12 115,10" stroke="#ffb961" stroke-width="1.5"></polyline>
+<circle cx="115" cy="10" fill="#ffb961" r="2"></circle>
+</svg>
+</div>
+<span class="text-tertiary font-bold">+0.04 rise</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-mono-sm text-mono-sm pt-1">
+<span>LINE-OF-SIGHT VISIBILITY:</span>
+<span class="text-on-surface font-bold">28 km HORIZON</span>
+</div>
+</div>
+<!-- Tactical Alert Box -->
+<div class="mt-space-sm p-space-xs bg-surface-container rounded border border-tertiary text-on-surface font-body-sm space-y-1">
+<div class="flex items-center gap-1 text-tertiary font-mono-sm text-mono-sm font-bold">
+<span class="material-symbols-outlined text-[15px]" data-icon="warning">warning</span>
+<span>REGIONAL DUST ADVISORY</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed text-[11px]">
+              Regional dust activity detected 900 km south (Sinus Meridiani corridor). Active monitoring via MRO MARCI orbiter passes every 112 min. Current local atmospheric lofting risk: LOW.
+            </p>
+</div>
+</div>
+<div class="pt-space-xs border-t border-surface-bright flex items-center justify-between text-on-surface-variant font-mono-sm text-mono-sm">
+<span>MASTCAM-Z SOLAR TAU FILTER</span>
+<span class="text-secondary">AUTO-CAL: READY</span>
+</div>
+</section>
+</div>
+<!-- BOTTOM ROW (2-PANEL SPLIT) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-sm">
+<!-- Left Panel: TERRAIN HAZARD MAP & MORPHOLOGY -->
+<section class="bg-surface-container-lowest border border-surface-bright rounded p-space-sm space-y-space-sm flex flex-col justify-between">
+<div>
+<!-- Header -->
+<div class="flex items-center justify-between pb-space-xs border-b border-surface-bright">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary" data-icon="layers">layers</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold uppercase tracking-wider">TERRAIN HAZARD MAP &amp; MORPHOLOGY</h2>
+</div>
+<span class="text-on-surface-variant font-mono-sm text-mono-sm">BOXWORK RIDGE // 3.4 km</span>
+</div>
+<!-- Tactical Vector GIS Canvas Map -->
+<div class="mt-space-sm bg-surface-container-low border border-surface-bright rounded p-space-xs relative overflow-hidden">
+<div class="flex items-center justify-between font-mono-sm text-mono-sm text-on-surface-variant mb-1">
+<div class="flex items-center gap-2">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-secondary"></span> &lt;10° Nominal</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-tertiary"></span> 10–20° Caution</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-error"></span> &gt;20° Hazard</span>
+</div>
+<span class="text-outline text-[10px]">ELEV GRID 0.5m DEM</span>
+</div>
+<!-- Vector Map Viewport -->
+<div class="w-full h-44 bg-surface-container-lowest relative border border-surface-bright rounded overflow-hidden">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 500 180">
+<!-- Topographic contour hairlines -->
+<path d="M 0 30 Q 150 10 280 40 T 500 20" fill="none" stroke="#2c2928" stroke-width="1"></path>
+<path d="M 0 60 Q 140 45 260 75 T 500 50" fill="none" stroke="#2c2928" stroke-width="1"></path>
+<path d="M 0 90 Q 180 80 300 110 T 500 80" fill="none" stroke="#2c2928" stroke-width="1"></path>
+<path d="M 0 130 Q 160 120 290 150 T 500 120" fill="none" stroke="#2c2928" stroke-width="1"></path>
+<path d="M 0 160 Q 200 150 350 170 T 500 155" fill="none" stroke="#2c2928" stroke-width="1"></path>
+<!-- Sand Dune Hazard Polygon (WP1 bypass) -->
+<polygon fill="rgba(255, 185, 97, 0.12)" points="80,105 130,85 160,115 110,135" stroke="#ffb961" stroke-dasharray="3 2" stroke-width="1"></polygon>
+<text fill="#ffb961" font-family="JetBrains Mono" font-size="7" x="86" y="112">BASALT DUNE (42 kPa)</text>
+<!-- NO-GO Unstable Talus Polygon (Red Hatched) -->
+<polygon fill="rgba(255, 180, 171, 0.2)" points="260,25 330,30 350,75 280,70" stroke="#ffb4ab" stroke-width="1.2"></polygon>
+<text fill="#ffb4ab" font-family="JetBrains Mono" font-size="8" font-weight="bold" x="272" y="52">NO-GO TALUS</text>
+<!-- Escarpment Ridge Line (Boxwork) -->
+<path d="M 180 145 L 290 100 L 410 70" fill="none" stroke="#ffb4ab" stroke-dasharray="4 2" stroke-width="2"></path>
+<text fill="#ffb4ab" font-family="JetBrains Mono" font-size="7.5" x="310" y="85">ESCARPMENT 16°-17°</text>
+<!-- EVA Planned Traverse Path -->
+<!-- Hab -> WP1 -> WP2 -> WP3 (PNR) -> WP4 -> WP5 -->
+<polyline fill="none" points="40,150 95,115 190,135 295,95 380,65 460,40" stroke="#45edee" stroke-width="2.5"></polyline>
+<!-- Waypoint Nodes -->
+<!-- HAB -->
+<circle cx="40" cy="150" fill="#ec6932" r="4"></circle>
+<text fill="#e8e1df" font-family="JetBrains Mono" font-size="8" font-weight="bold" x="30" y="165">HAB</text>
+<!-- WP1 -->
+<circle cx="95" cy="115" fill="#45edee" r="3"></circle>
+<text fill="#45edee" font-family="JetBrains Mono" font-size="7.5" x="88" y="108">WP1</text>
+<!-- WP2 -->
+<circle cx="190" cy="135" fill="#ffb961" r="3.5"></circle>
+<text fill="#ffb961" font-family="JetBrains Mono" font-size="7.5" x="180" y="148">WP2</text>
+<!-- WP3 [PNR] -->
+<circle cx="295" cy="95" fill="#ffb4ab" r="5" stroke="#151312" stroke-width="1"></circle>
+<circle class="pulse-dot" cx="295" cy="95" fill="none" r="8" stroke="#ffb4ab" stroke-width="1"></circle>
+<text fill="#ffb4ab" font-family="JetBrains Mono" font-size="8" font-weight="bold" x="270" y="112">WP3 [PNR]</text>
+<!-- WP4 -->
+<circle cx="380" cy="65" fill="#ffb961" r="3.5"></circle>
+<text fill="#ffb961" font-family="JetBrains Mono" font-size="7.5" x="375" y="58">WP4</text>
+<!-- WP5 Target -->
+<circle cx="460" cy="40" fill="#45edee" r="4.5"></circle>
+<text fill="#45edee" font-family="JetBrains Mono" font-size="8" font-weight="bold" x="440" y="32">WP5 BOXWORK</text>
+</svg>
+</div>
+</div>
+<!-- Tactical Hazard List Table/Cards -->
+<div class="mt-space-sm space-y-1 font-mono-sm text-mono-sm">
+<div class="p-1.5 bg-surface-container rounded border-l-2 border-tertiary flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[15px] mt-0.5" data-icon="north_east">north_east</span>
+<div>
+<strong class="text-tertiary">SEGMENT WP2 → WP3:</strong>
+<span class="text-on-surface">Boxwork Ridge approach slope 15°–17° grade. Trekking poles mandatory for EV1 &amp; EV2.</span>
+</div>
+</div>
+<div class="p-1.5 bg-surface-container rounded border-l-2 border-tertiary flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary text-[15px] mt-0.5" data-icon="south_east">south_east</span>
+<div>
+<strong class="text-tertiary">SEGMENT WP4:</strong>
+<span class="text-on-surface">Escarpment descent (16° slope, loose regolith substrate, step pacing max 0.4 m/s).</span>
+</div>
+</div>
+<div class="p-1.5 bg-surface-container rounded border-l-2 border-surface-bright flex items-start gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[15px] mt-0.5" data-icon="grain">grain</span>
+<div>
+<strong class="text-on-surface-variant">DUNE CROSSING:</strong>
+<span class="text-on-surface">WP1 bypass — 60 m loose basaltic sand deposit (Bearing capacity: 42 kPa, low shear risk).</span>
+</div>
+</div>
+<div class="p-1.5 bg-surface-container rounded border-l-2 border-error flex items-start gap-2">
+<span class="material-symbols-outlined text-error text-[15px] mt-0.5" data-icon="report">report</span>
+<div>
+<strong class="text-error">GEOMORPHIC FEATURE:</strong>
+<span class="text-on-surface">Sharp wind-etched ventifact field near WP4 (Mark IV suit boot and knee wear advisory).</span>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-space-xs border-t border-surface-bright flex items-center justify-between text-on-surface-variant font-mono-sm text-mono-sm">
+<span>TERRAIN MODEL: HiRISE / CTX STEREO</span>
+<span class="text-secondary">VERT RESOLUTION: 0.12 m</span>
+</div>
+</section>
+<!-- Right Panel: CONSUMABLES, PLSS & ABORT VECTORS -->
+<section class="bg-surface-container-lowest border border-surface-bright rounded p-space-sm space-y-space-sm flex flex-col justify-between">
+<div>
+<!-- Header -->
+<div class="flex items-center justify-between pb-space-xs border-b border-surface-bright">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary" data-icon="medical_services">medical_services</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold uppercase tracking-wider">CONSUMABLES, PLSS &amp; ABORT VECTORS</h2>
+</div>
+<span class="text-secondary font-mono-sm text-mono-sm font-semibold">+24% RESERVE · +8% MARGIN</span>
+</div>
+<!-- PLSS Consumables Bars for EV1 & EV2 -->
+<div class="mt-space-sm grid grid-cols-1 md:grid-cols-2 gap-space-xs bg-surface-container-low border border-surface-bright rounded p-space-xs">
+<!-- EV1 Subsystem -->
+<div class="space-y-1.5 border-b md:border-b-0 md:border-r border-surface-bright pb-2 md:pb-0 md:pr-2">
+<div class="flex items-center justify-between font-mono-sm text-mono-sm font-bold text-primary">
+<span>EV-1 (COMMANDER)</span>
+<span>STATUS: NOMINAL</span>
+</div>
+<!-- O2 -->
+<div>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>O2 RESERVE</span>
+<span class="text-on-surface">94% (6.8h)</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded overflow-hidden">
+<div class="bg-secondary h-full" style="width: 94%;"></div>
+</div>
+</div>
+<!-- CO2 LiOH -->
+<div>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>LiOH SCRUBBER</span>
+<span class="text-on-surface">91%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded overflow-hidden">
+<div class="bg-secondary h-full" style="width: 91%;"></div>
+</div>
+</div>
+<!-- Power -->
+<div>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>BATTERY POWER</span>
+<span class="text-on-surface">88% (5.9h)</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded overflow-hidden">
+<div class="bg-secondary h-full" style="width: 88%;"></div>
+</div>
+</div>
+<!-- Feedwater -->
+<div>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>LCVG COOLING WATER</span>
+<span class="text-on-surface">86%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded overflow-hidden">
+<div class="bg-secondary h-full" style="width: 86%;"></div>
+</div>
+</div>
+</div>
+<!-- EV2 Subsystem -->
+<div class="space-y-1.5 md:pl-1">
+<div class="flex items-center justify-between font-mono-sm text-mono-sm font-bold text-secondary">
+<span>EV-2 (GEOLOGIST)</span>
+<span>STATUS: NOMINAL</span>
+</div>
+<!-- O2 -->
+<div>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>O2 RESERVE</span>
+<span class="text-on-surface">92% (6.6h)</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded overflow-hidden">
+<div class="bg-secondary h-full" style="width: 92%;"></div>
+</div>
+</div>
+<!-- CO2 LiOH -->
+<div>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>LiOH SCRUBBER</span>
+<span class="text-on-surface">89%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded overflow-hidden">
+<div class="bg-secondary h-full" style="width: 89%;"></div>
+</div>
+</div>
+<!-- Power -->
+<div>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>BATTERY POWER</span>
+<span class="text-on-surface">85% (5.7h)</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded overflow-hidden">
+<div class="bg-secondary h-full" style="width: 85%;"></div>
+</div>
+</div>
+<!-- Feedwater -->
+<div>
+<div class="flex justify-between font-mono-sm text-mono-sm text-on-surface-variant">
+<span>LCVG COOLING WATER</span>
+<span class="text-on-surface">84%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded overflow-hidden">
+<div class="bg-secondary h-full" style="width: 84%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Waypoint Abort Options Matrix / Table -->
+<div class="mt-space-sm overflow-x-auto">
+<table class="w-full text-left font-mono-sm text-mono-sm border border-surface-bright">
+<thead class="bg-surface-container-high text-on-surface-variant uppercase text-[10px] border-b border-surface-bright">
+<tr>
+<th class="p-1.5">WAYPOINT</th>
+<th class="p-1.5">DIST HAB</th>
+<th class="p-1.5">DIRECT WALK-BACK</th>
+<th class="p-1.5">ROVER SORTIE</th>
+<th class="p-1.5 text-right">STATUS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-bright">
+<!-- HAB -->
+<tr class="hover:bg-surface-container">
+<td class="p-1.5 font-bold text-on-surface">HAB BASE</td>
+<td class="p-1.5 text-on-surface-variant">0.0 km</td>
+<td class="p-1.5 text-on-surface-variant">00 min</td>
+<td class="p-1.5 text-on-surface-variant">IMMEDIATE</td>
+<td class="p-1.5 text-right text-secondary font-bold">BASE SECURE</td>
+</tr>
+<!-- WP1 -->
+<tr class="hover:bg-surface-container">
+<td class="p-1.5 font-bold text-on-surface">WP1 (Dune bypass)</td>
+<td class="p-1.5 text-on-surface-variant">0.7 km</td>
+<td class="p-1.5 text-on-surface-variant">14 min</td>
+<td class="p-1.5 text-on-surface-variant">06 min</td>
+<td class="p-1.5 text-right text-secondary font-bold">GREEN</td>
+</tr>
+<!-- WP2 -->
+<tr class="hover:bg-surface-container">
+<td class="p-1.5 font-bold text-on-surface">WP2 (Ridge Base)</td>
+<td class="p-1.5 text-on-surface-variant">1.4 km</td>
+<td class="p-1.5 text-on-surface-variant">28 min</td>
+<td class="p-1.5 text-on-surface-variant">11 min</td>
+<td class="p-1.5 text-right text-secondary font-bold">GREEN</td>
+</tr>
+<!-- WP3: POINT OF NO RETURN (CRITICAL) -->
+<tr class="bg-surface-container-high pulse-hazard-border border-2 border-error">
+<td class="p-1.5 font-bold text-error flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]" data-icon="error">error</span>
+                    WP3 (PNR Crest)
+                  </td>
+<td class="p-1.5 font-bold text-error">2.1 km</td>
+<td class="p-1.5 font-bold text-error">42 min [THRESHOLD]</td>
+<td class="p-1.5 font-bold text-on-surface">16 min</td>
+<td class="p-1.5 text-right text-error font-bold">CRITICAL PNR</td>
+</tr>
+<!-- WP4 -->
+<tr class="hover:bg-surface-container">
+<td class="p-1.5 font-bold text-on-surface">WP4 (Escarpment)</td>
+<td class="p-1.5 text-on-surface-variant">2.8 km</td>
+<td class="p-1.5 text-tertiary">58 min (ROVER MANDATORY)</td>
+<td class="p-1.5 text-on-surface-variant">21 min</td>
+<td class="p-1.5 text-right text-tertiary font-bold">SORTIE ONLY</td>
+</tr>
+<!-- WP5 -->
+<tr class="hover:bg-surface-container">
+<td class="p-1.5 font-bold text-on-surface">WP5 (Boxwork Site)</td>
+<td class="p-1.5 text-on-surface-variant">3.4 km</td>
+<td class="p-1.5 text-tertiary">72 min (ROVER MANDATORY)</td>
+<td class="p-1.5 text-on-surface-variant">26 min</td>
+<td class="p-1.5 text-right text-tertiary font-bold">SORTIE ONLY</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Highlight Banner for WP3 PNR -->
+<div class="mt-space-xs p-1.5 bg-surface-container rounded border border-error flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[18px]" data-icon="crisis_alert">crisis_alert</span>
+<div class="font-mono-sm text-mono-sm leading-tight">
+<span class="text-error font-bold">CRITICAL: POINT OF NO RETURN (PNR) AT WP3 (2.1 km).</span>
+<span class="text-on-surface-variant">Beyond WP3, walk-back exceeds emergency 45-min O2 reserve. Pressurized rover PR-1 standby locked.</span>
+</div>
+</div>
+</div>
+<div class="pt-space-xs border-t border-surface-bright flex items-center justify-between text-on-surface-variant font-mono-sm text-mono-sm">
+<span>ROVER PR-1 TELEMETRY: READY</span>
+<span class="text-secondary">BATT 98% · AIRLOCK PREP NOMINAL</span>
+</div>
+</section>
+</div>
+</main>
+<!-- BOTTOM STATUS FOOTER STRIP -->
+<footer class="w-full bg-surface-container-lowest border-t border-surface-bright px-space-md py-space-xs font-mono-sm text-mono-sm text-on-surface-variant flex flex-wrap items-center justify-between gap-space-xs mt-space-sm z-40">
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary pulse-dot"></span>
+<span class="text-on-surface font-semibold">GALE CRATER HAB LOCAL TIME:</span>
+<span class="text-primary font-bold">09:42:18 LMST</span>
+</div>
+<span class="text-surface-bright hidden sm:inline">|</span>
+<div>
+<span>EPHEMERIS:</span>
+<span class="text-on-surface">LS 142.4° (MARS YEAR 38)</span>
+</div>
+<span class="text-surface-bright hidden md:inline">|</span>
+<div>
+<span>SPEED-OF-LIGHT EARTH DELAY:</span>
+<span class="text-tertiary font-bold">+14m 22s (OWLT)</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-[14px]" data-icon="lock">lock</span>
+<span>AES-256 MIL-TAC CRYPTO</span>
+</div>
+<span class="text-surface-bright">|</span>
+<span class="text-secondary font-bold">CON-NET SYNCHRONIZED</span>
+</div>
+</footer>
+</body></html>

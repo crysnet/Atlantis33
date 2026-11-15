@@ -1,0 +1,483 @@
+{
+  "@@locale": "en",
+  "appName": "ARES PATH",
+  "siteName": "Gale · Boxwork ridges",
+  "navPlan": "PLAN",
+  "navSafety": "SAFETY",
+  "navScience": "SCIENCE",
+  "language": "Language",
+  "layersTitle": "DATA LAYERS",
+  "layersActive": "{n} ACTIVE",
+  "@layersActive": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "layersReset": "RESET",
+  "layerOptical": "Optical surface",
+  "layerHillshade": "Relief (hillshade)",
+  "layerSlope": "Slope",
+  "layerForbidden": "Forbidden zones",
+  "layerCuriosity": "Curiosity track",
+  "layerThermal": "Thermal (THEMIS-IR day)",
+  "layerMinerals": "Mineralogy",
+  "layerRadiation": "Radiation flux",
+  "layerNoData": "No data yet",
+  "kindMeasured": "MEASURED",
+  "kindModeled": "MODELED",
+  "kindExample": "EXAMPLE",
+  "opacity": "OPACITY",
+  "legendTitle": "SLOPE LEGEND",
+  "legendNominal": "< 10° nominal",
+  "legendCaution": "10–20° caution",
+  "legendHigh": "20–25° high caution",
+  "legendForbidden": "> 25° forbidden",
+  "routesTitle": "ROUTE COMPARISON",
+  "routeSafe": "Safest",
+  "routeFast": "Fastest",
+  "routeScience": "Most science",
+  "metricDistance": "Distance",
+  "metricDuration": "Duration",
+  "metricMaxSlope": "Max slope",
+  "metricClimb": "Climb",
+  "metricO2": "O₂ at return",
+  "metricDose": "Dose",
+  "metricNoReturn": "Point of no return",
+  "metricWalk": "Walking",
+  "metricStops": "Work stops",
+  "hazardScore": "HAZARD",
+  "successScore": "SUCCESS",
+  "breakdown": "Breakdown",
+  "hzSlope": "Slope exposure",
+  "hzTerrain": "Rough / loose terrain",
+  "hzWalkback": "Beyond walk-back range",
+  "hzConsumables": "Consumables margin",
+  "hzRadiation": "Radiation dose",
+  "hzDay": "Day conditions (example)",
+  "scValue": "Science value",
+  "scTime": "Time factor",
+  "scConsumables": "Consumables factor",
+  "scPenalty": "Hazard penalty",
+  "objectivesTitle": "SCIENCE OBJECTIVES",
+  "objectivesAdd": "ADD OBJECTIVE",
+  "objectivesAddActive": "TAP THE MAP TO PLACE IT",
+  "objectivesEmpty": "No objectives. Add one to plan a route.",
+  "typeSample": "Sample",
+  "typeImage": "Image",
+  "typeMeasurement": "Measurement",
+  "typeEquipment": "Equipment",
+  "priorityLabel": "Priority {p}",
+  "@priorityLabel": {
+    "placeholders": {
+      "p": {
+        "type": "int"
+      }
+    }
+  },
+  "workMinutes": "{m} min",
+  "@workMinutes": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "objectiveEdit": "Edit objective",
+  "objectiveNewName": "New objective",
+  "fieldName": "Name",
+  "fieldType": "Type",
+  "fieldPriority": "Priority (1 to 5)",
+  "fieldWork": "Work time (min)",
+  "save": "Save",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "objectiveForbidden": "In forbidden terrain",
+  "statusFeasible": "FEASIBLE",
+  "statusNotFeasible": "NOT FEASIBLE",
+  "statusUnreachable": "UNREACHABLE",
+  "statusNoTarget": "NO TARGET",
+  "visits": "Visits",
+  "skippedLabel": "Not included",
+  "reasonBlocked": "forbidden terrain",
+  "reasonUnreachable": "unreachable",
+  "reasonTime": "not enough time",
+  "reasonOxygen": "not enough oxygen",
+  "reasonMargin": "margin too thin",
+  "reasonNotPrimary": "not on this route",
+  "computing": "COMPUTING ROUTES…",
+  "assumptionsTitle": "ASSUMPTIONS",
+  "assumptionsNote": "Team assumptions, not NASA standards.",
+  "assumeSpeed": "Walking speed on flat ground",
+  "assumeEva": "Maximum EVA duration",
+  "assumeO2": "Oxygen capacity",
+  "assumeReserve": "Minimum oxygen reserve",
+  "assumeSlopeLimit": "Slope limit (safest / others)",
+  "assumeDose": "Radiation dose rate (measured, RAD)",
+  "profileTitle": "ELEVATION & SLOPE PROFILE",
+  "habitat": "HABITAT",
+  "pnrShort": "PNR",
+  "elevation": "ELEV",
+  "attribution": "HiRISE (NASA/JPL/UArizona) · USGS Astrogeology",
+  "hintDrag": "Drag to pan · scroll to zoom · tap an objective to edit",
+  "zoomIn": "Zoom in",
+  "zoomOut": "Zoom out",
+  "zoomFit": "Fit to view",
+  "soon": "Coming next",
+  "sciTargetsTitle": "TARGETS // SORTIE",
+  "sciDetail": "TARGET DETAIL",
+  "sciOrbital": "ORBITAL · HiRISE",
+  "sciGround": "GROUND · ROVER PHOTO",
+  "sciGroundSoon": "No rover photo for this objective",
+  "sciGroundNote": "Photo from that sol, taken near this stop",
+  "sciDataStack": "DATA STACK AT THIS POINT",
+  "sciPick": "Select an objective",
+  "stackOptical": "Optical imagery",
+  "stackTopo": "Topography & slopes",
+  "stackThermal": "Thermal (THEMIS-IR day)",
+  "stackThermalNote": "THEMIS-IR day mosaic · about 100 m/px · relative brightness, not calibrated temperature · source: Mars Trek",
+  "stackMinerals": "Mineralogy",
+  "stackRadiation": "Radiation",
+  "stackGeology": "Geologic unit",
+  "stackGeologyNote": "Hesperian transition undivided unit · USGS global geologic map (SIM 3292), scale 1:20,000,000, so context only · source: Mars Trek",
+  "fieldElevation": "Elevation",
+  "fieldSlope": "Local slope",
+  "fieldRoughness": "Roughness",
+  "fieldFromHabitat": "From habitat",
+  "fieldDeltaElev": "vs habitat",
+  "opsTitle": "SITE OPERATIONS",
+  "opsAllot": "Work time",
+  "opsVisitedBy": "Included in routes",
+  "opsEdit": "Edit objective",
+  "opsHere": "Coordinates",
+  "priorityHigh": "HIGH",
+  "priorityMedium": "MEDIUM",
+  "priorityLow": "LOW",
+  "stackPending": "No data yet · pending {source}",
+  "safeOverall": "OVERALL STATUS",
+  "safeGo": "GO",
+  "safeCaution": "CAUTION",
+  "safeNoGo": "NO-GO",
+  "safePending": "PENDING",
+  "safeIncomplete": "INCOMPLETE DATA",
+  "safeRealChecks": "{n} of 5 checks use real data",
+  "checkRad": "RAD",
+  "checkWeather": "WEATHER",
+  "checkDust": "DUST",
+  "checkTerrain": "TERRAIN",
+  "checkConsumables": "CONSUMABLES",
+  "panelRadiation": "RADIATION · MSL RAD",
+  "panelWeather": "WEATHER · MSL REMS",
+  "panelDust": "DUST & OPACITY",
+  "panelTerrain": "TERRAIN HAZARD",
+  "panelConsumables": "CONSUMABLES & WALK-BACK",
+  "pendingPhase4": "NO DATA YET. The RAD and REMS series from the Planetary Data System arrive in phase 4.",
+  "exampleDose": "Dose of this route at the example rate",
+  "exampleRate": "Example rate",
+  "terrainByClass": "Distance by slope class",
+  "terrainRoughness": "Mean roughness",
+  "walkbackTitle": "Return by stop",
+  "colStop": "STOP",
+  "colAlong": "ALONG ROUTE",
+  "colStraight": "FROM HABITAT",
+  "colWalkback": "DIRECT WALK-BACK",
+  "consO2": "Oxygen left at return",
+  "consReserve": "Minimum reserve",
+  "consTime": "EVA time used",
+  "consMax": "Maximum EVA",
+  "consCompare": "All routes",
+  "consNote": "Straight-line walk-back at flat-ground speed. It ignores slope and obstacles.",
+  "@stackPending": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "@safeRealChecks": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "safeSolTitle": "REFERENCE SOL",
+  "safeSolNote": "Past-period evaluation: measured data from REMS (up to sol 4843, March 2026) and RAD. It is not a forecast and not today's conditions.",
+  "radRate": "Dose rate (detector E)",
+  "radBaseline": "Baseline (60 sols)",
+  "radRatio": "vs baseline",
+  "radProjected": "Dose of this route",
+  "radHistory": "Daily mean dose rate, 60 sols up to the reference sol",
+  "radUnitNote": "Absorbed dose in tissue-equivalent plastic. It is not dose equivalent (mSv).",
+  "radSource": "RAD · NASA SPDF CDAWeb",
+  "radB": "Detector B (silicon, no rover source)",
+  "wxProfile": "AIR TEMPERATURE BY LOCAL TIME (LMST)",
+  "wxAir": "Air temperature",
+  "wxGround": "Ground temperature",
+  "wxPressure": "Pressure",
+  "wxUv": "UV peak (A+B+C)",
+  "wxHumidity": "Humidity (max)",
+  "wxWindow": "EVA window",
+  "wxMinWindow": "Minimum air temperature in the window",
+  "wxCoverage": "hours with data",
+  "wxNoData": "no data",
+  "wxSource": "REMS · NASA PDS Atmospheres",
+  "dustNone": "The PDS has no REMS dust-opacity product. Pending another source.",
+  "rulesTitle": "GO / NO-GO RULES (team assumptions)",
+  "rulesRad": "Radiation, multiple of the baseline",
+  "rulesAir": "Air temperature in the EVA window",
+  "rulesStart": "EVA start (local mean solar time)",
+  "rulesCrew": "Assumed: the EVA is done by two astronauts; consumables and dose are computed for one. No rover is modeled.",
+  "rulesNote": "Thresholds are assumptions, not NASA limits. Dust has no data, so the overall status stays incomplete.",
+  "safeIncomplete2": "DUST HAS NO DATA",
+  "minLabel": "min",
+  "maxLabel": "max",
+  "utcLabel": "UTC",
+  "wxAirShort": "AIR",
+  "wxGroundShort": "GROUND",
+  "navHelmet": "HELMET",
+  "navMission": "MISSION",
+  "missionTitle": "Simulated EVA: suit telemetry",
+  "missionNote": "Simulation. The astronaut walks the selected route; each reading is computed for that position from the real elevation, slope and REMS data. Elapsed time, oxygen and dose are interpolated from the route totals. There are no vital signs or suit sensors: there is no data for them.",
+  "missionStatus": "Status",
+  "missionNominal": "NOMINAL",
+  "missionCaution": "CAUTION",
+  "missionAlert": "ALERT",
+  "missionPosition": "Position",
+  "missionDose": "Dose so far (est.)",
+  "missionO2Need": "Oxygen needed to walk back",
+  "missionO2Reserve": "Reserve on return",
+  "missionSpeed": "Speed",
+  "missionReset": "Back to start",
+  "missionAlertPnr": "Past the point of no return",
+  "missionAlertO2": "Oxygen below what the walk back needs",
+  "missionAlertO2Low": "Oxygen reserve on return under 10%",
+  "missionAllClear": "No alerts at this position",
+  "missionDone": "Route finished",
+  "helmetNoRoute": "Calculating routes…",
+  "helmetHabitat": "HABITAT",
+  "helmetConcept": "CONCEPT",
+  "helmetTitle": "Helmet visor display (HUD)",
+  "helmetNote": "Visual concept. The position is simulated along the selected route. Distances, heading, slope and objectives come from the route model; the air temperature comes from REMS. There are no vital signs or suit sensors: there is no data for them.",
+  "helmetBackdrop": "Backdrop: real Curiosity photo ({source}); it is not the view of this route.",
+  "helmetNext": "Next",
+  "helmetSlopeWarn": "CAUTION: SLOPE {deg}° AHEAD ({dist} m)",
+  "helmetReturnTitle": "RETURN",
+  "helmetHabDist": "To habitat (straight line)",
+  "helmetWalkBack": "Walk-back time",
+  "helmetPnr": "Point of no return at",
+  "helmetBeyondPnr": "Past the point",
+  "helmetYes": "YES",
+  "helmetNo": "NO",
+  "helmetHereTitle": "HERE",
+  "helmetHeading": "Heading",
+  "helmetSlopeAhead": "Slope ahead (90 m)",
+  "helmetAir": "Air temperature",
+  "helmetElapsed": "Elapsed (est.)",
+  "helmetO2": "Oxygen (est.)",
+  "helmetPlay": "Play",
+  "helmetPause": "Pause",
+  "helmetProgress": "Progress along the route",
+  "helmetSimulated": "Simulated position",
+  "helmetFootnote": "Elapsed time and oxygen are interpolated from the route totals. Air temperature uses the REMS hourly profile of the reference sol at the local time of the simulated position.",
+  "@helmetBackdrop": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "@helmetSlopeWarn": {
+    "placeholders": {
+      "deg": {
+        "type": "String"
+      },
+      "dist": {
+        "type": "String"
+      }
+    }
+  },
+  "modeTitle": "EXIT MODE",
+  "modeFoot": "On foot",
+  "modeRover": "With rover",
+  "metricRover": "Rover",
+  "metricRoverNone": "not used",
+  "assumeRoverTitle": "ROVER MODE ASSUMPTIONS",
+  "assumeRoverSpeed": "Rover speed",
+  "assumeRoverSlope": "Rover slope limit",
+  "assumeRoverRough": "Rover maximum roughness",
+  "assumeRoverO2": "Oxygen use on the rover",
+  "assumeRoverTransfer": "Time to get on or off",
+  "assumeRoverNote": "The rover is left at one point of the route: it goes out along the first stretch it can drive and comes back along the last one. The rest is on foot. The routes are still optimized for walking. Speed and slope come from the Apollo lunar rover (NASA, NTRS 20250011301); the other values are team assumptions.",
+  "modeSupport": "Support",
+  "metricEmergency": "Emergency return",
+  "metricEmergencyFoot": "On foot",
+  "assumeDispatch": "Support rover departure after the alert",
+  "assumeSupportNote": "A rover waits at the habitat. The crew walks the same route; the rover does not change its time or oxygen. In an emergency it leaves after the alert, drives only where it can, and meets the astronaut on the way (the best meeting point is chosen). It shortens the return time, moves the point of no return and reduces the radius that counts in the hazard score. Speed and slope come from the Apollo lunar rover (NASA, NTRS 20250011301); the other values are team assumptions.",
+  "modePair": "Pair",
+  "routePair1": "Astronaut 1",
+  "routePair2": "Astronaut 2",
+  "reasonOtherAstronaut": "the other astronaut",
+  "reasonNotInPair": "not reached by the pair",
+  "pairTitle": "EVA IN A PAIR",
+  "pairVisits": "Objectives",
+  "pairSeparation": "Max separation",
+  "pairO2Min": "Lowest oxygen",
+  "pairNone": "No pair of routes keeps the two astronauts within {limit} m of each other.",
+  "pairNote": "Duration is that of the slower astronaut. Hazard is the higher of the two. Success counts the objectives visited by either one. Each astronaut has their own oxygen.",
+  "assumePairTitle": "PAIR MODE ASSUMPTIONS",
+  "assumePairSep": "Maximum separation",
+  "assumePairSample": "Separation checked every",
+  "assumePairNote": "Two astronauts leave the habitat together, split the objectives and must stay within the maximum separation (line of sight and communication) at all times. Real NASA EVAs go in pairs and together, so this split is our own extension and the limit is a team assumption without a reference. Each route keeps the science rule: feasible, and with a comfortable margin if it has more than one objective.",
+  "@pairNone": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "siteChange": "Change site",
+  "sitePending": "Data in preparation",
+  "siteLoadError": "Could not load the site. The current one stays open.",
+  "modeObjective": "By objective",
+  "transportTitle": "Transport",
+  "transportFoot": "On foot",
+  "transportVehicle": "Vehicle",
+  "transportHybrid": "Hybrid",
+  "transportHint": "Only used in “By objective” mode. Vehicle: drive to the objective. Hybrid: drive as far as the terrain allows, then walk.",
+  "reasonRover": "the vehicle would be left behind",
+  "assumeObjectiveNote": "Each objective brings its own transport. There is one vehicle: it leaves the habitat with the astronaut and stays where it is parked; to use it again, the route has to pass through that point. The way to a “Vehicle” objective is searched only over cells the vehicle can drive. Speed, slope, roughness and transfer values are the rover ones.",
+  "transportNoteNotHere": "{name}: the vehicle is not on this stretch, so it is done on foot.",
+  "@transportNoteNotHere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transportNoteCannotStart": "{name}: the vehicle cannot start from here, so it is done on foot.",
+  "@transportNoteCannotStart": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transportNoteBlocked": "{name}: the vehicle cannot advance on this stretch, so it is done on foot.",
+  "@transportNoteBlocked": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transportNotePartial": "{name}: the vehicle cannot reach it. It goes as far as it can and the rest is on foot.",
+  "@transportNotePartial": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transportNoteNoRecovery": "{name}: there is no point on the way back to pick the vehicle up again, so it is done on foot.",
+  "@transportNoteNoRecovery": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transportNoteStranded": "The vehicle would be left behind: the way back never passes through where it was parked.",
+  "msnTitle": "Missions",
+  "msnNew": "New mission",
+  "msnDuplicate": "Duplicate",
+  "msnDelete": "Delete",
+  "msnDeleteLast": "The only mission cannot be deleted.",
+  "msnDeleteTitle": "Delete mission?",
+  "msnDeleteBody": "{name} will be deleted from this device. This cannot be undone.",
+  "@msnDeleteBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "msnName": "Name",
+  "msnNotes": "Notes",
+  "msnSite": "Site",
+  "msnObjectives": "{count, plural, =0{No objectives} =1{1 objective} other{{count} objectives}}",
+  "@msnObjectives": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "msnConsumables": "Consumables",
+  "msnEquipment": "Equipment and tools",
+  "msnAddItem": "Add",
+  "msnEmptyItems": "Nothing added.",
+  "msnItemName": "Item",
+  "msnItemQty": "Quantity",
+  "msnItemUnit": "Unit",
+  "msnItemMass": "Mass per unit (kg)",
+  "msnMassTotal": "Declared mass: {kg} kg",
+  "@msnMassTotal": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "msnAssumeNote": "Consumables and equipment are written by the user. They are not NASA data and do not change the route calculation yet.",
+  "msnRoutesNote": "The routes are calculated from the objectives of the open mission.",
+  "msnExport": "Copy JSON",
+  "msnCopied": "Mission copied as JSON.",
+  "msnOpenError": "Could not open the site of that mission.",
+  "msnCurrent": "Open",
+  "siteIndicativeTag": "Indicative",
+  "siteIndicativeNote": "Indicative routes: the relief comes from a 200 m model, so local slopes are smoothed and the roughness is unknown. Use them as an approximation, not to avoid rocks or small slopes.",
+  "layerSlope15": "Slope above 15 %",
+  "layerTransit": "Transit zones (DCI + thermal inertia)",
+  "layerThermalNight": "Relative thermal inertia (THEMIS-IR night)",
+  "layerMineralsPts": "Aqueous and hydrous minerals",
+  "layerZones": "Exploration zones",
+  "legendTransitTitle": "Transit zones (TES, 3.5 km per pixel)",
+  "legendTransitGreen": "Best transit: DCI > 0.96 and inertia > 300",
+  "legendTransitYellow": "Safe transit: DCI > 0.95 and inertia 180 to 300",
+  "legendTransitRed": "Avoid: DCI < 0.94 and inertia < 150",
+  "legendTransitNone": "Not classified (outside those rules)",
+  "legendMineralsTitle": "Minerals (orbit)",
+  "legendSulfate": "Sulfate",
+  "legendPhyllo": "Phyllosilicate (clay)",
+  "legendHydrous": "Hydrous mineral",
+  "legendZonesTitle": "Exploration zones (NASA, 2015)",
+  "legendHabitation": "Habitation zone",
+  "legendLanding": "Landing site",
+  "legendEz": "Exploration zone",
+  "legendRoi": "Region of interest",
+  "legendEzRadius": "100 km radius",
+  "legendSlope15": "Slope above 15 % (avoid for a base)",
+  "transitNote": "The thresholds are team assumptions without a reference. DCI and thermal inertia come from TES at 3.5 and 7.5 km: in a window of a few kilometres the layer has one or two colours.",
+  "srcTitle": "Sources and data",
+  "srcIntro": "Every value in the app is one of three kinds: real data from NASA, USGS or ASU; a value computed by the team from that data; or a team assumption. Source files and dates are listed in the project notes (RECURSOS.md).",
+  "srcReal": "Real data",
+  "srcModeled": "Computed by the team",
+  "srcAssumed": "Assumptions",
+  "srcClose": "Close",
+  "safeNoEnvData": "No radiation or weather measurements at this site: RAD and REMS are on Curiosity, in Gale crater, so those two checks stay pending. The dose of the routes uses the Gale baseline as an assumption. Meridiani lies higher, with less atmosphere above it, so the real dose is probably larger.",
+  "doseGaleNote": "This site has no radiation measurements: the dose uses the Gale baseline (assumption).",
+  "srcLink": "Sources",
+  "layerNames": "Place names (IAU)",
+  "layerCraters": "Craters of 1 km and larger",
+  "layerGeology": "Geology and dunes",
+  "routeAreaLabel": "ROUTE AREA",
+  "legendGeologyTitle": "Geology and dunes (USGS, global scale)",
+  "legendGeologyNote": "The unit code is drawn on each area (for example Htu, mNh). Dune fields appear in amber. The map is global scale: it does not resolve small outcrops.",
+  "legendCraters": "Crater of 1 km or more (Robbins database)",
+  "legendNames": "Official place name (IAU)",
+  "contextNote": "Outside the dashed frame there is a coarser image (CTX) for context. Routes are only calculated inside the frame.",
+  "siteReachTag": "Long range",
+  "siteReachNote": "Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km)."
+}
