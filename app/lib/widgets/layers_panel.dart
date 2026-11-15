@@ -125,7 +125,6 @@ class _Legend extends StatelessWidget {
         item(AppColors.slopeCaution, l.legendCaution),
         item(AppColors.slopeHigh, l.legendHigh),
         item(AppColors.slopeForbidden, l.legendForbidden),
-        if (on('slope15')) item(const Color(0xFFE74C3C), l.legendSlope15),
         if (on('transit')) ...[
           const SizedBox(height: 6),
           Text(l.legendTransitTitle, style: AppText.label()),
@@ -147,12 +146,6 @@ class _Legend extends StatelessWidget {
           if (on('hydrous_pts')) item(kMineralColors['hydrous']!, l.legendHydrous),
           if (on('valleys')) item(kValleyColor, l.legendValleys),
           Text(l.legendBiosigNote, style: AppText.body(10.5, color: AppColors.textMute, height: 1.35)),
-        ],
-        if (on('geology')) ...[
-          const SizedBox(height: 6),
-          Text(l.legendGeologyTitle, style: AppText.label()),
-          const SizedBox(height: 6),
-          Text(l.legendGeologyNote, style: AppText.body(10.5, color: AppColors.textMute, height: 1.35)),
         ],
         if (on('craters')) ...[const SizedBox(height: 6), item(AppColors.text, l.legendCraters)],
         if (on('names')) item(AppColors.text, l.legendNames),

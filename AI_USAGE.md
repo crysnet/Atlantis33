@@ -57,6 +57,7 @@ Actualizar este archivo cada vez que se use una herramienta de IA.
 | 2026-11-15 | Claude Code (Opus 5.5) | Script que amplía los minerales hidratados (CRISM, OMEGA) de Mars Trek a todo el mosaico CTX de Meridiani; ajuste de una prueba | `tools/21_minerales_ctx.py`, `app/assets/site_meridiani_*/vectors.json`, `app/test/meridiani_test.dart`. Las posiciones son datos de la NASA (Mars Trek); la IA solo escribió el código |
 | 2026-11-15 | Claude Code (Opus 5.5) | Capas separadas de búsqueda de biofirmas (minerales acuosos, hidratados y redes de valles), activadas por defecto | `tools/21_minerales_ctx.py`, `app/lib/` (capas, dibujo, leyenda, textos), `app/assets/`, pruebas. Datos de Mars Trek (NASA); la IA escribió el código y los textos de la leyenda |
 | 2026-11-15 | Claude Code (Opus 5.5) | Preparación del entorno en Windows (Flutter 3.47.7) y compilación del APK de prueba v0.7.1 | `dist/ARES_PATH_v0.7.1.apk`, `app/pubspec.yaml`, `RETOMAR.md` |
+| 2026-11-15 | Antigravity (Google DeepMind) | Limpieza de funcionalidades (eliminación de Casco y Simulación), reducción del selector de sitios a Meridiani Contexto regional (100 km) y ajuste de capas (eliminación de relieve sombreado, zonas prohibidas, pendiente > 15 % y geología/dunas; renombrado de pendiente a Relieve) | `app/assets/sites.json`, `app/lib/`, `app/test/`, `RETOMAR.md` |
 
 ## Notas
 

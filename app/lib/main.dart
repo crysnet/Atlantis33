@@ -7,8 +7,6 @@ import 'data/mission_store.dart';
 import 'data/site_data.dart';
 import 'data/site_registry.dart';
 import 'l10n/app_localizations.dart';
-import 'screens/helmet_screen.dart';
-import 'screens/mission_screen.dart';
 import 'screens/plan_screen.dart';
 import 'screens/safety_screen.dart';
 import 'screens/science_screen.dart';
@@ -127,9 +125,7 @@ class _Home extends StatelessWidget {
           child: switch (m.tab) {
             0 => const PlanScreen(),
             1 => const SafetyScreen(),
-            2 => const ScienceScreen(),
-            3 => const MissionScreen(),
-            _ => const HelmetScreen(),
+            _ => const ScienceScreen(),
           },
         ),
         Container(

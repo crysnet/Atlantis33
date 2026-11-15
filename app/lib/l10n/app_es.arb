@@ -1,7 +1,7 @@
 {
   "@@locale": "es",
   "appName": "ARES PATH",
-  "siteName": "Gale · Crestas boxwork",
+  "siteName": "Meridiani · Contexto regional (100 km)",
   "navPlan": "PLAN",
   "navSafety": "SEGURIDAD",
   "navScience": "CIENCIA",
@@ -11,7 +11,7 @@
   "layersReset": "RESTABLECER",
   "layerOptical": "Superficie óptica",
   "layerHillshade": "Relieve (sombreado)",
-  "layerSlope": "Pendiente",
+  "layerSlope": "Relieve",
   "layerForbidden": "Zonas prohibidas",
   "layerCuriosity": "Recorrido de Curiosity",
   "layerThermal": "Térmica (THEMIS-IR día)",

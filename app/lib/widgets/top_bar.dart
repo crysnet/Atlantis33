@@ -14,7 +14,7 @@ class TopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final m = AppScope.of(context);
     final l = AppLocalizations.of(context)!;
-    final tabs = [l.navPlan, l.navSafety, l.navScience, l.navMission, l.navHelmet];
+    final tabs = [l.navPlan, l.navSafety, l.navScience];
     final r = m.route;
     final (statusText, statusColor) = r == null
         ? ('…', AppColors.textMute)
@@ -99,7 +99,7 @@ class _SiteChip extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
     final m = model;
     final name = (m.siteLabel ?? l.siteName).toUpperCase();
-    final multi = m.registry.sites.length > 1;
+    final multi = m.registry.sites.isNotEmpty;
     final chip = Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(color: AppColors.panel2, border: Border.all(color: AppColors.hairline)),

@@ -23,21 +23,17 @@ void main() {
     });
     await tester.pump();
     final model = AppScope.of(tester.element(find.byType(Scaffold).first));
-    expect(model.siteId, 'gale_boxwork');
-
-    await tester.runAsync(() => model.switchSite('meridiani_habitat'));
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(model.siteId, 'meridiani_habitat');
-    expect(tester.takeException(), isNull, reason: 'cambio de sitio');
+    expect(model.siteId, 'meridiani_regional');
+    expect(tester.takeException(), isNull, reason: 'carga inicial de Meridiani');
     expect(find.text('Indicative routes: the relief comes from a 200 m model, so local slopes are smoothed and the roughness is unknown. Use them as an approximation, not to avoid rocks or small slopes.'), findsOneWidget);
     // Todas las capas científicas y de tránsito encendidas, con la leyenda abierta.
-    for (final id in ['transit', 'thermal_night', 'slope15', 'aqueous_pts', 'hydrous_pts', 'valleys', 'zones', 'names', 'craters', 'geology']) {
+    for (final id in ['transit', 'thermal_night', 'aqueous_pts', 'hydrous_pts', 'valleys', 'zones', 'names', 'craters']) {
       model.toggleLayer(id, true);
     }
     await tester.pump(const Duration(milliseconds: 500));
     expect(tester.takeException(), isNull, reason: 'capas nuevas');
     expect(find.text('Transit zones (TES, 3.5 km per pixel)'), findsOneWidget);
-    for (final tab in ['PLAN', 'SAFETY', 'SCIENCE', 'MISSION', 'HELMET']) {
+    for (final tab in ['PLAN', 'SAFETY', 'SCIENCE']) {
       await tester.tap(find.text(tab));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));

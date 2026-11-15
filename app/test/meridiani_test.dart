@@ -128,9 +128,9 @@ void main() {
     expect(r.metrics!.distanceM, greaterThan(500));
   });
 
-  test('el registro marca la zona habitable como indicativa', () async {
+  test('el registro marca el contexto regional como indicativo', () async {
     final r = await SiteRegistry.load();
-    expect(r.byId('meridiani_habitat')!.indicative, isTrue);
-    expect(r.byId('meridiani_endeavour')!.available, isTrue);
+    expect(r.byId('meridiani_regional')!.indicative, isTrue);
+    expect(r.byId('meridiani_regional')!.available, isTrue);
   });
 }

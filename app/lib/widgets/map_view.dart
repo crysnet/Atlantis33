@@ -1,6 +1,4 @@
 import 'dart:math' as math;
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +25,7 @@ Color routeColor(String profile) => switch (profile) {
 /// de la esquina noroeste del recuadro. El mapa propio evita depender de una librería de mapas con
 /// proyecciones, que aquí no hacen falta.
 class MapView extends StatefulWidget {
-  const MapView({super.key, this.forceSim = false});
-
-  /// Dibuja siempre al astronauta simulado, aunque el avance sea cero.
-  final bool forceSim;
+  const MapView({super.key});
 
   @override
   State<MapView> createState() => _MapViewState();
@@ -46,7 +41,6 @@ class _MapViewState extends State<MapView> {
   Offset _w0 = Offset.zero;
   String? _dragId;
   final ValueNotifier<Offset?> _hover = ValueNotifier(null);
-  ui.Image? _forbidden;
   SiteData? _site;
 
   /// Lado del recuadro del sitio en metros (4000 en Gale).
@@ -59,37 +53,14 @@ class _MapViewState extends State<MapView> {
   @override
   void dispose() {
     _hover.dispose();
-    _forbidden?.dispose();
     super.dispose();
   }
 
-  void _ensureForbidden(SiteData d) {
+  void _ensureSite(SiteData d) {
     if (identical(_site, d)) return;
-    // Sitio nuevo: se rehace la imagen de zonas prohibidas y se reajusta la vista al recuadro.
     _site = d;
     _worldM = d.sizeM;
     _fitted = false;
-    _forbidden?.dispose();
-    _forbidden = null;
-    final g = d.grid;
-    final px = Uint8List(g.width * g.height * 4);
-    for (var i = 0; i < g.blocked.length; i++) {
-      if (g.blocked[i] != 0) {
-        final o = i * 4;
-        final stripe = ((i % g.width) + (i ~/ g.width)) % 3 == 0;
-        px[o] = 0xE7;
-        px[o + 1] = 0x4C;
-        px[o + 2] = 0x3C;
-        px[o + 3] = stripe ? 120 : 235;
-      }
-    }
-    ui.decodeImageFromPixels(px, g.width, g.height, ui.PixelFormat.rgba8888, (img) {
-      if (mounted && identical(_site, d)) {
-        setState(() => _forbidden = img);
-      } else {
-        img.dispose();
-      }
-    });
   }
 
   void _fit() {
@@ -128,7 +99,7 @@ class _MapViewState extends State<MapView> {
   Widget build(BuildContext context) {
     final m = AppScope.of(context);
     final l = AppLocalizations.of(context)!;
-    _ensureForbidden(m.data);
+    _ensureSite(m.data);
     return LayoutBuilder(builder: (context, c) {
       _size = c.biggest;
       if (!_fitted && _size.width > 0) {
@@ -201,7 +172,6 @@ class _MapViewState extends State<MapView> {
                         habitatLabel: l.habitat,
                         pnrLabel: l.pnrShort,
                         frameLabel: l.routeAreaLabel,
-                        showSim: widget.forceSim || m.simActive,
                       ),
                     ),
                   ),
@@ -329,13 +299,10 @@ class _MapViewState extends State<MapView> {
     final d = m.data;
     final z = _zoomLevel(d);
     final optical = m.layers['optical']!;
-    final hill = m.layers['hillshade']!;
     final thermal = m.layers['thermal']!;
     final slope = m.layers['slope']!;
-    final forb = m.layers['forbidden']!;
     final tnight = m.layers['thermal_night']!;
     final transit = m.layers['transit']!;
-    final slope15 = m.layers['slope15']!;
     Widget image(String asset, double opacity) => Positioned(
           left: 0,
           top: 0,
@@ -382,17 +349,7 @@ class _MapViewState extends State<MapView> {
                 if (thermal.visible) image(d.assetPath('layers/thermal.png'), thermal.opacity),
                 if (tnight.visible) image(d.assetPath('layers/thermal_night.png'), tnight.opacity),
                 if (transit.visible) image(d.assetPath('layers/transit.png'), transit.opacity),
-                if (hill.visible) image(d.assetPath('layers/hillshade.png'), hill.opacity),
                 if (slope.visible) image(d.assetPath('layers/slope.png'), slope.opacity),
-                if (slope15.visible) image(d.assetPath('layers/slope15.png'), slope15.opacity),
-                if (forb.visible && _forbidden != null)
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    width: d.sizeM,
-                    height: d.sizeM,
-                    child: Opacity(opacity: forb.opacity, child: RawImage(image: _forbidden, fit: BoxFit.fill, filterQuality: FilterQuality.none)),
-                  ),
               ],
             ),
           ),
@@ -411,7 +368,6 @@ class _OverlayPainter extends CustomPainter {
     required this.habitatLabel,
     required this.pnrLabel,
     required this.frameLabel,
-    required this.showSim,
   });
 
   final AppModel model;
@@ -421,7 +377,6 @@ class _OverlayPainter extends CustomPainter {
   final String habitatLabel;
   final String pnrLabel;
   final String frameLabel;
-  final bool showSim;
 
   Offset _p(double x, double y) => Offset(origin.dx + x * scale, origin.dy + y * scale);
 
@@ -455,8 +410,6 @@ class _OverlayPainter extends CustomPainter {
     tp.paint(canvas, at + const Offset(5, 3));
   }
 
-  static const _unitPalette = [Color(0xFF8E6BBF), Color(0xFF4FA3A5), Color(0xFFC9A227), Color(0xFFB5543C), Color(0xFF5B8C3A), Color(0xFF4F7FBF), Color(0xFFBF6B9E), Color(0xFF9A9A6B)];
-
   /// Recuadro punteado de la ventana de cálculo de rutas, cuando el sitio trae un marco de contexto más grande.
   void _frame(Canvas canvas, SiteData d) {
     if (d.context == null) return;
@@ -478,36 +431,8 @@ class _OverlayPainter extends CustomPainter {
     _label(canvas, frameLabel, r.topRight + const Offset(-8, 8), alignRight: true);
   }
 
-  /// Unidades geológicas y dunas (capa `geology`), cráteres (`craters`) y nombres (`names`).
+  /// Cráteres (`craters`) y nombres (`names`).
   void _context(Canvas canvas, SiteData d, Size size) {
-    final geo = model.layers['geology']!;
-    if (geo.visible) {
-      final units = <String>[];
-      for (final a in d.vectors.areas) {
-        if (a.rings.isEmpty) continue;
-        final path = Path()..fillType = PathFillType.evenOdd;
-        for (final ring in a.rings) {
-          for (var i = 0; i < ring.length; i++) {
-            final o = _p(ring[i].$1, ring[i].$2);
-            i == 0 ? path.moveTo(o.dx, o.dy) : path.lineTo(o.dx, o.dy);
-          }
-          path.close();
-        }
-        final dune = a.kind == 'landform';
-        if (!units.contains(a.unit)) units.add(a.unit);
-        final color = dune ? const Color(0xFFE6AA28) : _unitPalette[d.vectors.areas.map((x) => x.unit).toSet().toList().indexOf(a.unit) % _unitPalette.length];
-        canvas.drawPath(path, Paint()..color = color.withValues(alpha: (dune ? 0.45 : 0.22) * geo.opacity));
-        canvas.drawPath(path, Paint()..color = color.withValues(alpha: 0.9 * geo.opacity)..style = PaintingStyle.stroke..strokeWidth = 1.2);
-        final first = a.rings.first;
-        var cx = 0.0, cy = 0.0;
-        for (final p in first) {
-          cx += p.$1;
-          cy += p.$2;
-        }
-        final at = _p(cx / first.length, cy / first.length);
-        if (!dune && (Offset.zero & size).contains(at)) _label(canvas, a.unit, at, color: color, border: color);
-      }
-    }
     final cr = model.layers['craters']!;
     if (cr.visible) {
       final stroke = Paint()..color = AppColors.text.withValues(alpha: 0.8 * cr.opacity)..style = PaintingStyle.stroke..strokeWidth = 1.3;
@@ -690,35 +615,6 @@ class _OverlayPainter extends CustomPainter {
       if (visited.contains(o.id)) canvas.drawCircle(c, 3, Paint()..color = color);
       if (sel) canvas.drawCircle(c, 16, Paint()..color = color.withValues(alpha: 0.6)..style = PaintingStyle.stroke..strokeWidth = 1);
       _label(canvas, '${o.id.toUpperCase()} · P${o.priority}', c + const Offset(14, -9), color: color, border: color);
-    }
-
-    // Astronauta simulado: tramo recorrido y marcador con el rumbo.
-    final sim = showSim ? model.simPos : null;
-    if (r != null && sim != null) {
-      final g = d.grid;
-      final trail = Path();
-      for (var k = 0; k <= sim.cellIndex; k++) {
-        final (x, y) = g.xy(r.cells[k]);
-        k == 0 ? trail.moveTo(_p(x, y).dx, _p(x, y).dy) : trail.lineTo(_p(x, y).dx, _p(x, y).dy);
-      }
-      final here = _p(sim.xM, sim.yM);
-      trail.lineTo(here.dx, here.dy);
-      canvas.drawPath(trail, Paint()..color = AppColors.bg.withValues(alpha: 0.8)..style = PaintingStyle.stroke..strokeWidth = 7..strokeJoin = StrokeJoin.round..strokeCap = StrokeCap.round);
-      canvas.drawPath(trail, Paint()..color = AppColors.cyan..style = PaintingStyle.stroke..strokeWidth = 4..strokeJoin = StrokeJoin.round..strokeCap = StrokeCap.round);
-      canvas.drawCircle(here, 15, Paint()..color = AppColors.cyan.withValues(alpha: 0.18));
-      canvas.drawCircle(here, 15, Paint()..color = AppColors.cyan..style = PaintingStyle.stroke..strokeWidth = 1);
-      // Flecha del rumbo (0° = norte, hacia arriba).
-      final a = sim.headingDeg * math.pi / 180;
-      final dir = Offset(math.sin(a), -math.cos(a));
-      final side = Offset(-dir.dy, dir.dx);
-      final arrow = Path()
-        ..moveTo(here.dx + dir.dx * 11, here.dy + dir.dy * 11)
-        ..lineTo(here.dx - dir.dx * 7 + side.dx * 7, here.dy - dir.dy * 7 + side.dy * 7)
-        ..lineTo(here.dx - dir.dx * 3, here.dy - dir.dy * 3)
-        ..lineTo(here.dx - dir.dx * 7 - side.dx * 7, here.dy - dir.dy * 7 - side.dy * 7)
-        ..close();
-      canvas.drawPath(arrow, Paint()..color = AppColors.cyan);
-      canvas.drawPath(arrow, Paint()..color = AppColors.bg..style = PaintingStyle.stroke..strokeWidth = 1.5);
     }
   }
 

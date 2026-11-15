@@ -13,7 +13,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appName => 'ARES PATH';
 
   @override
-  String get siteName => 'Gale · Crestas boxwork';
+  String get siteName => 'Meridiani · Contexto regional (100 km)';
 
   @override
   String get navPlan => 'PLAN';
@@ -45,7 +45,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get layerHillshade => 'Relieve (sombreado)';
 
   @override
-  String get layerSlope => 'Pendiente';
+  String get layerSlope => 'Relieve';
 
   @override
   String get layerForbidden => 'Zonas prohibidas';

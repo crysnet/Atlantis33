@@ -1,130 +1,7 @@
 {
   "_nota": "Registro de sitios de la app. asset_dir es la carpeta dentro de assets/. available=false muestra el sitio en el selector como datos en preparación, sin poder abrirlo. layers lista las capas del panel para ese sitio (ids de kLayers en app_model.dart). Los datos de cada sitio nuevo salen de tools/ y se anotan en RECURSOS.md. quality: high, indicative (rutas indicativas por relieve grueso) o reach (rejilla de 16 m de largo alcance).",
-  "default": "gale_boxwork",
+  "default": "meridiani_regional",
   "sites": [
-    {
-      "id": "gale_boxwork",
-      "asset_dir": "site_gale",
-      "available": true,
-      "name": {
-        "en": "Gale · Boxwork ridges",
-        "es": "Gale · Crestas boxwork"
-      },
-      "layers": [
-        "optical",
-        "hillshade",
-        "slope",
-        "forbidden",
-        "curiosity",
-        "thermal",
-        "aqueous_pts",
-        "hydrous_pts",
-        "zones",
-        "names",
-        "craters",
-        "geology"
-      ]
-    },
-    {
-      "id": "gale_reach",
-      "asset_dir": "site_gale_reach",
-      "available": true,
-      "quality": "reach",
-      "name": {
-        "en": "Gale · EVA reach (24 km)",
-        "es": "Gale · Alcance de la EVA (24 km)"
-      },
-      "layers": [
-        "optical",
-        "hillshade",
-        "slope",
-        "slope15",
-        "forbidden",
-        "curiosity",
-        "aqueous_pts",
-        "hydrous_pts",
-        "zones",
-        "names",
-        "craters",
-        "geology"
-      ]
-    },
-    {
-      "id": "meridiani_endeavour",
-      "asset_dir": "site_meridiani_endeavour",
-      "available": true,
-      "name": {
-        "en": "Meridiani · Endeavour rim",
-        "es": "Meridiani · Borde de Endeavour"
-      },
-      "layers": [
-        "optical",
-        "hillshade",
-        "slope",
-        "slope15",
-        "forbidden",
-        "transit",
-        "thermal_night",
-        "aqueous_pts",
-        "hydrous_pts",
-        "valleys",
-        "zones",
-        "names",
-        "craters",
-        "geology"
-      ],
-      "quality": "high"
-    },
-    {
-      "id": "meridiani_endeavour_reach",
-      "asset_dir": "site_meridiani_endeavour_reach",
-      "available": true,
-      "quality": "reach",
-      "name": {
-        "en": "Meridiani · Endeavour, EVA reach (22 km)",
-        "es": "Meridiani · Endeavour, alcance de la EVA (22 km)"
-      },
-      "layers": [
-        "optical",
-        "hillshade",
-        "slope",
-        "slope15",
-        "forbidden",
-        "aqueous_pts",
-        "hydrous_pts",
-        "valleys",
-        "zones",
-        "names",
-        "craters",
-        "geology"
-      ]
-    },
-    {
-      "id": "meridiani_habitat",
-      "asset_dir": "site_meridiani_habitat",
-      "available": true,
-      "name": {
-        "en": "Meridiani · Habitation zone",
-        "es": "Meridiani · Zona habitable"
-      },
-      "layers": [
-        "optical",
-        "hillshade",
-        "slope",
-        "slope15",
-        "forbidden",
-        "transit",
-        "thermal_night",
-        "aqueous_pts",
-        "hydrous_pts",
-        "valleys",
-        "zones",
-        "names",
-        "craters",
-        "geology"
-      ],
-      "quality": "indicative"
-    },
     {
       "id": "meridiani_regional",
       "asset_dir": "site_meridiani_regional",
@@ -136,10 +13,7 @@
       },
       "layers": [
         "optical",
-        "hillshade",
         "slope",
-        "slope15",
-        "forbidden",
         "transit",
         "thermal_night",
         "aqueous_pts",
@@ -147,8 +21,7 @@
         "valleys",
         "zones",
         "names",
-        "craters",
-        "geology"
+        "craters"
       ]
     }
   ]

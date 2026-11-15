@@ -7,7 +7,6 @@ import '../data/mission_store.dart';
 import '../data/site_data.dart';
 import '../data/site_registry.dart';
 import '../routing/routing.dart';
-import '../util/sim_pos.dart';
 
 /// Modo de salida: a pie, con rover aparcado en un punto de la ruta, a pie con un rover de apoyo en el hábitat, en pareja
 /// con los objetivos repartidos entre los dos astronautas, o por objetivo (cada objetivo trae su transporte).
@@ -37,13 +36,10 @@ class LayerState {
 
 const List<LayerDef> kLayers = [
   LayerDef('optical', LayerKind.measured, 'HiRISE 0.25 m'),
-  LayerDef('hillshade', LayerKind.measured, 'DEM 1 m'),
   LayerDef('slope', LayerKind.modeled, '4 m'),
-  LayerDef('forbidden', LayerKind.modeled, '> 25°', hasOpacity: true),
   LayerDef('curiosity', LayerKind.measured, 'MSL', hasOpacity: true),
   LayerDef('thermal', LayerKind.measured, 'THEMIS-IR 100 m'),
   LayerDef('minerals', LayerKind.example, 'CRISM', hasData: false),
-  LayerDef('slope15', LayerKind.modeled, '> 15 %'),
   LayerDef('transit', LayerKind.modeled, 'TES 3.5 km'),
   LayerDef('thermal_night', LayerKind.measured, 'THEMIS-IR 100 m'),
   LayerDef('aqueous_pts', LayerKind.measured, 'Mars Trek'),
@@ -52,13 +48,12 @@ const List<LayerDef> kLayers = [
   LayerDef('zones', LayerKind.measured, 'NASA EMC 2015'),
   LayerDef('names', LayerKind.measured, 'UAI · Trek'),
   LayerDef('craters', LayerKind.measured, 'Robbins ≥ 1 km'),
-  LayerDef('geology', LayerKind.measured, 'USGS SIM 3292'),
 ];
 
 /// Estado de la aplicación: capas, objetivos, rutas calculadas y selección.
 class AppModel extends ChangeNotifier {
   AppModel(this.data, {this.registry = SiteRegistry.empty, String? siteId, MissionBook? book, MissionStore? store})
-      : siteId = siteId ?? (registry.defaultId.isEmpty ? 'gale_boxwork' : registry.defaultId),
+      : siteId = siteId ?? (registry.defaultId.isEmpty ? 'meridiani_regional' : registry.defaultId),
         store = store ?? MemoryMissionStore(),
         objectives = List.of(book?.current.objectives ?? data.objectives) {
     for (final l in kLayers) {
@@ -83,7 +78,7 @@ class AppModel extends ChangeNotifier {
   }
 
   static const _defaultVisible = {'optical': true, 'slope': true, 'curiosity': true, 'aqueous_pts': true, 'hydrous_pts': true, 'valleys': true};
-  static const _defaultOpacity = {'optical': 1.0, 'hillshade': 0.6, 'slope': 0.4, 'forbidden': 0.6, 'curiosity': 0.9, 'thermal': 0.6, 'slope15': 0.55, 'transit': 0.55, 'thermal_night': 0.6, 'geology': 0.9, 'valleys': 0.9};
+  static const _defaultOpacity = {'optical': 1.0, 'slope': 0.4, 'curiosity': 0.9, 'thermal': 0.6, 'transit': 0.55, 'thermal_night': 0.6, 'valleys': 0.9};
 
   /// Datos del sitio abierto. Cambian al llamar a [switchSite].
   SiteData data;
@@ -121,74 +116,8 @@ class AppModel extends ChangeNotifier {
   int _gen = 0;
   int _nextId = 1;
 
-  /// Simulación del recorrido: avance en la ruta seleccionada (0 a 1), reproducción y velocidad.
-  double simT = 0.0;
-  bool simPlaying = false;
-  int simSpeed = 1;
-  Timer? _simTimer;
-  SimPos? _simPos;
-  RouteResult? _simRoute;
-  double _simPosT = -1;
-
-  /// Posición simulada y datos derivados; null si no hay ruta calculada. Se guarda mientras no cambien ruta ni avance.
-  SimPos? get simPos {
-    final r = route;
-    if (r == null || r.metrics == null || r.cells.length < 2) return null;
-    if (!identical(r, _simRoute) || simT != _simPosT) {
-      _simPos = SimPos.compute(data, objectives, r, simT);
-      _simRoute = r;
-      _simPosT = simT;
-    }
-    return _simPos;
-  }
-
-  /// La simulación se muestra en el mapa mientras haya avance o reproducción.
-  bool get simActive => simT > 0 || simPlaying;
-
-  void setSimT(double v) {
-    simT = v.clamp(0.0, 1.0);
-    notifyListeners();
-  }
-
-  void setSimSpeed(int v) {
-    simSpeed = v;
-    notifyListeners();
-  }
-
-  void toggleSim() {
-    if (simPlaying) {
-      _stopSim();
-      notifyListeners();
-      return;
-    }
-    if (simT >= 1.0) simT = 0.0;
-    simPlaying = true;
-    _simTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
-      simT += 0.003 * simSpeed;
-      if (simT >= 1.0) {
-        simT = 1.0;
-        _stopSim();
-      }
-      notifyListeners();
-    });
-    notifyListeners();
-  }
-
-  void resetSim() {
-    _stopSim();
-    simT = 0.0;
-    notifyListeners();
-  }
-
-  void _stopSim() {
-    _simTimer?.cancel();
-    _simTimer = null;
-    simPlaying = false;
-  }
-
   @override
   void dispose() {
-    _simTimer?.cancel();
     if (_saveTimer?.isActive ?? false) {
       _saveTimer!.cancel();
       store.save(book);
@@ -263,8 +192,6 @@ class AppModel extends ChangeNotifier {
   void _showMission() {
     final m = book.current;
     _gen++;
-    _stopSim();
-    simT = 0.0;
     objectives = List.of(m.objectives);
     exitMode = _parseMode(m.exitMode);
     selectedRoute = exitMode == ExitMode.pair ? 'pair1' : 'safe';
@@ -410,14 +337,12 @@ class AppModel extends ChangeNotifier {
     if (exitMode == v) return;
     exitMode = v;
     selectedRoute = v == ExitMode.pair ? 'pair1' : 'safe';
-    resetSim();
     _persist();
     recompute();
   }
 
   void selectRoute(String id) {
     selectedRoute = id;
-    resetSim();
     notifyListeners();
   }
 
@@ -452,8 +377,6 @@ class AppModel extends ChangeNotifier {
     computeMs = sw.elapsedMilliseconds;
     pairResult = pair;
     routes = result;
-    _stopSim();
-    simT = 0.0;
     computing = false;
     notifyListeners();
   }

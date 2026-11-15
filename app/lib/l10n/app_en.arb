@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
   "appName": "ARES PATH",
-  "siteName": "Gale · Boxwork ridges",
+  "siteName": "Meridiani · Regional context (100 km)",
   "navPlan": "PLAN",
   "navSafety": "SAFETY",
   "navScience": "SCIENCE",
@@ -18,7 +18,7 @@
   "layersReset": "RESET",
   "layerOptical": "Optical surface",
   "layerHillshade": "Relief (hillshade)",
-  "layerSlope": "Slope",
+  "layerSlope": "Relief",
   "layerForbidden": "Forbidden zones",
   "layerCuriosity": "Curiosity track",
   "layerThermal": "Thermal (THEMIS-IR day)",

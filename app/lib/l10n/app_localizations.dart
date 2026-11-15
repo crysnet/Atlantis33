@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @siteName.
   ///
   /// In en, this message translates to:
-  /// **'Gale · Boxwork ridges'**
+  /// **'Meridiani · Regional context (100 km)'**
   String get siteName;
 
   /// No description provided for @navPlan.
@@ -167,7 +167,7 @@ abstract class AppLocalizations {
   /// No description provided for @layerSlope.
   ///
   /// In en, this message translates to:
-  /// **'Slope'**
+  /// **'Relief'**
   String get layerSlope;
 
   /// No description provided for @layerForbidden.
