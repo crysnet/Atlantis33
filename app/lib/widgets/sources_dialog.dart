@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/app_localizations.dart';
 import '../state/app_model.dart';
@@ -30,6 +31,8 @@ const List<_Src> _sources = [
   _Src('real', 'TES · ASU Mars Space Flight Facility', 'Dust Cover Index (Ruff and Christensen, 2002) and thermal inertia (Christensen et al., 2001), at 3.5 and 7.5 km per pixel.', 'Índice de polvo (Ruff y Christensen, 2002) e inercia térmica (Christensen y otros, 2001), a 3.5 y 7.5 km por píxel.',
       'https://www.mars.asu.edu/data/tes_ruffdust/'),
   _Src('real', 'CRISM, OMEGA and Exploration Zones · NASA Mars Trek', 'Aqueous and hydrous mineral detections, and the exploration zones of the NASA 2015 workshop.', 'Detecciones de minerales acuosos e hidratados y zonas de exploración del taller de la NASA de 2015.', 'https://trek.nasa.gov/mars/'),
+  _Src('real', 'Opportunity · NASA/JPL-Caltech', 'Four press images (Navcam and Pancam) of Perseverance Valley, Endeavour rim, shown in the Helmet tab as photos of the area.', 'Cuatro imágenes de prensa (Navcam y Pancam) de Perseverance Valley, borde de Endeavour, que el Casco muestra como fotos de la zona.',
+      'https://photojournal.jpl.nasa.gov/catalog/PIA21724'),
   _Src('real', 'Global geologic map · USGS (SIM 3292)', 'Geologic unit shown in Science (Gale).', 'Unidad geológica que muestra la pantalla Ciencia (Gale).', 'https://pubs.usgs.gov/sim/3292/'),
   _Src('modeled', 'Computed by the team', 'Slope, roughness, forbidden zones, routes, hazard and success scores, transit classes, simulated EVA.', 'Pendiente, rugosidad, zonas prohibidas, rutas, puntajes de peligro y éxito, clases de tránsito y EVA simulada.'),
   _Src('assumed', 'Team assumptions (not NASA values)', 'Suit speed, EVA duration, oxygen, GO / NO-GO limits, transit thresholds, rover and pair parameters, demo objectives, habitat positions. Rover limits are rounded from the Apollo lunar rover (NASA NTRS 20250011301).', 'Velocidad del traje, duración de la EVA, oxígeno, límites de GO / NO-GO, umbrales de tránsito, parámetros de rover y pareja, objetivos de demostración y posiciones del hábitat. Los límites del rover se redondean del vehículo lunar de Apolo (NASA NTRS 20250011301).'),
@@ -49,7 +52,7 @@ Future<void> showSourcesDialog(BuildContext context, AppModel m) {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(s.title, style: AppText.body(12.5, weight: FontWeight.w600)),
               Text(es ? s.es : s.en, style: AppText.body(11.5, color: AppColors.textDim, height: 1.35)),
-              if (s.url != null) SelectableText(s.url!, style: AppText.mono(10, color: AppColors.cyan)),
+              if (s.url != null) _UrlLink(s.url!),
             ]),
           ),
       ]);
@@ -73,4 +76,27 @@ Future<void> showSourcesDialog(BuildContext context, AppModel m) {
       actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.srcClose.toUpperCase(), style: AppText.label()))],
     ),
   );
+}
+
+/// URL que se abre en una pestaña nueva (en la tableta, en el navegador). Es un enlace para los lectores de pantalla.
+class _UrlLink extends StatelessWidget {
+  const _UrlLink(this.url);
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        link: true,
+        label: url,
+        child: ExcludeSemantics(
+          child: InkWell(
+            mouseCursor: SystemMouseCursors.click,
+            onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication, webOnlyWindowName: '_blank'),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Text(url, style: AppText.mono(10, color: AppColors.cyan).copyWith(decoration: TextDecoration.underline, decorationColor: AppColors.cyan)),
+            ),
+          ),
+        ),
+      );
 }

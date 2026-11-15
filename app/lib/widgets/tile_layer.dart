@@ -2,6 +2,24 @@ import 'package:flutter/material.dart';
 
 import '../data/site_data.dart';
 
+/// Una tesela de [tileM] metros en (left, top). Las del borde del mapa suelen traer relleno negro más allá de los datos:
+/// se recorta a lo que cabe en el mapa ([visW] × [visH] metros) para que no queden barras negras.
+Widget _tile({required double left, required double top, required double tileM, required double visW, required double visH, required Image image}) {
+  final w = visW < tileM ? visW : tileM, h = visH < tileM ? visH : tileM;
+  if (w >= tileM && h >= tileM) {
+    return Positioned(left: left, top: top, width: tileM + 0.3, height: tileM + 0.3, child: image);
+  }
+  return Positioned(
+    left: left,
+    top: top,
+    width: w + (w >= tileM ? 0.3 : 0),
+    height: h + (h >= tileM ? 0.3 : 0),
+    child: ClipRect(
+      child: OverflowBox(alignment: Alignment.topLeft, minWidth: tileM, maxWidth: tileM, minHeight: tileM, maxHeight: tileM, child: image),
+    ),
+  );
+}
+
 /// Teselas de la ortofoto del nivel [z] que cubren el rectángulo del mundo (x0, y0)-(x1, y1), en metros locales.
 /// Cada tesela se coloca en metros, para dibujarla dentro de una transformación de escala y desplazamiento.
 List<Widget> tileWidgets(SiteData d, int z, double x0, double y0, double x1, double y1) {
@@ -13,12 +31,13 @@ List<Widget> tileWidgets(SiteData d, int z, double x0, double y0, double x1, dou
     for (var ty = ty0; ty <= ty1; ty++)
       for (var tx = tx0; tx <= tx1; tx++)
         if (tx * tileM < d.sizeM && ty * tileM < d.sizeM)
-          Positioned(
+          _tile(
             left: tx * tileM,
             top: ty * tileM,
-            width: tileM + 0.3,
-            height: tileM + 0.3,
-            child: Image.asset(
+            tileM: tileM,
+            visW: d.sizeM - tx * tileM,
+            visH: d.sizeM - ty * tileM,
+            image: Image.asset(
               d.assetPath('ortho/$z/$tx/$ty.jpg'),
               fit: BoxFit.fill,
               filterQuality: FilterQuality.medium,
@@ -41,12 +60,13 @@ List<Widget> contextTileWidgets(SiteData d, ContextTiles c, int z, double x0, do
     for (var ty = ty0; ty <= ty1; ty++)
       for (var tx = tx0; tx <= tx1; tx++)
         if (tx * tileM < c.sizeM && ty * tileM < c.sizeM)
-          Positioned(
+          _tile(
             left: c.x + tx * tileM,
             top: c.y + ty * tileM,
-            width: tileM + 0.3,
-            height: tileM + 0.3,
-            child: Image.asset(
+            tileM: tileM,
+            visW: c.sizeM - tx * tileM,
+            visH: c.sizeM - ty * tileM,
+            image: Image.asset(
               c.assetDir == null ? d.assetPath('context/$z/$tx/$ty.jpg') : 'assets/${c.assetDir}/$z/$tx/$ty.jpg',
               fit: BoxFit.fill,
               filterQuality: FilterQuality.medium,

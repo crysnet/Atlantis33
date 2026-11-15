@@ -1259,7 +1259,7 @@ abstract class AppLocalizations {
   /// No description provided for @rulesCrew.
   ///
   /// In en, this message translates to:
-  /// **'Assumed: the EVA is done by two astronauts; consumables and dose are computed for one. No rover is modeled.'**
+  /// **'Assumed: the EVA is done by two astronauts; consumables and dose are computed for one.'**
   String get rulesCrew;
 
   /// No description provided for @rulesNote.
@@ -2473,6 +2473,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Opportunity track (MER-B, corrected position)'**
   String get legendOpportunity;
+
+  /// No description provided for @rulesRoverNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No rover is modeled in this mode.'**
+  String get rulesRoverNone;
+
+  /// No description provided for @rulesRoverUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'The rover legs of this mode use the rover model (see the assumptions in Plan).'**
+  String get rulesRoverUsed;
+
+  /// No description provided for @kindAssumption.
+  ///
+  /// In en, this message translates to:
+  /// **'ASSUMPTION'**
+  String get kindAssumption;
+
+  /// No description provided for @missionSuit.
+  ///
+  /// In en, this message translates to:
+  /// **'SUIT'**
+  String get missionSuit;
+
+  /// No description provided for @errNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name.'**
+  String get errNameRequired;
+
+  /// No description provided for @errNonNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number of 0 or more (up to 100000).'**
+  String get errNonNegative;
+
+  /// No description provided for @errRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number from {min} to {max}.'**
+  String errRange(int min, int max);
+
+  /// No description provided for @o2Depleted.
+  ///
+  /// In en, this message translates to:
+  /// **'depleted'**
+  String get o2Depleted;
+
+  /// No description provided for @layerAqueousPts.
+  ///
+  /// In en, this message translates to:
+  /// **'Aqueous minerals · biosignatures'**
+  String get layerAqueousPts;
+
+  /// No description provided for @layerHydrousPts.
+  ///
+  /// In en, this message translates to:
+  /// **'Hydrous minerals (CRISM, OMEGA)'**
+  String get layerHydrousPts;
+
+  /// No description provided for @layerValleys.
+  ///
+  /// In en, this message translates to:
+  /// **'Valley networks (Hynek 2010)'**
+  String get layerValleys;
+
+  /// No description provided for @legendBiosigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Biosignature search (from orbit)'**
+  String get legendBiosigTitle;
+
+  /// No description provided for @legendValleys.
+  ///
+  /// In en, this message translates to:
+  /// **'Valley network (ancient water)'**
+  String get legendValleys;
+
+  /// No description provided for @legendBiosigNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. Sulfates are in the layer «Aqueous and hydrous minerals».'**
+  String get legendBiosigNote;
+
+  /// No description provided for @helmetBackdropTerrain.
+  ///
+  /// In en, this message translates to:
+  /// **'Backdrop: view of the terrain drawn from the elevation model (NASA / USGS) at the simulated position and heading; it is not a photo.'**
+  String get helmetBackdropTerrain;
+
+  /// No description provided for @zonePhotoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The area, seen by Opportunity'**
+  String get zonePhotoTitle;
+
+  /// No description provided for @zonePhotoNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next photo of the area'**
+  String get zonePhotoNext;
+
+  /// No description provided for @zonePhotoNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Real photos of Perseverance Valley (Endeavour rim). They show the area, not this exact point. Tap for the next one.'**
+  String get zonePhotoNote;
+
+  /// No description provided for @cmpVsFast.
+  ///
+  /// In en, this message translates to:
+  /// **'Versus the fastest route'**
+  String get cmpVsFast;
+
+  /// No description provided for @cmpSame.
+  ///
+  /// In en, this message translates to:
+  /// **'Same objective and almost the same path as the fastest route: in this terrain the two profiles give nearly the same result.'**
+  String get cmpSame;
 }
 
 class _AppLocalizationsDelegate

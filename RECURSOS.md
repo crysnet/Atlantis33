@@ -214,6 +214,9 @@ Servicios ArcGIS de Mars Trek (NASA/JPL), consultados con un recuadro de lon −
 | Capa | Archivo | Elementos | Servicio |
 |---|---|---|---|
 | Distribución de minerales acuosos (puntos; clases `sulfate` y `phyllosilicate`; no hay `carbonate` en el recuadro) | `acuosos_meridiani.geojson` | 64 (32 posiciones únicas: 20 sulfatos, 12 filosilicatos) | `https://trek.nasa.gov/mars/trekarcgis/rest/services/Aquieous_Mineral_Distribution_Options_clon0/MapServer/0` |
+| Minerales acuosos en todo el mosaico CTX de Meridiani (mismo recuadro; 2026-11-15, `tools/23_minerales_ctx.py`, 16 KB) | `data/raw/rasgos/meridiani/acuosos_ctx.geojson` | 46 (11 filosilicatos y 12 sulfatos únicos; sin carbonatos) | `https://trek.nasa.gov/mars/trekarcgis/rest/services/Aquieous_Mineral_Distribution_Options_clon0/MapServer/0/query` |
+| Redes de valles (Hynek, Hoke y Hutchison 2010) en el mosaico CTX de Meridiani (2026-11-15, `tools/23_minerales_ctx.py`, 183 KB) | `data/raw/rasgos/meridiani/valles_ctx.geojson` | 3 (líneas; se recortan al mapa base) | `https://trek.nasa.gov/mars/trekarcgis/rest/services/Hynek_Valley_Networks/MapServer/0/query` (el servicio de teselas WMTS de Trek da 404, la consulta de vectores sí responde) |
+| Minerales hidratados en todo el mosaico CTX de Meridiani (recuadro lon −8.09 a −2.80, lat −4.89 a −0.61; descargado el 2026-11-15 con `tools/23_minerales_ctx.py`, 6.3 KB) | `data/raw/rasgos/meridiani/hidratados_ctx.geojson` | 18 (17 CRISM, 1 OMEGA) | `https://trek.nasa.gov/mars/trekarcgis/rest/services/Hydrous_Mineral_Detections_OMEGA_CRISM_clon0/MapServer/0/query` |
 | Minerales hidratados (OMEGA y CRISM; Carter et al. 2013 según la descripción de Trek) | `hidratados_meridiani.geojson` | 24 (22 CRISM, 2 OMEGA) | `.../Hydrous_Mineral_Detections_OMEGA_CRISM_clon0/MapServer/0` |
 | Zonas de exploración (NASA EMC, taller de 2015): puntos | `ez_puntos_meridiani.geojson` | 3: SW Sinus Meridiani (lat −2.25, lon −6.43), Southern Meridiani Planum (−3.17, −4.52), Western Meridiani Planum (−2.94, −5.54) | `.../EZ/MapServer/0` |
 | EZMars: zonas habitables, sitios de aterrizaje, regiones de interés y radios de 100 km | `ezmars_capa1.geojson` (2 Hab_Zone), `ezmars_capa2.geojson` (2 Landing_Zone), `ezmars_capa3.geojson` (26 polígonos ROI), `ezmars_capa4.geojson` (4 círculos EZ_Buffer) | ver archivos | `.../EZMars/MapServer/{1,2,3,4}` |
@@ -266,4 +269,17 @@ Con aviso previo al usuario. Solo a `data/raw/` (no versionado). Procesados con 
 | Catálogo de Mars Trek | `data/raw/opportunity/trek_catalogo.json` | 1 504 672 bytes | JSON del buscador de Trek | `https://trek.nasa.gov/mars/TrekServices/ws/index/eq/searchItems?rows=2100`. Resultado: sin recorrido de Opportunity en Trek (solo el de Perseverance) |
 
 Notas: (1) El DCI de Gale sale del mismo `dci_16ppd.raw` global. En la ventana de 4 km de Gale (DCI 0.967 a 0.971, inercia 344 a 369) la capa es de un solo color (verde); en el alcance de 24 km (DCI 0.944 a 0.971, inercia 294 a 486) hay 71.5 % verde, 5.4 % amarillo y 23 % sin clase. Umbrales: supuestos del equipo, los mismos que en Meridiani. (2) La CSV no dice el datum ni el origen. Se tomó como sitio de aterrizaje Eagle Crater (lat −1.9462, lon 354.4734° E, valor publicado por la NASA) con un plano local; el final del recorrido (sol 5081) cae en lat −2.329, lon −5.350, dentro del recuadro del DEM de Endeavour, y es coherente con Perseverance Valley. La posición es **aproximada** (error sin medir). (3) Términos de uso de ASU y del PDS sin consultar. (4) Probado sin salida: `mars.nasa.gov/mmgis-maps/MER-B/...` responde 403.
+
+## Fotos de Opportunity en Perseverance Valley (Casco de Endeavour), descargadas el 2026-11-15
+
+Con autorización del usuario. Descargadas con `tools/24_fotos_opportunity.py` a `data/raw/opportunity_fotos/` y copiadas a `app/assets/meridiani_opportunity/` (con `zone_photos.json`). La API de imágenes crudas de mars.nasa.gov solo trae Curiosity (`mer` y `opportunity` dan 0 resultados), así que son imágenes de prensa del JPL en la NASA Image and Video Library (`images-api.nasa.gov`), crédito NASA/JPL-Caltech. Son mosaicos ya procesados, no imágenes crudas. Se muestran como fotos **de la zona**, no del punto exacto.
+
+| Imagen | Cámara y fecha | Archivo y tamaño | Origen |
+|---|---|---|---|
+| PIA21724, vista cuesta abajo de «Perseverance Valley» al entrar por arriba (mosaico de cinco imágenes) | Navcam, sol 4782 (2017-07-07) | `PIA21724~medium.jpg`, 62 211 bytes, 1280 × 398 | `https://images-assets.nasa.gov/image/PIA21724/PIA21724~medium.jpg` (ficha: `https://photojournal.jpl.nasa.gov/catalog/PIA21724`) |
+| PIA21725, vista hacia atrás, cuesta arriba | Navcam, sol 4793 (2017-07-18) | `PIA21725~small.jpg`, 93 015 bytes, 640 × 640 | `https://images-assets.nasa.gov/image/PIA21725/PIA21725~small.jpg` |
+| PIA22074, vista desde dentro de «Perseverance Valley» | Pancam, soles 4840 a 4871 (2017-09-04 a 2017-10-06) | `PIA22074~medium.jpg`, 19 156 bytes, 1280 × 215 | `https://images-assets.nasa.gov/image/PIA22074/PIA22074~medium.jpg` |
+| PIA22071, vista cuesta abajo con sombras | Navcam, sol 4911 (2017-11-11) | `PIA22071~small.jpg`, 15 580 bytes, 640 × 239 | `https://images-assets.nasa.gov/image/PIA22071/PIA22071~small.jpg` |
+
+Total 189 962 bytes. Los títulos en español son traducción del equipo. Términos de uso de la biblioteca de la NASA sin consultar a fondo (las imágenes del JPL se publican con crédito NASA/JPL-Caltech).
 

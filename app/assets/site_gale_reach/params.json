@@ -50,7 +50,7 @@
     "cell_m": 16.0,
     "slope_exponent_ref_deg": 25.0,
     "roughness_ref_cm": 40.0,
-    "safe_fast_targets": "primary",
+    "safe_fast_targets": "by_profile",
     "science_keep_comfort": true,
     "profiles": {
       "safe": {

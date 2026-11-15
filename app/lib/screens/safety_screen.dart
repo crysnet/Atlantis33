@@ -26,9 +26,6 @@ String _levelText(AppLocalizations l, CheckLevel v) => switch (v) {
       CheckLevel.pending => l.safePending,
     };
 
-/// Hora marciana (LMST) por hora terrestre: un sol dura 24.66 horas terrestres.
-const double _lmstPerEarthHour = 24.0 / 24.6598;
-
 /// Verificaciones de salida. Radiación y clima usan datos reales de RAD y REMS del sol elegido;
 /// terreno y consumibles salen del modelo de rutas; el polvo no tiene datos.
 class _Checks {
@@ -53,7 +50,7 @@ _Checks _computeChecks(AppModel m) {
       cons = !met.feasible ? CheckLevel.noGo : (isComfortable(d.model, met) ? CheckLevel.go : CheckLevel.caution);
     }
   }
-  final window = (met?.totalH ?? 0) * _lmstPerEarthHour;
+  final window = met?.totalH ?? 0; // la hora LMST de fin es la de inicio más el tiempo de ruta, igual que en Misión
   final wx = met == null
       ? const WeatherCheck(level: CheckLevel.pending, hoursInWindow: 0)
       : d.environment.weatherCheck(m.envSol, d.envConfig, window);
@@ -272,7 +269,7 @@ class _RadiationPanel extends StatelessWidget {
     final level = env.radiationLevel(m.envSol, cfg);
     final met = route?.metrics;
     // Dosis de la ruta con la tasa del sol elegido.
-    final routeDose = met != null && rs != null ? rs.eMean * met.totalH / 24.0 : null;
+    final routeDose = met != null && rs != null ? m.doseOver(met.totalH) : null;
     final bars = [for (final r in env.rad) if (r.sol > m.envSol - 60 && r.sol <= m.envSol) r];
     return _Box(
       icon: Icons.radar,
@@ -378,7 +375,7 @@ class _WeatherPanel extends StatelessWidget {
     final d = m.data;
     final w = d.environment.weatherFor(m.envSol);
     final met = route?.metrics;
-    final window = (met?.totalH ?? 0) * _lmstPerEarthHour;
+    final window = met?.totalH ?? 0; // la hora LMST de fin es la de inicio más el tiempo de ruta, igual que en Misión
     String range(double? a, double? b, String unit, [int digits = 0]) =>
         (a == null || b == null) ? l.wxNoData : '${f.num(a, digits)} … ${f.num(b, digits)} $unit';
     return _Box(
@@ -405,7 +402,7 @@ class _WeatherPanel extends StatelessWidget {
                   child: Text(
                     met == null
                         ? l.wxWindow
-                        : '${l.wxWindow}: ${f.num(d.envConfig.evaStartLmstH, 0).padLeft(2, '0')}:00 → ${f.num((d.envConfig.evaStartLmstH + window) % 24, 1)} LMST   ·   ${l.wxMinWindow}: '
+                        : '${l.wxWindow}: ${f.clock(d.envConfig.evaStartLmstH)} → ${f.clock(d.envConfig.evaStartLmstH + window)} LMST   ·   ${l.wxMinWindow}: '
                             '${check.minAirC == null ? l.wxNoData : '${f.num(check.minAirC!, 0)} °C'} (${check.hoursInWindow} ${l.wxCoverage})',
                     style: AppText.mono(10.5, color: AppColors.textDim),
                   ),
@@ -537,18 +534,22 @@ class _RulesPanel extends StatelessWidget {
           ]),
         );
     final caution = l.safeCaution.toLowerCase();
+    final roverUsed = m.routes.values.any((r) => r.metrics != null && (r.metrics!.rover || r.metrics!.support || r.metrics!.roverM > 0));
     return _Box(
       icon: Icons.rule,
       title: l.rulesTitle,
-      tag: Tag('ASSUMPTION', color: AppColors.amber),
+      tag: Tag(l.kindAssumption, color: AppColors.amber),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         row(l.rulesRad, '$caution ≥ ${f.num(c.radCautionRatio, 1)}× · no-go ≥ ${f.num(c.radNoGoRatio, 1)}×'),
         row(l.rulesAir, '$caution ≤ ${f.num(c.airCautionC, 0)} °C · no-go ≤ ${f.num(c.airNoGoC, 0)} °C'),
-        row(l.rulesStart, '${f.num(c.evaStartLmstH, 0).padLeft(2, '0')}:00 LMST'),
+        row(l.rulesStart, '${f.clock(c.evaStartLmstH)} LMST'),
         const SizedBox(height: 2),
         Text(l.rulesNote, style: AppText.body(11, color: AppColors.textMute, height: 1.4)),
         const SizedBox(height: 4),
-        Text(l.rulesCrew, style: AppText.body(11, color: AppColors.textMute, height: 1.4)),
+        Text(
+          '${l.rulesCrew} ${roverUsed ? l.rulesRoverUsed : l.rulesRoverNone}',
+          style: AppText.body(11, color: AppColors.textMute, height: 1.4),
+        ),
       ]),
     );
   }
@@ -696,7 +697,7 @@ class _ConsumablesPanel extends StatelessWidget {
         children: [
           cell(Row(children: [Container(width: 8, height: 3, color: routeColor(id)), const SizedBox(width: 6), Flexible(child: Text(routeName(l, id), style: AppText.body(12), overflow: TextOverflow.ellipsis))])),
           cell(Text(mt == null ? '—' : f.hours(mt.totalH), style: AppText.mono(12))),
-          cell(Text(mt == null ? '—' : f.percent(mt.o2RemainingFrac), style: AppText.mono(12))),
+          cell(Text(mt == null ? '—' : f.o2(mt.o2RemainingFrac, l.o2Depleted), style: AppText.mono(12))),
           cell(Align(alignment: Alignment.centerLeft, child: Tag(txt, color: col))),
         ],
       );
@@ -707,7 +708,7 @@ class _ConsumablesPanel extends StatelessWidget {
       title: l.panelConsumables,
       tag: Tag(l.kindModeled, color: AppColors.orange),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        bar(l.consO2, met.o2RemainingFrac, o2Color, '${f.percent(met.o2RemainingFrac)}  ·  ${l.consReserve} ${f.percent(mod.o2Reserve)}', marker: mod.o2Reserve),
+        bar(l.consO2, met.o2RemainingFrac, o2Color, '${f.o2(met.o2RemainingFrac, l.o2Depleted)}  ·  ${l.consReserve} ${f.percent(mod.o2Reserve)}', marker: mod.o2Reserve),
         bar(l.consTime, timeFrac, timeColor, '${f.hours(met.totalH)} / ${f.hours(mod.maxEvaH)}'),
         const SizedBox(height: 4),
         Text(l.consCompare.toUpperCase(), style: AppText.label(color: AppColors.textMute)),

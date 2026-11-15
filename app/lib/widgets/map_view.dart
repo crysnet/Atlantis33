@@ -190,8 +190,8 @@ class _MapViewState extends State<MapView> {
               final w = _toWorld(d.localPosition);
               if (m.addMode) {
                 if (w.dx >= 0 && w.dy >= 0 && w.dx < m.data.sizeM && w.dy < m.data.sizeM) {
-                  final id = m.addObjective(w.dx, w.dy, l.objectiveNewName);
-                  showObjectiveDialog(context, m, id);
+                  m.setAddMode(false);
+                  showObjectiveDialog(context, m, null, x: w.dx, y: w.dy);
                 }
                 return;
               }
@@ -245,8 +245,7 @@ class _MapViewState extends State<MapView> {
                           onCreate: () {
                             final p = _probe!;
                             setState(() => _probe = null);
-                            final id = m.addObjective(p.dx, p.dy, l.objectiveNewName);
-                            showObjectiveDialog(context, m, id);
+                            showObjectiveDialog(context, m, null, x: p.dx, y: p.dy);
                           },
                         ),
                       ),
@@ -312,7 +311,7 @@ class _MapViewState extends State<MapView> {
   }
 
   Widget _scaleBar() {
-    const nice = [10, 20, 50, 100, 200, 500, 1000, 2000];
+    const nice = [10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000];
     var meters = nice.first;
     for (final n in nice) {
       if (n * _scale <= 150) meters = n;
@@ -620,9 +619,44 @@ class _OverlayPainter extends CustomPainter {
         if (z.name.isNotEmpty) _label(canvas, z.name, c + const Offset(10, -8));
       }
     }
+    // Redes de valles (Hynek 2010): búsqueda de biofirmas.
+    final valleys = model.layers['valleys']!;
+    if (valleys.visible && d.vectors.valleys.isNotEmpty) {
+      final line = Paint()
+        ..color = kValleyColor.withValues(alpha: valleys.opacity)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..strokeJoin = StrokeJoin.round;
+      for (final v in d.vectors.valleys) {
+        for (final pts in v.paths) {
+          final path = Path();
+          for (var i = 0; i < pts.length; i++) {
+            final o = _p(pts[i].$1, pts[i].$2);
+            i == 0 ? path.moveTo(o.dx, o.dy) : path.lineTo(o.dx, o.dy);
+          }
+          canvas.drawPath(path, line);
+        }
+      }
+    }
+    // Minerales de las capas de biofirmas: acuosos con más probabilidad de conservarlas (filosilicatos y carbonatos) e hidratados.
+    final aqueous = model.layers['aqueous_pts']!;
+    final hydrous = model.layers['hydrous_pts']!;
+    if (aqueous.visible || hydrous.visible) {
+      for (final q in d.vectors.minerals) {
+        final layer = q.cls == 'hydrous' ? hydrous : aqueous;
+        if (!layer.visible || !kMineralColors.containsKey(q.cls)) continue;
+        final c = _p(q.x, q.y);
+        final color = kMineralColors[q.cls]!.withValues(alpha: layer.opacity);
+        final diamond = Path()..moveTo(c.dx, c.dy - 6)..lineTo(c.dx + 6, c.dy)..lineTo(c.dx, c.dy + 6)..lineTo(c.dx - 6, c.dy)..close();
+        canvas.drawPath(diamond, Paint()..color = color);
+        canvas.drawPath(diamond, Paint()..color = AppColors.bg..style = PaintingStyle.stroke..strokeWidth = 1.2);
+      }
+    }
     final minerals = model.layers['minerals_pts']!;
     if (minerals.visible) {
       for (final q in d.vectors.minerals) {
+        // Un punto que ya dibuja una capa de biofirmas encendida no se dibuja otra vez aquí.
+        if (q.cls == 'hydrous' ? hydrous.visible : (aqueous.visible && kMineralColors.containsKey(q.cls))) continue;
         final c = _p(q.x, q.y);
         final color = switch (q.cls) {
           'sulfate' => const Color(0xFFE6AA28),

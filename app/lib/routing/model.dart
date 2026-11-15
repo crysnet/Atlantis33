@@ -91,6 +91,7 @@ class RoutingModel {
     required this.hazard,
     required this.success,
     required this.scienceKeepComfort,
+    required this.safeFastByProfile,
     required this.rover,
     required this.pairMaxSeparationM,
     required this.pairSampleH,
@@ -123,6 +124,7 @@ class RoutingModel {
       hazard: p['hazard'] as Map<String, dynamic>,
       success: p['success'] as Map<String, dynamic>,
       scienceKeepComfort: (r['science_keep_comfort'] as bool?) ?? false,
+      safeFastByProfile: r['safe_fast_targets'] == 'by_profile',
       rover: RoverParams.fromJson(p['rover'] as Map<String, dynamic>),
       pairMaxSeparationM: ((p['pair'] as Map<String, dynamic>)['max_separation_m'] as num).toDouble(),
       pairSampleH: ((p['pair'] as Map<String, dynamic>)['sample_min'] as num).toDouble() / 60.0,
@@ -147,6 +149,9 @@ class RoutingModel {
   final Map<String, dynamic> hazard;
   final Map<String, dynamic> success;
   final bool scienceKeepComfort;
+
+  /// `safe_fast_targets: by_profile`: la ruta segura y la rápida eligen cada una su objetivo (en vez del de mayor prioridad).
+  final bool safeFastByProfile;
 
   /// Supuestos del modo con rover.
   final RoverParams rover;

@@ -1,7 +1,7 @@
 name: ares_path
-description: "A new Flutter project."
+description: "ARES PATH: planificador de EVA en Marte con datos de la NASA, sin conexión."
 publish_to: 'none'
-version: 0.9.0+9
+version: 0.9.4+13
 
 environment:
   sdk: ^3.13.5
@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   intl: ^0.20.3
   shared_preferences: ^2.5.6
+  url_launcher: ^6.3.3
+  web: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -142,6 +144,7 @@ flutter:
     - assets/site_gale_reach/context/2/1/
     - assets/site_gale_reach/context/2/2/
     - assets/site_gale_reach/context/2/3/
+    - assets/meridiani_opportunity/
     - assets/site_meridiani_endeavour/site.json
     - assets/site_meridiani_endeavour/params.json
     - assets/site_meridiani_endeavour/objectives.json

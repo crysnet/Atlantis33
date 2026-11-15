@@ -6,6 +6,7 @@ import '../data/mission.dart';
 import '../data/mission_store.dart';
 import '../data/site_data.dart';
 import '../data/site_registry.dart';
+import '../data/ui_prefs.dart';
 import '../routing/route_worker.dart';
 import '../routing/routing.dart';
 import '../util/sim_pos.dart';
@@ -48,21 +49,24 @@ const List<LayerDef> kLayers = [
   LayerDef('transit', LayerKind.modeled, 'TES 3.5 km'),
   LayerDef('thermal_night', LayerKind.measured, 'THEMIS-IR 100 m'),
   LayerDef('minerals_pts', LayerKind.measured, 'CRISM · OMEGA'),
+  LayerDef('aqueous_pts', LayerKind.measured, 'Mars Trek'),
+  LayerDef('hydrous_pts', LayerKind.measured, 'CRISM · OMEGA'),
+  LayerDef('valleys', LayerKind.measured, 'Hynek 2010', hasOpacity: true),
   LayerDef('zones', LayerKind.measured, 'NASA EMC 2015'),
-  LayerDef('names', LayerKind.measured, 'UAI · Trek'),
+  LayerDef('names', LayerKind.measured, 'IAU · Trek'),
   LayerDef('craters', LayerKind.measured, 'Robbins ≥ 1 km'),
   LayerDef('geology', LayerKind.measured, 'USGS SIM 3292'),
 ];
 
 /// Estado de la aplicación: capas, objetivos, rutas calculadas y selección.
 class AppModel extends ChangeNotifier {
-  AppModel(this.data, {this.registry = SiteRegistry.empty, String? siteId, MissionBook? book, MissionStore? store, this.useWorker = false})
+  AppModel(this.data, {this.registry = SiteRegistry.empty, String? siteId, MissionBook? book, MissionStore? store, this.useWorker = false, this.uiStore, Map<String, dynamic>? uiPrefs})
       : siteId = siteId ?? (registry.defaultId.isEmpty ? 'gale_boxwork' : registry.defaultId),
         store = store ?? MemoryMissionStore(),
+        _ui = uiPrefs ?? {},
         objectives = List.of(book?.current.objectives ?? data.objectives) {
-    for (final l in kLayers) {
-      layers[l.id] = LayerState(_defaultVisible[l.id] ?? false, _defaultOpacity[l.id] ?? 1.0);
-    }
+    _applyLayers();
+    if (_ui['lang'] == 'es' || _ui['lang'] == 'en') locale = Locale(_ui['lang'] as String);
     if (book != null) {
       this.book = book;
       exitMode = _parseMode(book.current.exitMode);
@@ -81,8 +85,44 @@ class AppModel extends ChangeNotifier {
     _nextId = _nextUserId();
   }
 
+  /// Capas de búsqueda de biofirmas: encendidas por defecto en los sitios cuyo registro las lista (Meridiani).
+  static const _biosigLayers = {'aqueous_pts', 'hydrous_pts', 'valleys'};
+
+  bool _defaultOn(String id) {
+    if (_biosigLayers.contains(id)) return registry.byId(siteId)?.layers.contains(id) ?? false;
+    return _defaultVisible[id] ?? false;
+  }
+
   static const _defaultVisible = {'optical': true, 'slope': true, 'curiosity': true, 'opportunity': true};
   static const _defaultOpacity = {'optical': 1.0, 'hillshade': 0.6, 'slope': 0.4, 'forbidden': 0.6, 'curiosity': 0.9, 'opportunity': 0.9, 'thermal': 0.6, 'slope15': 0.55, 'transit': 0.55, 'thermal_night': 0.6, 'geology': 0.9};
+
+  final UiPrefsStore? uiStore;
+  final Map<String, dynamic> _ui;
+
+  /// Pone las capas del sitio actual: las guardadas (visibilidad y opacidad) o las de fábrica.
+  void _applyLayers() {
+    final saved = ((_ui['layers'] as Map?)?[siteId]) as Map?;
+    for (final l in kLayers) {
+      var vis = _defaultOn(l.id);
+      var op = _defaultOpacity[l.id] ?? 1.0;
+      final v = saved?[l.id];
+      if (v is List && v.length == 2 && v[0] is bool && v[1] is num) {
+        vis = v[0] as bool;
+        op = (v[1] as num).toDouble().clamp(0.0, 1.0);
+      }
+      layers[l.id] = LayerState(vis, op);
+    }
+  }
+
+  void _saveUi() {
+    final store = uiStore;
+    if (store == null) return;
+    _ui['lang'] = locale.languageCode;
+    final all = Map<String, dynamic>.from((_ui['layers'] as Map?) ?? {});
+    all[siteId] = {for (final e in layers.entries) e.key: [e.value.visible, e.value.opacity]};
+    _ui['layers'] = all;
+    store.save(_ui);
+  }
 
   /// Datos del sitio abierto. Cambian al llamar a [switchSite].
   SiteData data;
@@ -135,6 +175,13 @@ class AppModel extends ChangeNotifier {
   /// Sol de REMS y RAD que usa la pantalla de seguridad.
   late int envSol = data.environment.referenceSol;
   Locale locale = const Locale('en');
+
+  /// Tasa de dosis (µGy/día) del sol de referencia elegido en Seguridad. Sin dato de RAD, la línea base del modelo.
+  /// Plan, Seguridad y Misión calculan la dosis de una ruta con esta misma tasa.
+  double get doseRateUGyPerDay => data.environment.radFor(envSol)?.eMean ?? data.model.doseUGyPerDay;
+
+  /// Dosis (µGy) de una salida de [hours] horas con la tasa de [doseRateUGyPerDay].
+  double doseOver(double hours) => doseRateUGyPerDay * hours / 24.0;
   int _gen = 0;
   int _nextId = 1;
 
@@ -146,15 +193,17 @@ class AppModel extends ChangeNotifier {
   SimPos? _simPos;
   RouteResult? _simRoute;
   double _simPosT = -1;
+  int _simEnvSol = -1;
 
   /// Posición simulada y datos derivados; null si no hay ruta calculada. Se guarda mientras no cambien ruta ni avance.
   SimPos? get simPos {
     final r = route;
     if (r == null || r.metrics == null || r.cells.length < 2) return null;
-    if (!identical(r, _simRoute) || simT != _simPosT) {
-      _simPos = SimPos.compute(data, objectives, r, simT);
+    if (!identical(r, _simRoute) || simT != _simPosT || envSol != _simEnvSol) {
+      _simPos = SimPos.compute(data, objectives, r, simT, envSol: envSol, doseRate: doseRateUGyPerDay);
       _simRoute = r;
       _simPosT = simT;
+      _simEnvSol = envSol;
     }
     return _simPos;
   }
@@ -266,9 +315,7 @@ class AppModel extends ChangeNotifier {
       data = d;
       siteId = e.id;
       envSol = d.environment.referenceSol;
-      for (final l in kLayers) {
-        layers[l.id] = LayerState(_defaultVisible[l.id] ?? false, _defaultOpacity[l.id] ?? 1.0);
-      }
+      _applyLayers();
       return true;
     } catch (_) {
       return false;
@@ -394,6 +441,7 @@ class AppModel extends ChangeNotifier {
 
   void setLocale(Locale l) {
     locale = l;
+    _saveUi();
     notifyListeners();
   }
 
@@ -409,18 +457,21 @@ class AppModel extends ChangeNotifier {
 
   void toggleLayer(String id, bool v) {
     layers[id]!.visible = v;
+    _saveUi();
     notifyListeners();
   }
 
   void setOpacity(String id, double v) {
     layers[id]!.opacity = v;
+    _saveUi();
     notifyListeners();
   }
 
   void resetLayers() {
     for (final l in kLayers) {
-      layers[l.id] = LayerState(_defaultVisible[l.id] ?? false, _defaultOpacity[l.id] ?? 1.0);
+      layers[l.id] = LayerState(_defaultOn(l.id), _defaultOpacity[l.id] ?? 1.0);
     }
+    _saveUi();
     notifyListeners();
   }
 
@@ -441,6 +492,12 @@ class AppModel extends ChangeNotifier {
 
   void selectObjective(String? id) {
     selectedObjective = id;
+    notifyListeners();
+  }
+
+  void setAddMode(bool v) {
+    if (addMode == v) return;
+    addMode = v;
     notifyListeners();
   }
 
@@ -491,11 +548,11 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String addObjective(double x, double y, String name) {
+  String addObjective(double x, double y, String name, {String type = 'sample', int priority = 3, double workMin = 30, String? transport}) {
     final id = 'u${_nextId++}';
     objectives = [
       ...objectives,
-      Objective(id: id, name: name, type: 'sample', priority: 3, workMin: 30, xM: x, yM: y),
+      Objective(id: id, name: name, type: type, priority: priority, workMin: workMin, xM: x, yM: y, transport: transport ?? 'foot'),
     ];
     selectedObjective = id;
     addMode = false;

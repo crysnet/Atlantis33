@@ -47,9 +47,23 @@ void main() {
       test('trae las capas de F5: minerales y zonas en coordenadas locales del sitio', () {
         final v = d.vectors;
         for (final q in v.minerals) {
-          final c = d.context!;
+          // Los minerales cubren todo el mosaico CTX (tools/23_minerales_ctx.py): dentro del mapa base, no del marco de contexto.
+          final c = d.base!;
           expect(q.x, inInclusiveRange(c.x, c.x + c.sizeM));
-          expect(['sulfate', 'phyllosilicate', 'hydrous'], contains(q.cls));
+          expect(q.y, inInclusiveRange(c.y, c.y + c.sizeM));
+          expect(['sulfate', 'phyllosilicate', 'carbonate', 'hydrous'], contains(q.cls));
+        }
+        // Redes de valles (Hynek 2010) recortadas al mapa base.
+        expect(v.valleys, isNotEmpty);
+        final b = d.base!;
+        for (final vf in v.valleys) {
+          for (final p in vf.paths) {
+            expect(p.length, greaterThanOrEqualTo(2));
+            for (final (x, y) in p) {
+              expect(x, inInclusiveRange(b.x, b.x + b.sizeM));
+              expect(y, inInclusiveRange(b.y, b.y + b.sizeM));
+            }
+          }
         }
         for (final z in v.zones) {
           expect(z.ring != null || (z.x != null && z.y != null), isTrue, reason: z.type);

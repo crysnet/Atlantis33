@@ -22,6 +22,7 @@ class SimPos {
     required this.walkBackH,
     required this.elapsedH,
     required this.o2Frac,
+    required this.o2Depleted,
     required this.airC,
     required this.lmstLabel,
     required this.xM,
@@ -45,6 +46,9 @@ class SimPos {
   final double walkBackH;
   final double elapsedH;
   final double o2Frac;
+
+  /// El oxígeno de la ruta no alcanza: ya se agotó en esta posición.
+  final bool o2Depleted;
   final double? airC;
   final String lmstLabel;
 
@@ -62,7 +66,7 @@ class SimPos {
   static const _lookM = 40.0;
   static const _aheadM = 90.0;
 
-  static SimPos compute(SiteData d, List<Objective> objectives, RouteResult r, double t) {
+  static SimPos compute(SiteData d, List<Objective> objectives, RouteResult r, double t, {int? envSol, double? doseRate}) {
     final g = d.grid;
     final cells = r.cells;
     final along = alongRoute(g, cells);
@@ -143,17 +147,24 @@ class SimPos {
       walkBackH: habM / d.model.flatSpeedMPerH,
       elapsedH: elapsed,
       o2Frac: (1.0 - m.o2UsedFrac * t).clamp(0.0, 1.0),
-      airC: _airAt(env.weatherFor(env.referenceSol), lmst),
+      o2Depleted: 1.0 - m.o2UsedFrac * t <= 0,
+      airC: _airAt(env.weatherFor(envSol ?? env.referenceSol), lmst),
       xM: px,
       yM: py,
       cellIndex: i,
-      doseUGy: m.doseUGy * t,
+      doseUGy: (doseRate ?? d.model.doseUGyPerDay) * m.totalH / 24.0 * t,
       o2NeedBackFrac: m.totalH > 0 ? m.o2UsedFrac / m.totalH * (habM / d.model.flatSpeedMPerH) : 0.0,
-      lmstLabel: '${(lmst.floor() % 24).toString().padLeft(2, '0')}:${((lmst % 1) * 60).floor().toString().padLeft(2, '0')}',
+      lmstLabel: _clock(lmst),
     );
   }
 
-  /// Temperatura del aire a la hora local dada, con los datos de REMS del sol de referencia.
+  /// Hora del día `HH:MM`, redondeada al minuto (igual que la hora de fin de Seguridad).
+  static String _clock(double h) {
+    final total = (h * 60).round() % 1440;
+    return '${(total ~/ 60).toString().padLeft(2, '0')}:${(total % 60).toString().padLeft(2, '0')}';
+  }
+
+  /// Temperatura del aire a la hora local dada, con los datos de REMS del sol de referencia elegido en Seguridad.
   static double? _airAt(WeatherSol? w, double lmstH) {
     if (w == null) return null;
     final hour = lmstH.floor() % 24;

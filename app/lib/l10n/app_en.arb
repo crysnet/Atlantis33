@@ -228,7 +228,7 @@
   "rulesRad": "Radiation, multiple of the baseline",
   "rulesAir": "Air temperature in the EVA window",
   "rulesStart": "EVA start (local mean solar time)",
-  "rulesCrew": "Assumed: the EVA is done by two astronauts; consumables and dose are computed for one. No rover is modeled.",
+  "rulesCrew": "Assumed: the EVA is done by two astronauts; consumables and dose are computed for one.",
   "rulesNote": "Thresholds are assumptions, not NASA limits. Dust has no data, so the overall status stays incomplete.",
   "safeIncomplete2": "DUST HAS NO DATA",
   "minLabel": "min",
@@ -510,5 +510,35 @@
   "probePhoto": "Rover photo",
   "layerOpportunity": "Opportunity track",
   "probeOpportunity": "Opportunity track",
-  "legendOpportunity": "Opportunity track (MER-B, corrected position)"
+  "legendOpportunity": "Opportunity track (MER-B, corrected position)",
+  "rulesRoverNone": "No rover is modeled in this mode.",
+  "rulesRoverUsed": "The rover legs of this mode use the rover model (see the assumptions in Plan).",
+  "kindAssumption": "ASSUMPTION",
+  "missionSuit": "SUIT",
+  "errNameRequired": "Enter a name.",
+  "errNonNegative": "Enter a number of 0 or more (up to 100000).",
+  "errRange": "Enter a whole number from {min} to {max}.",
+  "@errRange": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "o2Depleted": "depleted",
+  "layerAqueousPts": "Aqueous minerals · biosignatures",
+  "layerHydrousPts": "Hydrous minerals (CRISM, OMEGA)",
+  "layerValleys": "Valley networks (Hynek 2010)",
+  "legendBiosigTitle": "Biosignature search (from orbit)",
+  "legendValleys": "Valley network (ancient water)",
+  "legendBiosigNote": "Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. Sulfates are in the layer «Aqueous and hydrous minerals».",
+  "helmetBackdropTerrain": "Backdrop: view of the terrain drawn from the elevation model (NASA / USGS) at the simulated position and heading; it is not a photo.",
+  "zonePhotoTitle": "The area, seen by Opportunity",
+  "zonePhotoNext": "Next photo of the area",
+  "zonePhotoNote": "Real photos of Perseverance Valley (Endeavour rim). They show the area, not this exact point. Tap for the next one.",
+  "cmpVsFast": "Versus the fastest route",
+  "cmpSame": "Same objective and almost the same path as the fastest route: in this terrain the two profiles give nearly the same result."
 }

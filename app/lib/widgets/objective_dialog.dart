@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../l10n/app_localizations.dart';
 import '../state/app_model.dart';
 import '../theme/app_theme.dart';
 import 'common.dart';
 
+/// Tiempo de trabajo permitido, en minutos.
+const int kWorkMinMax = 600;
+
 /// Diálogo para editar nombre, tipo, prioridad y tiempo de trabajo de un objetivo, o borrarlo.
-Future<void> showObjectiveDialog(BuildContext context, AppModel m, String id) async {
-  final o = m.objective(id);
-  if (o == null) return;
+/// Con [id] nulo crea un objetivo nuevo en ([x], [y]): solo existe al guardar; Cancelar no deja nada.
+Future<void> showObjectiveDialog(BuildContext context, AppModel m, String? id, {double x = 0, double y = 0}) async {
+  final isNew = id == null;
+  final o = isNew ? null : m.objective(id);
+  if (!isNew && o == null) return;
   final l = AppLocalizations.of(context)!;
-  final name = TextEditingController(text: o.name);
-  final work = TextEditingController(text: o.workMin.round().toString());
-  var type = o.type;
-  var priority = o.priority;
-  var transport = o.transport;
+  final name = TextEditingController(text: o?.name ?? l.objectiveNewName);
+  final work = TextEditingController(text: (o?.workMin ?? 30).round().toString());
+  var type = o?.type ?? 'sample';
+  var priority = o?.priority ?? 3;
+  var transport = o?.transport ?? 'foot';
+  String? nameError;
+  String? workError;
   await showDialog<void>(
     context: context,
     builder: (ctx) => StatefulBuilder(
@@ -27,11 +35,17 @@ Future<void> showObjectiveDialog(BuildContext context, AppModel m, String id) as
               focusedBorder: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide(color: AppColors.orange)),
             );
         return AlertDialog(
-          title: Text(l.objectiveEdit.toUpperCase(), style: AppText.head(15)),
+          title: Text((isNew ? l.objectivesAdd : l.objectiveEdit).toUpperCase(), style: AppText.head(15)),
           content: SizedBox(
             width: 360,
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-              TextField(controller: name, style: AppText.body(14), decoration: deco(l.fieldName)),
+              TextField(
+                controller: name,
+                autofocus: isNew,
+                style: AppText.body(14),
+                decoration: deco(l.fieldName).copyWith(errorText: nameError),
+                onChanged: (_) => set(() => nameError = null),
+              ),
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
                 initialValue: type,
@@ -99,26 +113,42 @@ Future<void> showObjectiveDialog(BuildContext context, AppModel m, String id) as
               TextField(
                 controller: work,
                 keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(4)],
                 style: AppText.mono(14),
-                decoration: deco(l.fieldWork),
+                decoration: deco(l.fieldWork).copyWith(errorText: workError),
+                onChanged: (_) => set(() => workError = null),
               ),
             ]),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                m.removeObjective(id);
-              },
-              child: Text(l.delete.toUpperCase(), style: AppText.label(color: AppColors.red)),
-            ),
+            if (!isNew)
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  m.removeObjective(id);
+                },
+                child: Text(l.delete.toUpperCase(), style: AppText.label(color: AppColors.red)),
+              ),
             TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel.toUpperCase(), style: AppText.label())),
             FilledButton(
               style: FilledButton.styleFrom(backgroundColor: AppColors.orange, foregroundColor: AppColors.bg, shape: const RoundedRectangleBorder()),
               onPressed: () {
-                final minutes = double.tryParse(work.text.trim()) ?? o.workMin;
+                final minutes = int.tryParse(work.text.trim());
+                final nameOk = name.text.trim().isNotEmpty;
+                final workOk = minutes != null && minutes >= 0 && minutes <= kWorkMinMax;
+                if (!nameOk || !workOk) {
+                  set(() {
+                    nameError = nameOk ? null : l.errNameRequired;
+                    workError = workOk ? null : l.errRange(0, kWorkMinMax);
+                  });
+                  return;
+                }
                 Navigator.pop(ctx);
-                m.updateObjective(id, name: name.text.trim().isEmpty ? o.name : name.text.trim(), type: type, priority: priority, workMin: minutes.clamp(0, 600).toDouble(), transport: transport);
+                if (isNew) {
+                  m.addObjective(x, y, name.text.trim(), type: type, priority: priority, workMin: minutes.toDouble(), transport: transport);
+                } else {
+                  m.updateObjective(id, name: name.text.trim(), type: type, priority: priority, workMin: minutes.toDouble(), transport: transport);
+                }
               },
               child: Text(l.save.toUpperCase(), style: AppText.label(color: AppColors.bg)),
             ),

@@ -151,14 +151,15 @@ class _RouteCardState extends State<_RouteCard> {
                     const SizedBox(height: 10),
                     Row(children: [
                       metric(l.metricClimb, '+${f.num(met.ascentM, 0)} m'),
-                      metric(l.metricO2, f.percent(met.o2RemainingFrac),
+                      metric(l.metricO2, f.o2(met.o2RemainingFrac, l.o2Depleted),
                           c: met.o2Ok ? AppColors.text : AppColors.red),
-                      metric(l.metricDose, '${f.num(met.doseUGy, 0)} µGy'),
+                      metric(l.metricDose, '${f.num(m.doseOver(met.totalH), 0)} µGy'),
                     ]),
                     const SizedBox(height: 12),
                     _score(l.hazardScore, r.hazard!.score, _hazardColor(r.hazard!.score), f),
                     const SizedBox(height: 7),
                     _score(l.successScore, r.success!.score, AppColors.cyan, f),
+                    if (widget.profile != 'fast') _compareWithFast(m, r, met, l, f),
                     const SizedBox(height: 10),
                     Text(
                       '${l.visits}: ${r.visited.isEmpty ? '-' : r.visited.map((e) => e.toUpperCase()).join(' → ')}'
@@ -191,6 +192,48 @@ class _RouteCardState extends State<_RouteCard> {
           ]),
         ),
       ),
+    );
+  }
+
+  /// Qué cambia frente a la ruta rápida: peligro, pendiente máxima, oxígeno al volver y tiempo. Verde si mejora, ámbar si empeora.
+  /// Si es el mismo objetivo y casi el mismo camino, lo dice en vez de mostrar diferencias sin sentido.
+  Widget _compareWithFast(AppModel m, RouteResult r, RouteMetrics met, AppLocalizations l, Fmt f) {
+    final fast = m.routes['fast'];
+    final fm = fast?.metrics;
+    if (fast == null || fm == null || fast.hazard == null || r.hazard == null) return const SizedBox.shrink();
+    final sameTarget = r.visited.join(',') == fast.visited.join(',');
+    final dMin = ((met.totalH - fm.totalH) * 60).round();
+    final dKm = (met.distanceM - fm.distanceM).abs();
+    final dSlope = met.maxSlopeDeg - fm.maxSlopeDeg;
+    final dHaz = r.hazard!.score - fast.hazard!.score;
+    final dO2 = (met.o2RemainingFrac - fm.o2RemainingFrac) * 100;
+    if (sameTarget && dMin.abs() < 3 && dKm < 100 && dSlope.abs() < 1 && dHaz.abs() < 1) {
+      return Padding(padding: const EdgeInsets.only(top: 8), child: Text(l.cmpSame, style: AppText.body(11, color: AppColors.textMute, height: 1.35)));
+    }
+    Widget chip(String label, double d, String text, {required bool lowerIsBetter}) {
+      final good = lowerIsBetter ? d < 0 : d > 0;
+      final neutral = d.abs() < 0.05;
+      final c = neutral ? AppColors.textDim : (good ? AppColors.green : AppColors.amber);
+      return Padding(
+        padding: const EdgeInsets.only(right: 12, bottom: 2),
+        child: Text('$label $text', style: AppText.mono(10.5, color: c)),
+      );
+    }
+
+    String sg(double v, int digits) => '${v > 0 ? '+' : ''}${f.num(v, digits)}';
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(l.cmpVsFast.toUpperCase(), style: AppText.label(color: AppColors.textMute)),
+        const SizedBox(height: 3),
+        Wrap(children: [
+          chip(l.hazardScore, dHaz, sg(dHaz, 0), lowerIsBetter: true),
+          chip(l.metricMaxSlope, dSlope, '${sg(dSlope, 1)}°', lowerIsBetter: true),
+          chip(l.metricO2, dO2, '${sg(dO2, 0)} pp', lowerIsBetter: false),
+          chip(l.metricDuration, dMin.toDouble(), '${dMin > 0 ? '+' : ''}$dMin min', lowerIsBetter: true),
+          if (!sameTarget) chip(l.visits, 0, r.visited.map((e) => e.toUpperCase()).join('→'), lowerIsBetter: true),
+        ]),
+      ]),
     );
   }
 
@@ -452,7 +495,7 @@ class _PairCard extends StatelessWidget {
           const SizedBox(height: 10),
           Row(children: [
             metric(l.pairSeparation, '${f.num(s.maxSeparationM, 0)} / ${f.num(pr.limitM, 0)} m'),
-            metric(l.pairO2Min, f.percent(s.o2RemainingMinFrac)),
+            metric(l.pairO2Min, f.o2(s.o2RemainingMinFrac, l.o2Depleted)),
           ]),
           const SizedBox(height: 12),
           Row(children: [

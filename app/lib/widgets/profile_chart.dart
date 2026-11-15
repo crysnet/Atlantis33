@@ -120,7 +120,21 @@ class _ProfilePainter extends CustomPainter {
     final total = dist.last;
     final span = math.max(zmax - zmin, 10.0);
     final pad = span * 0.1;
-    final lo = zmin - pad, hi = zmax + pad;
+    // Eje Y con paso «redondo» (1, 2, 5 × 10^n m): las cuatro divisiones de la rejilla son iguales y sus etiquetas avanzan parejo.
+    final need = (zmax + pad) - (zmin - pad);
+    var step = 1.0;
+    outer:
+    for (final mag in const [0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0]) {
+      for (final k in const [1.0, 2.0, 5.0]) {
+        if (k * mag * 4 >= need) {
+          step = k * mag;
+          break outer;
+        }
+      }
+    }
+    final lo = ((zmin - pad) / step).floor() * step;
+    final hi = lo + 4 * step;
+    final yDigits = step < 1 ? 1 : 0;
     Offset pt(int i) => Offset(left + dist[i] / total * w, top + (1 - (g.z[cells[i]] - lo) / (hi - lo)) * h);
 
     // Rejilla y ejes.
@@ -128,13 +142,13 @@ class _ProfilePainter extends CustomPainter {
     for (var k = 0; k <= 4; k++) {
       final y = top + h * k / 4;
       canvas.drawLine(Offset(left, y), Offset(left + w, y), grid);
-      _text(canvas, f.num(hi - (hi - lo) * k / 4, 0), Offset(left - 6, y - 6), align: TextAlign.right, width: 40);
+      _text(canvas, f.num(hi - (hi - lo) * k / 4, yDigits), Offset(left - 6, y - 6), align: TextAlign.right, width: 40);
     }
     final kmStep = total > 6000 ? 1000.0 : 500.0;
     for (var d = 0.0; d <= total; d += kmStep) {
       final x = left + d / total * w;
       canvas.drawLine(Offset(x, top), Offset(x, top + h), grid);
-      _text(canvas, f.num(d / 1000, 1), Offset(x - 12, top + h + 3), align: TextAlign.center, width: 30);
+      _text(canvas, f.num(d / 1000, 1), Offset(x, top + h + 3), align: TextAlign.center, width: 30);
     }
     _text(canvas, 'km', Offset(left + w + 2, top + h + 3), width: 20);
 

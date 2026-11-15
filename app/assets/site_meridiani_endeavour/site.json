@@ -1,5 +1,6 @@
 {
   "id": "meridiani_endeavour",
+  "zone_photos": "meridiani_opportunity",
   "name": "Meridiani Planum: Endeavour crater rim",
   "frame": {
     "description": "Local plane in metres. x grows east, y grows south, origin at the north-west corner of the box.",

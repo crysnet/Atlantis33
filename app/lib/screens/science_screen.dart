@@ -185,7 +185,7 @@ class _Detail extends StatelessWidget {
             Expanded(
               child: _framed(
                 l.sciOrbital,
-                'HiRISE 0.25 m',
+                f.text('HiRISE 0.25 m'),
                 AppColors.cyan,
                 OrbitalCrop(
                   data: d,
@@ -230,7 +230,7 @@ class _Detail extends StatelessWidget {
                 Text(l.sciDataStack, style: AppText.head(12)),
               ]),
             ),
-            stackRow('01', l.stackOptical, Text('HiRISE · 0.25 m/px', style: AppText.body(12, color: AppColors.textDim)), Tag(l.kindMeasured, color: AppColors.cyan)),
+            stackRow('01', l.stackOptical, Text(f.text('HiRISE · 0.25 m/px'), style: AppText.body(12, color: AppColors.textDim)), Tag(l.kindMeasured, color: AppColors.cyan)),
             stackRow(
               '02',
               l.stackTopo,

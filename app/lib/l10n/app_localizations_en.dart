@@ -609,7 +609,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rulesCrew =>
-      'Assumed: the EVA is done by two astronauts; consumables and dose are computed for one. No rover is modeled.';
+      'Assumed: the EVA is done by two astronauts; consumables and dose are computed for one.';
 
   @override
   String get rulesNote =>
@@ -1270,4 +1270,71 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get legendOpportunity =>
       'Opportunity track (MER-B, corrected position)';
+
+  @override
+  String get rulesRoverNone => 'No rover is modeled in this mode.';
+
+  @override
+  String get rulesRoverUsed =>
+      'The rover legs of this mode use the rover model (see the assumptions in Plan).';
+
+  @override
+  String get kindAssumption => 'ASSUMPTION';
+
+  @override
+  String get missionSuit => 'SUIT';
+
+  @override
+  String get errNameRequired => 'Enter a name.';
+
+  @override
+  String get errNonNegative => 'Enter a number of 0 or more (up to 100000).';
+
+  @override
+  String errRange(int min, int max) {
+    return 'Enter a whole number from $min to $max.';
+  }
+
+  @override
+  String get o2Depleted => 'depleted';
+
+  @override
+  String get layerAqueousPts => 'Aqueous minerals · biosignatures';
+
+  @override
+  String get layerHydrousPts => 'Hydrous minerals (CRISM, OMEGA)';
+
+  @override
+  String get layerValleys => 'Valley networks (Hynek 2010)';
+
+  @override
+  String get legendBiosigTitle => 'Biosignature search (from orbit)';
+
+  @override
+  String get legendValleys => 'Valley network (ancient water)';
+
+  @override
+  String get legendBiosigNote =>
+      'Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. Sulfates are in the layer «Aqueous and hydrous minerals».';
+
+  @override
+  String get helmetBackdropTerrain =>
+      'Backdrop: view of the terrain drawn from the elevation model (NASA / USGS) at the simulated position and heading; it is not a photo.';
+
+  @override
+  String get zonePhotoTitle => 'The area, seen by Opportunity';
+
+  @override
+  String get zonePhotoNext => 'Next photo of the area';
+
+  @override
+  String get zonePhotoNote =>
+      'Real photos of Perseverance Valley (Endeavour rim). They show the area, not this exact point. Tap for the next one.';
+
+  @override
+  String get cmpVsFast => 'Versus the fastest route';
+
+  @override
+  String get cmpSame =>
+      'Same objective and almost the same path as the fastest route: in this terrain the two profiles give nearly the same result.';
 }

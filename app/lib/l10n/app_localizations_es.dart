@@ -611,7 +611,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get rulesCrew =>
-      'Supuesto: la salida es de dos astronautas; los consumibles y la dosis se calculan para uno. No se modela un rover.';
+      'Supuesto: la salida es de dos astronautas; los consumibles y la dosis se calculan para uno.';
 
   @override
   String get rulesNote =>
@@ -1273,4 +1273,71 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get legendOpportunity =>
       'Recorrido de Opportunity (MER-B, posición corregida)';
+
+  @override
+  String get rulesRoverNone => 'En este modo no se modela un rover.';
+
+  @override
+  String get rulesRoverUsed =>
+      'Los tramos en rover de este modo usan el modelo de rover (ver los supuestos en Plan).';
+
+  @override
+  String get kindAssumption => 'SUPUESTO';
+
+  @override
+  String get missionSuit => 'TRAJE';
+
+  @override
+  String get errNameRequired => 'Escribe un nombre.';
+
+  @override
+  String get errNonNegative => 'Escribe un número de 0 o más (hasta 100000).';
+
+  @override
+  String errRange(int min, int max) {
+    return 'Escribe un número entero de $min a $max.';
+  }
+
+  @override
+  String get o2Depleted => 'agotado';
+
+  @override
+  String get layerAqueousPts => 'Minerales acuosos · biofirmas';
+
+  @override
+  String get layerHydrousPts => 'Minerales hidratados (CRISM, OMEGA)';
+
+  @override
+  String get layerValleys => 'Redes de valles (Hynek 2010)';
+
+  @override
+  String get legendBiosigTitle => 'Búsqueda de biofirmas (desde órbita)';
+
+  @override
+  String get legendValleys => 'Red de valles (agua antigua)';
+
+  @override
+  String get legendBiosigNote =>
+      'Filosilicatos y carbonatos: suelo con más probabilidad de conservar biofirmas. Detecciones orbitales de Mars Trek (NASA), no muestras. Los sulfatos están en la capa «Minerales acuosos e hidratados».';
+
+  @override
+  String get helmetBackdropTerrain =>
+      'Fondo: vista del terreno dibujada con el modelo de elevación (NASA / USGS) desde la posición y el rumbo simulados; no es una foto.';
+
+  @override
+  String get zonePhotoTitle => 'La zona, vista por Opportunity';
+
+  @override
+  String get zonePhotoNext => 'Siguiente foto de la zona';
+
+  @override
+  String get zonePhotoNote =>
+      'Fotos reales de Perseverance Valley (borde de Endeavour). Muestran la zona, no este punto exacto. Toca para ver la siguiente.';
+
+  @override
+  String get cmpVsFast => 'Frente a la ruta rápida';
+
+  @override
+  String get cmpSame =>
+      'Mismo objetivo y casi el mismo camino que la ruta rápida: en este terreno los dos perfiles dan casi lo mismo.';
 }
