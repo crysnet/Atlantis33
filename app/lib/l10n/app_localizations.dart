@@ -245,19 +245,19 @@ abstract class AppLocalizations {
   /// No description provided for @legendCaution.
   ///
   /// In en, this message translates to:
-  /// **'10–20° caution'**
+  /// **'10–12° caution'**
   String get legendCaution;
 
   /// No description provided for @legendHigh.
   ///
   /// In en, this message translates to:
-  /// **'20–25° high caution'**
+  /// **'12–15° high caution'**
   String get legendHigh;
 
   /// No description provided for @legendForbidden.
   ///
   /// In en, this message translates to:
-  /// **'> 25° forbidden'**
+  /// **'> 15° forbidden'**
   String get legendForbidden;
 
   /// No description provided for @routesTitle.
@@ -2099,7 +2099,7 @@ abstract class AppLocalizations {
   /// No description provided for @legendBiosigNote.
   ///
   /// In en, this message translates to:
-  /// **'Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. No carbonates are recorded in Meridiani; sulfates are not shown.'**
+  /// **'Phyllosilicates and hydrous minerals: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not in-situ samples.'**
   String get legendBiosigNote;
 
   /// No description provided for @layerZones.
@@ -2207,7 +2207,7 @@ abstract class AppLocalizations {
   /// No description provided for @transitNote.
   ///
   /// In en, this message translates to:
-  /// **'The thresholds are team assumptions without a reference. DCI and thermal inertia come from TES at 3.5 and 7.5 km: in a window of a few kilometres the layer has one or two colours.'**
+  /// **'Measured by MGS-TES (NASA/ASU) at 3.5 km/px (DCI) and 7.5 km/px (thermal inertia). The red zone (DCI < 0.94 and inertia < 150) is automatically blocked as a dust trap in route calculation.'**
   String get transitNote;
 
   /// No description provided for @srcTitle.

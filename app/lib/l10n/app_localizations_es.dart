@@ -84,13 +84,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get legendNominal => '< 10° nominal';
 
   @override
-  String get legendCaution => '10–20° precaución';
+  String get legendCaution => '10–12° precaución';
 
   @override
-  String get legendHigh => '20–25° precaución alta';
+  String get legendHigh => '12–15° precaución alta';
 
   @override
-  String get legendForbidden => '> 25° prohibida';
+  String get legendForbidden => '> 15° prohibida';
 
   @override
   String get routesTitle => 'COMPARACIÓN DE RUTAS';
@@ -1076,7 +1076,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get legendBiosigNote =>
-      'Filosilicatos y carbonatos: suelo con más probabilidad de conservar biofirmas. Detecciones orbitales de Mars Trek (NASA), no muestras. En Meridiani no hay carbonatos registrados; los sulfatos no se muestran.';
+      'Filosilicatos y minerales hidratados: suelo con mayor potencial de conservar biofirmas. Detecciones orbitales de Mars Trek (NASA), no muestras in situ.';
 
   @override
   String get layerZones => 'Zonas de exploración';
@@ -1132,7 +1132,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get transitNote =>
-      'Los umbrales son supuestos del equipo sin referencia. El DCI y la inercia térmica salen de TES a 3.5 y 7.5 km: en una ventana de pocos kilómetros la capa tiene uno o dos colores.';
+      'Datos medidos por MGS-TES (NASA/ASU) a 3,5 km/px (DCI) y 7,5 km/px (inercia térmica). La zona roja (DCI < 0,94 e inercia < 150) se bloquea automáticamente como trampa de polvo en el cálculo de rutas.';
 
   @override
   String get srcTitle => 'Fuentes y datos';

@@ -142,9 +142,9 @@ def muestrear_dem(ruta_dem, n_celdas):
 def color_pendiente_rgba(pend, mascara_valida):
     rgba = np.zeros((pend.shape[0], pend.shape[1], 4), dtype=np.uint8)
     m0 = (pend < 10.0) & mascara_valida
-    m1 = (pend >= 10.0) & (pend < 20.0) & mascara_valida
-    m2 = (pend >= 20.0) & (pend <= 25.0) & mascara_valida
-    m3 = (pend > 25.0) & mascara_valida
+    m1 = (pend >= 10.0) & (pend < 12.0) & mascara_valida
+    m2 = (pend >= 12.0) & (pend <= 15.0) & mascara_valida
+    m3 = (pend > 15.0) & mascara_valida
     rgba[m0] = (46, 204, 113, 180)
     rgba[m1] = (241, 196, 15, 210)
     rgba[m2] = (230, 126, 34, 225)
@@ -513,8 +513,7 @@ def main():
     par["routing"]["cell_m"] = CELL_M
     par["routing"]["slope_exponent_ref_deg"] = 15.0
     par["routing"]["profiles"]["safe"]["slope_limit_deg"] = 15.0
-    hab_col = int(np.clip((hab_x - X0) / CELL_M, 0, GRID_N - 1))
-    hab_row = int(np.clip((Y0 - hab_y) / CELL_M, 0, GRID_N - 1))
+    # hab_x y hab_y ya están en el plano local (0..SIZE_M): la celda es hab_x // CELL_M, no (hab_x - X0) / CELL_M
     if prohib_512[hab_row, hab_col] != 0:
         prohib_512[hab_row, hab_col] = 0
         prohib_512.tofile(os.path.join(SITE_DIR, "grid", "forbidden.bin"))

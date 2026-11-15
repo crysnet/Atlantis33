@@ -46,8 +46,8 @@ class PlannedRoute {
 }
 
 const List<LayerDef> kLayers = [
-  LayerDef('optical', LayerKind.measured, 'HiRISE 0.25 m'),
-  LayerDef('slope', LayerKind.modeled, '4 m'),
+  LayerDef('optical', LayerKind.measured, 'CTX 40 m'),
+  LayerDef('slope', LayerKind.modeled, 'HRSC·MOLA 200 m'),
   LayerDef('curiosity', LayerKind.measured, 'MSL', hasOpacity: true),
   LayerDef('thermal', LayerKind.measured, 'THEMIS-IR 100 m'),
   LayerDef('minerals', LayerKind.example, 'CRISM', hasData: false),

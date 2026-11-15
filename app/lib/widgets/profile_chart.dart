@@ -40,8 +40,8 @@ class ProfileChart extends StatelessWidget {
             ],
             const Spacer(),
             _legendDot(AppColors.slopeNominal, '<10°'),
-            _legendDot(AppColors.slopeCaution, '10–20°'),
-            _legendDot(AppColors.slopeHigh, '20–25°'),
+            _legendDot(AppColors.slopeCaution, '10–12°'),
+            _legendDot(AppColors.slopeHigh, '12–15°'),
           ]),
         ),
         Expanded(
@@ -82,7 +82,7 @@ class _ProfilePainter extends CustomPainter {
     final mod = model.data.model;
     if (s < mod.slopeNominalMax) return AppColors.slopeNominal;
     if (s < mod.slopeCautionMax) return AppColors.slopeCaution;
-    if (s <= 25) return AppColors.slopeHigh;
+    if (s <= mod.slopeRefDeg) return AppColors.slopeHigh;
     return AppColors.slopeForbidden;
   }
 

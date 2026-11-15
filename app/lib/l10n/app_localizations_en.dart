@@ -84,13 +84,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get legendNominal => '< 10° nominal';
 
   @override
-  String get legendCaution => '10–20° caution';
+  String get legendCaution => '10–12° caution';
 
   @override
-  String get legendHigh => '20–25° high caution';
+  String get legendHigh => '12–15° high caution';
 
   @override
-  String get legendForbidden => '> 25° forbidden';
+  String get legendForbidden => '> 15° forbidden';
 
   @override
   String get routesTitle => 'ROUTE COMPARISON';
@@ -1074,7 +1074,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get legendBiosigNote =>
-      'Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. No carbonates are recorded in Meridiani; sulfates are not shown.';
+      'Phyllosilicates and hydrous minerals: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not in-situ samples.';
 
   @override
   String get layerZones => 'Exploration zones';
@@ -1130,7 +1130,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transitNote =>
-      'The thresholds are team assumptions without a reference. DCI and thermal inertia come from TES at 3.5 and 7.5 km: in a window of a few kilometres the layer has one or two colours.';
+      'Measured by MGS-TES (NASA/ASU) at 3.5 km/px (DCI) and 7.5 km/px (thermal inertia). The red zone (DCI < 0.94 and inertia < 150) is automatically blocked as a dust trap in route calculation.';
 
   @override
   String get srcTitle => 'Sources and data';
