@@ -56,9 +56,9 @@ void main() {
     final data = await SiteData.load(registry.byId(registry.defaultId)!.assetDir);
     final m = AppModel(data, registry: registry, siteId: registry.defaultId);
     expect(m.siteId, registry.defaultId);
-    expect(m.siteLabel, 'Gale · Boxwork ridges');
+    expect(m.siteLabel, 'Meridiani · Regional context (100 km)');
     m.setLocale(const Locale('es'));
-    expect(m.siteLabel, 'Gale · Crestas boxwork');
+    expect(m.siteLabel, 'Meridiani · Contexto regional (100 km)');
     expect(m.layerDefs.map((l) => l.id), registry.byId(registry.defaultId)!.layers);
 
     final conPendiente = SiteRegistry.fromJson({
@@ -72,9 +72,8 @@ void main() {
     expect(await m2.switchSite('sin_datos'), isFalse);
     expect(m2.siteId, registry.defaultId);
     m2.dispose();
-    final pending = registry.sites.firstWhere((s) => s.id == 'meridiani_habitat');
+    final pending = registry.sites.firstWhere((s) => s.id == 'meridiani_regional');
     expect(pending.indicative, isTrue);
-    expect(registry.byId('meridiani_endeavour')!.indicative, isFalse);
     expect(await m.switchSite('no_existe'), isFalse);
     expect(m.siteId, registry.defaultId);
     expect(identical(m.data, data), isTrue);

@@ -29,6 +29,17 @@ class AppColors {
   static const routeScience = cyan;
 }
 
+/// Minerales desde órbita que se dibujan, con su color (mapa y leyenda). La capa de acuosos muestra solo los de más
+/// probabilidad de biofirmas (filosilicatos y carbonatos); los sulfatos están en los datos pero no se dibujan.
+const Map<String, Color> kMineralColors = {
+  'phyllosilicate': Color(0xFFD63DA8),
+  'carbonate': Color(0xFF5DBB63),
+  'hydrous': AppColors.cyan,
+};
+
+/// Redes de valles (Hynek 2010).
+const Color kValleyColor = Color(0xFF4A90E2);
+
 /// Estilos de texto: Space Grotesk para títulos, Inter (sustituye a IBM Plex Sans) para texto
 /// y JetBrains Mono para etiquetas y números.
 class AppText {

@@ -31,7 +31,7 @@ const List<_Src> _sources = [
       'https://www.mars.asu.edu/data/tes_ruffdust/'),
   _Src('real', 'CRISM, OMEGA and Exploration Zones · NASA Mars Trek', 'Aqueous and hydrous mineral detections, and the exploration zones of the NASA 2015 workshop.', 'Detecciones de minerales acuosos e hidratados y zonas de exploración del taller de la NASA de 2015.', 'https://trek.nasa.gov/mars/'),
   _Src('real', 'Global geologic map · USGS (SIM 3292)', 'Geologic unit shown in Science (Gale).', 'Unidad geológica que muestra la pantalla Ciencia (Gale).', 'https://pubs.usgs.gov/sim/3292/'),
-  _Src('modeled', 'Computed by the team', 'Slope, roughness, forbidden zones, routes, hazard and success scores, transit classes, simulated EVA.', 'Pendiente, rugosidad, zonas prohibidas, rutas, puntajes de peligro y éxito, clases de tránsito y EVA simulada.'),
+  _Src('modeled', 'Computed by the team', 'Slope, roughness, forbidden zones, routes, hazard and success scores, transit classes.', 'Pendiente, rugosidad, zonas prohibidas, rutas, puntajes de peligro y éxito y clases de tránsito.'),
   _Src('assumed', 'Team assumptions (not NASA values)', 'Suit speed, EVA duration, oxygen, GO / NO-GO limits, transit thresholds, rover and pair parameters, demo objectives, habitat positions. Rover limits are rounded from the Apollo lunar rover (NASA NTRS 20250011301).', 'Velocidad del traje, duración de la EVA, oxígeno, límites de GO / NO-GO, umbrales de tránsito, parámetros de rover y pareja, objetivos de demostración y posiciones del hábitat. Los límites del rover se redondean del vehículo lunar de Apolo (NASA NTRS 20250011301).'),
 ];
 

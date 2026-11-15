@@ -1,6 +1,4 @@
 import 'dart:math' as math;
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +25,7 @@ Color routeColor(String profile) => switch (profile) {
 /// de la esquina noroeste del recuadro. El mapa propio evita depender de una librería de mapas con
 /// proyecciones, que aquí no hacen falta.
 class MapView extends StatefulWidget {
-  const MapView({super.key, this.forceSim = false});
-
-  /// Dibuja siempre al astronauta simulado, aunque el avance sea cero.
-  final bool forceSim;
+  const MapView({super.key});
 
   @override
   State<MapView> createState() => _MapViewState();
@@ -46,53 +41,58 @@ class _MapViewState extends State<MapView> {
   Offset _w0 = Offset.zero;
   String? _dragId;
   final ValueNotifier<Offset?> _hover = ValueNotifier(null);
-  ui.Image? _forbidden;
   SiteData? _site;
 
   /// Lado del recuadro del sitio en metros (4000 en Gale).
   double _worldM = 4000;
   final Expando<Path> _pathCache = Expando<Path>();
 
-  double get _minScale => math.min(_size.width, _size.height) / (_site?.base?.sizeM ?? _site?.context?.sizeM ?? _worldM) * 0.8;
+  double get _minScale {
+    final b = _site?.validBounds;
+    if (b != null && _size.width > 0 && _size.height > 0) {
+      return math.max(_size.width / b.width, _size.height / b.height);
+    }
+    return math.min(_size.width, _size.height) / (_site?.base?.sizeM ?? _site?.context?.sizeM ?? _worldM) * 0.8;
+  }
   static const double _maxScale = 4.0;
 
   @override
   void dispose() {
     _hover.dispose();
-    _forbidden?.dispose();
     super.dispose();
   }
 
-  void _ensureForbidden(SiteData d) {
+  void _ensureSite(SiteData d) {
     if (identical(_site, d)) return;
-    // Sitio nuevo: se rehace la imagen de zonas prohibidas y se reajusta la vista al recuadro.
     _site = d;
     _worldM = d.sizeM;
     _fitted = false;
-    _forbidden?.dispose();
-    _forbidden = null;
-    final g = d.grid;
-    final px = Uint8List(g.width * g.height * 4);
-    for (var i = 0; i < g.blocked.length; i++) {
-      if (g.blocked[i] != 0) {
-        final o = i * 4;
-        final stripe = ((i % g.width) + (i ~/ g.width)) % 3 == 0;
-        px[o] = 0xE7;
-        px[o + 1] = 0x4C;
-        px[o + 2] = 0x3C;
-        px[o + 3] = stripe ? 120 : 235;
-      }
-    }
-    ui.decodeImageFromPixels(px, g.width, g.height, ui.PixelFormat.rgba8888, (img) {
-      if (mounted && identical(_site, d)) {
-        setState(() => _forbidden = img);
-      } else {
-        img.dispose();
-      }
-    });
+  }
+
+  void _clampOrigin() {
+    final b = _site?.validBounds;
+    if (b == null || _size.width <= 0 || _size.height <= 0) return;
+    final minX = _size.width - b.right * _scale;
+    final maxX = -b.left * _scale;
+    final minY = _size.height - b.bottom * _scale;
+    final maxY = -b.top * _scale;
+    _origin = Offset(
+      minX <= maxX ? _origin.dx.clamp(minX, maxX) : (minX + maxX) / 2,
+      minY <= maxY ? _origin.dy.clamp(minY, maxY) : (minY + maxY) / 2,
+    );
   }
 
   void _fit() {
+    final b = _site?.validBounds;
+    if (b != null && _size.width > 0 && _size.height > 0) {
+      _scale = math.max(_size.width / b.width, _size.height / b.height);
+      _origin = Offset(
+        (_size.width - b.width * _scale) / 2 - b.left * _scale,
+        (_size.height - b.height * _scale) / 2 - b.top * _scale,
+      );
+      _clampOrigin();
+      return;
+    }
     final s = math.min(_size.width, _size.height) / _worldM * 0.96;
     _scale = s;
     _origin = Offset((_size.width - _worldM * s) / 2, (_size.height - _worldM * s) / 2);
@@ -108,6 +108,7 @@ class _MapViewState extends State<MapView> {
     setState(() {
       _scale = ns;
       _origin = focal - w * ns;
+      _clampOrigin();
     });
   }
 
@@ -124,18 +125,23 @@ class _MapViewState extends State<MapView> {
     return best;
   }
 
+  bool _hitHabitat(AppModel m, Offset p) =>
+      (_toScreen(m.data.habitatX, m.data.habitatY) - p).distance < 22.0;
+
   @override
   Widget build(BuildContext context) {
     final m = AppScope.of(context);
     final l = AppLocalizations.of(context)!;
-    _ensureForbidden(m.data);
-    return LayoutBuilder(builder: (context, c) {
-      _size = c.biggest;
-      if (!_fitted && _size.width > 0) {
-        _fit();
-        _fitted = true;
-      }
-      return Listener(
+    _ensureSite(m.data);
+    return Column(children: [
+      Expanded(
+        child: LayoutBuilder(builder: (context, c) {
+          _size = c.biggest;
+          if (!_fitted && _size.width > 0) {
+            _fit();
+            _fitted = true;
+          }
+          return Listener(
         onPointerSignal: (e) {
           if (e is PointerScrollEvent) _zoomAt(e.localPosition, math.exp(-e.scrollDelta.dy / 400));
         },
@@ -164,6 +170,7 @@ class _MapViewState extends State<MapView> {
                 setState(() {
                   _scale = ns;
                   _origin = d.localFocalPoint - _w0 * ns;
+                  _clampOrigin();
                 });
               }
             },
@@ -183,8 +190,15 @@ class _MapViewState extends State<MapView> {
                 return;
               }
               final hit = _hitObjective(m, d.localPosition);
+              if (m.traceMode) {
+                if (hit != null) {
+                  m.pickTracePoint(hit);
+                } else if (_hitHabitat(m, d.localPosition)) {
+                  m.pickTracePoint('habitat');
+                }
+                return;
+              }
               m.selectObjective(hit);
-              if (hit != null) showObjectiveDialog(context, m, hit);
             },
             child: ClipRect(
               child: Stack(
@@ -201,12 +215,35 @@ class _MapViewState extends State<MapView> {
                         habitatLabel: l.habitat,
                         pnrLabel: l.pnrShort,
                         frameLabel: l.routeAreaLabel,
-                        showSim: widget.forceSim || m.simActive,
                       ),
                     ),
                   ),
-                  Positioned(left: 12, top: 12, child: _toolbar(l)),
+                  Positioned(
+                    left: 12,
+                    top: 12,
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      _toolbar(l),
+                      const SizedBox(width: 8),
+                      _addObjectiveBtn(m, l),
+                      if (m.objectives.isNotEmpty) ...[
+                        const SizedBox(width: 8),
+                        _traceRouteBtn(m, l),
+                      ],
+                    ]),
+                  ),
                   if (m.addMode) Positioned(top: 12, left: 0, right: 0, child: Center(child: _banner(l.objectivesAddActive))),
+                  if (m.traceMode)
+                    Positioned(
+                      top: 12,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: _banner(
+                          m.traceDraftStart == null ? l.routeTracePickStart : l.routeTracePickEnd,
+                          color: AppColors.cyan,
+                        ),
+                      ),
+                    ),
                   if (m.computing) Positioned(top: 12, left: 0, right: 0, child: Center(child: _banner(l.computing, color: AppColors.amber))),
                   Positioned(left: 12, bottom: 12, child: _readout(m, l)),
                   Positioned(right: 12, bottom: 12, child: _scaleBar()),
@@ -216,7 +253,40 @@ class _MapViewState extends State<MapView> {
           ),
         ),
       );
-    });
+    }),
+      ),
+      _traceFooter(m, l),
+    ]);
+  }
+
+  Widget _traceFooter(AppModel m, AppLocalizations l) {
+    final f = Fmt(m.locale);
+    final b = m.data.validBounds;
+    final traceWKm = (b?.width ?? m.data.sizeM) / 1000.0;
+    final traceHKm = (b?.height ?? m.data.sizeM) / 1000.0;
+    final viewWKm = _size.width > 0 && _scale > 0
+        ? math.min(_size.width / _scale / 1000.0, traceWKm)
+        : traceWKm;
+    final viewHKm = _size.height > 0 && _scale > 0
+        ? math.min(_size.height / _scale / 1000.0, traceHKm)
+        : traceHKm;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      decoration: const BoxDecoration(
+        color: AppColors.panel,
+        border: Border(top: BorderSide(color: AppColors.hairline)),
+      ),
+      child: Text(
+        l.mapTraceLegend(
+          f.num(viewWKm, 1),
+          f.num(viewHKm, 1),
+          f.num(traceWKm, 1),
+          f.num(traceHKm, 1),
+        ),
+        style: AppText.mono(10, color: AppColors.textDim),
+      ),
+    );
   }
 
   Widget _banner(String text, {Color color = AppColors.cyan}) => Container(
@@ -241,6 +311,51 @@ class _MapViewState extends State<MapView> {
         btn(Icons.remove, l.zoomOut, () => _zoomAt(center, 1 / 1.5)),
         btn(Icons.center_focus_strong_outlined, l.zoomFit, () => setState(_fit)),
       ]),
+    );
+  }
+
+  Widget _addObjectiveBtn(AppModel m, AppLocalizations l) {
+    final active = m.addMode;
+    final color = active ? AppColors.cyan : AppColors.orange;
+    return Material(
+      color: AppColors.panel.withValues(alpha: 0.92),
+      child: InkWell(
+        onTap: m.toggleAddMode,
+        child: Container(
+          height: 36,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(border: Border.all(color: color)),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Icon(active ? Icons.close : Icons.add_location_alt_outlined, size: 15, color: color),
+            const SizedBox(width: 6),
+            Text(active ? l.objectivesAddActive : l.objectivesAdd, style: AppText.label(color: color)),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  Widget _traceRouteBtn(AppModel m, AppLocalizations l) {
+    final active = m.traceMode;
+    final color = active ? AppColors.amber : AppColors.cyan;
+    return Material(
+      color: AppColors.panel.withValues(alpha: 0.92),
+      child: InkWell(
+        onTap: m.toggleTraceMode,
+        child: Container(
+          height: 36,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: active ? AppColors.amber.withValues(alpha: 0.14) : Colors.transparent,
+            border: Border.all(color: color),
+          ),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Icon(active ? Icons.close : Icons.alt_route, size: 15, color: color),
+            const SizedBox(width: 6),
+            Text(l.routeTraceBtn.toUpperCase(), style: AppText.label(color: color)),
+          ]),
+        ),
+      ),
     );
   }
 
@@ -269,7 +384,7 @@ class _MapViewState extends State<MapView> {
   }
 
   Widget _scaleBar() {
-    const nice = [10, 20, 50, 100, 200, 500, 1000, 2000];
+    const nice = [10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000];
     var meters = nice.first;
     for (final n in nice) {
       if (n * _scale <= 150) meters = n;
@@ -329,13 +444,10 @@ class _MapViewState extends State<MapView> {
     final d = m.data;
     final z = _zoomLevel(d);
     final optical = m.layers['optical']!;
-    final hill = m.layers['hillshade']!;
     final thermal = m.layers['thermal']!;
     final slope = m.layers['slope']!;
-    final forb = m.layers['forbidden']!;
     final tnight = m.layers['thermal_night']!;
     final transit = m.layers['transit']!;
-    final slope15 = m.layers['slope15']!;
     Widget image(String asset, double opacity) => Positioned(
           left: 0,
           top: 0,
@@ -382,17 +494,7 @@ class _MapViewState extends State<MapView> {
                 if (thermal.visible) image(d.assetPath('layers/thermal.png'), thermal.opacity),
                 if (tnight.visible) image(d.assetPath('layers/thermal_night.png'), tnight.opacity),
                 if (transit.visible) image(d.assetPath('layers/transit.png'), transit.opacity),
-                if (hill.visible) image(d.assetPath('layers/hillshade.png'), hill.opacity),
                 if (slope.visible) image(d.assetPath('layers/slope.png'), slope.opacity),
-                if (slope15.visible) image(d.assetPath('layers/slope15.png'), slope15.opacity),
-                if (forb.visible && _forbidden != null)
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    width: d.sizeM,
-                    height: d.sizeM,
-                    child: Opacity(opacity: forb.opacity, child: RawImage(image: _forbidden, fit: BoxFit.fill, filterQuality: FilterQuality.none)),
-                  ),
               ],
             ),
           ),
@@ -411,7 +513,6 @@ class _OverlayPainter extends CustomPainter {
     required this.habitatLabel,
     required this.pnrLabel,
     required this.frameLabel,
-    required this.showSim,
   });
 
   final AppModel model;
@@ -421,7 +522,6 @@ class _OverlayPainter extends CustomPainter {
   final String habitatLabel;
   final String pnrLabel;
   final String frameLabel;
-  final bool showSim;
 
   Offset _p(double x, double y) => Offset(origin.dx + x * scale, origin.dy + y * scale);
 
@@ -455,8 +555,6 @@ class _OverlayPainter extends CustomPainter {
     tp.paint(canvas, at + const Offset(5, 3));
   }
 
-  static const _unitPalette = [Color(0xFF8E6BBF), Color(0xFF4FA3A5), Color(0xFFC9A227), Color(0xFFB5543C), Color(0xFF5B8C3A), Color(0xFF4F7FBF), Color(0xFFBF6B9E), Color(0xFF9A9A6B)];
-
   /// Recuadro punteado de la ventana de cálculo de rutas, cuando el sitio trae un marco de contexto más grande.
   void _frame(Canvas canvas, SiteData d) {
     if (d.context == null) return;
@@ -478,36 +576,8 @@ class _OverlayPainter extends CustomPainter {
     _label(canvas, frameLabel, r.topRight + const Offset(-8, 8), alignRight: true);
   }
 
-  /// Unidades geológicas y dunas (capa `geology`), cráteres (`craters`) y nombres (`names`).
+  /// Cráteres (`craters`) y nombres (`names`).
   void _context(Canvas canvas, SiteData d, Size size) {
-    final geo = model.layers['geology']!;
-    if (geo.visible) {
-      final units = <String>[];
-      for (final a in d.vectors.areas) {
-        if (a.rings.isEmpty) continue;
-        final path = Path()..fillType = PathFillType.evenOdd;
-        for (final ring in a.rings) {
-          for (var i = 0; i < ring.length; i++) {
-            final o = _p(ring[i].$1, ring[i].$2);
-            i == 0 ? path.moveTo(o.dx, o.dy) : path.lineTo(o.dx, o.dy);
-          }
-          path.close();
-        }
-        final dune = a.kind == 'landform';
-        if (!units.contains(a.unit)) units.add(a.unit);
-        final color = dune ? const Color(0xFFE6AA28) : _unitPalette[d.vectors.areas.map((x) => x.unit).toSet().toList().indexOf(a.unit) % _unitPalette.length];
-        canvas.drawPath(path, Paint()..color = color.withValues(alpha: (dune ? 0.45 : 0.22) * geo.opacity));
-        canvas.drawPath(path, Paint()..color = color.withValues(alpha: 0.9 * geo.opacity)..style = PaintingStyle.stroke..strokeWidth = 1.2);
-        final first = a.rings.first;
-        var cx = 0.0, cy = 0.0;
-        for (final p in first) {
-          cx += p.$1;
-          cy += p.$2;
-        }
-        final at = _p(cx / first.length, cy / first.length);
-        if (!dune && (Offset.zero & size).contains(at)) _label(canvas, a.unit, at, color: color, border: color);
-      }
-    }
     final cr = model.layers['craters']!;
     if (cr.visible) {
       final stroke = Paint()..color = AppColors.text.withValues(alpha: 0.8 * cr.opacity)..style = PaintingStyle.stroke..strokeWidth = 1.3;
@@ -569,16 +639,34 @@ class _OverlayPainter extends CustomPainter {
         if (z.name.isNotEmpty) _label(canvas, z.name, c + const Offset(10, -8));
       }
     }
-    final minerals = model.layers['minerals_pts']!;
-    if (minerals.visible) {
-      for (final q in d.vectors.minerals) {
-        final c = _p(q.x, q.y);
-        final color = switch (q.cls) {
-          'sulfate' => const Color(0xFFE6AA28),
-          'phyllosilicate' => const Color(0xFFD63DA8),
-          _ => AppColors.cyan,
+    // Redes de valles (Hynek 2010): búsqueda de biofirmas.
+    final valleys = model.layers['valleys']!;
+    if (valleys.visible && d.vectors.valleys.isNotEmpty) {
+      final line = Paint()
+        ..color = kValleyColor.withValues(alpha: valleys.opacity)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..strokeJoin = StrokeJoin.round;
+      for (final v in d.vectors.valleys) {
+        for (final pts in v.paths) {
+          final path = Path();
+          for (var i = 0; i < pts.length; i++) {
+            final o = _p(pts[i].$1, pts[i].$2);
+            i == 0 ? path.moveTo(o.dx, o.dy) : path.lineTo(o.dx, o.dy);
+          }
+          canvas.drawPath(path, line);
         }
-            .withValues(alpha: minerals.opacity);
+      }
+    }
+    // Minerales desde órbita, en dos capas: acuosos con más probabilidad de biofirmas (filosilicatos y carbonatos) e hidratados.
+    final aqueous = model.layers['aqueous_pts']!;
+    final hydrous = model.layers['hydrous_pts']!;
+    if (aqueous.visible || hydrous.visible) {
+      for (final q in d.vectors.minerals) {
+        final layer = q.cls == 'hydrous' ? hydrous : aqueous;
+        if (!layer.visible || !kMineralColors.containsKey(q.cls)) continue;
+        final c = _p(q.x, q.y);
+        final color = kMineralColors[q.cls]!.withValues(alpha: layer.opacity);
         final diamond = Path()..moveTo(c.dx, c.dy - 6)..lineTo(c.dx + 6, c.dy)..lineTo(c.dx, c.dy + 6)..lineTo(c.dx - 6, c.dy)..close();
         canvas.drawPath(diamond, Paint()..color = color);
         canvas.drawPath(diamond, Paint()..color = AppColors.bg..style = PaintingStyle.stroke..strokeWidth = 1.2);
@@ -608,43 +696,62 @@ class _OverlayPainter extends CustomPainter {
     _frame(canvas, d);
     _vectors(canvas, d);
 
-    // Rutas: las no seleccionadas atenuadas.
+    // Rutas: las no destacadas en verde, la activa en cian (o todas las vinculadas con colores propios al tocar un punto con >1 ruta).
     canvas.save();
     canvas.translate(origin.dx, origin.dy);
     canvas.scale(scale);
-    for (final sel in [false, true]) {
-      for (final e in model.routes.entries) {
-        final isSel = e.key == model.selectedRoute;
-        if (isSel != sel || e.value.cells.isEmpty) continue;
-        final color = routeColor(e.key);
-        final casing = Paint()
-          ..color = AppColors.bg.withValues(alpha: 0.7)
-          ..style = PaintingStyle.stroke
-          ..strokeJoin = StrokeJoin.round
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = (isSel ? 7.0 : 5.0) / scale;
-        final stroke = Paint()
-          ..color = color.withValues(alpha: isSel ? 1.0 : 0.55)
-          ..style = PaintingStyle.stroke
-          ..strokeJoin = StrokeJoin.round
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = (isSel ? 3.5 : 2.2) / scale;
-        final path = _routePath(e.value);
-        canvas.drawPath(path, casing);
-        canvas.drawPath(path, stroke);
+    if (model.tracedRoutes.isNotEmpty) {
+      for (final hi in [false, true]) {
+        for (final r in model.tracedRoutes) {
+          final isHi = isTracedRouteHighlighted(model, r);
+          if (isHi != hi || r.result.cells.isEmpty) continue;
+          final color = tracedRouteColor(model, r);
+          final casing = Paint()
+            ..color = AppColors.bg.withValues(alpha: 0.7)
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeCap = StrokeCap.round
+            ..strokeWidth = (isHi ? 7.0 : 4.5) / scale;
+          final stroke = Paint()
+            ..color = color.withValues(alpha: isHi ? 1.0 : 0.65)
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeCap = StrokeCap.round
+            ..strokeWidth = (isHi ? 3.5 : 2.2) / scale;
+          final path = _routePath(r.result);
+          canvas.drawPath(path, casing);
+          canvas.drawPath(path, stroke);
+        }
+      }
+    } else {
+      for (final sel in [false, true]) {
+        for (final e in model.routes.entries) {
+          final isSel = e.key == model.selectedRoute;
+          if (isSel != sel || e.value.cells.isEmpty) continue;
+          final color = routeColor(e.key);
+          final casing = Paint()
+            ..color = AppColors.bg.withValues(alpha: 0.7)
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeCap = StrokeCap.round
+            ..strokeWidth = (isSel ? 7.0 : 5.0) / scale;
+          final stroke = Paint()
+            ..color = color.withValues(alpha: isSel ? 1.0 : 0.55)
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeCap = StrokeCap.round
+            ..strokeWidth = (isSel ? 3.5 : 2.2) / scale;
+          final path = _routePath(e.value);
+          canvas.drawPath(path, casing);
+          canvas.drawPath(path, stroke);
+        }
       }
     }
     canvas.restore();
 
-    // Punto de no retorno de la ruta seleccionada.
     final r = model.route;
-    if (r != null && r.metrics != null && r.cells.isNotEmpty) {
-      final nr = r.metrics!.noReturn;
-      final c = _p(nr.xM, nr.yM);
-      canvas.drawCircle(c, 8, Paint()..color = AppColors.amber..style = PaintingStyle.stroke..strokeWidth = 2);
-      canvas.drawCircle(c, 2.5, Paint()..color = AppColors.amber);
-      _label(canvas, pnrLabel, c + const Offset(12, -9), color: AppColors.amber, border: AppColors.amber);
-    }
+
+    final activeStartId = model.traceMode ? model.traceDraftStart : model.activePlannedRoute?.fromId;
 
     // Hábitat.
     final h = _p(d.habitatX, d.habitatY);
@@ -652,6 +759,9 @@ class _OverlayPainter extends CustomPainter {
     canvas.drawRect(hr, Paint()..color = AppColors.panel.withValues(alpha: 0.9));
     canvas.drawRect(hr, Paint()..color = AppColors.green..style = PaintingStyle.stroke..strokeWidth = 2);
     canvas.drawCircle(h, 2.5, Paint()..color = AppColors.green);
+    if (activeStartId == 'habitat') {
+      canvas.drawCircle(h, 16, Paint()..color = AppColors.orange.withValues(alpha: 0.75)..style = PaintingStyle.stroke..strokeWidth = 1.5);
+    }
     _label(canvas, habitatLabel, h + const Offset(14, -9), color: AppColors.green, border: AppColors.green);
 
     // Objetivos.
@@ -660,6 +770,7 @@ class _OverlayPainter extends CustomPainter {
       final c = _p(o.xM, o.yM);
       final blocked = d.isBlocked(o.xM, o.yM);
       final sel = model.selectedObjective == o.id;
+      final isStart = activeStartId == o.id;
       final color = blocked ? AppColors.red : AppColors.cyan;
       final dia = Path()
         ..moveTo(c.dx, c.dy - 10)
@@ -671,36 +782,8 @@ class _OverlayPainter extends CustomPainter {
       canvas.drawPath(dia, Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = sel ? 3 : 2);
       if (visited.contains(o.id)) canvas.drawCircle(c, 3, Paint()..color = color);
       if (sel) canvas.drawCircle(c, 16, Paint()..color = color.withValues(alpha: 0.6)..style = PaintingStyle.stroke..strokeWidth = 1);
+      if (isStart) canvas.drawCircle(c, 19, Paint()..color = AppColors.orange.withValues(alpha: 0.85)..style = PaintingStyle.stroke..strokeWidth = 1.5);
       _label(canvas, '${o.id.toUpperCase()} · P${o.priority}', c + const Offset(14, -9), color: color, border: color);
-    }
-
-    // Astronauta simulado: tramo recorrido y marcador con el rumbo.
-    final sim = showSim ? model.simPos : null;
-    if (r != null && sim != null) {
-      final g = d.grid;
-      final trail = Path();
-      for (var k = 0; k <= sim.cellIndex; k++) {
-        final (x, y) = g.xy(r.cells[k]);
-        k == 0 ? trail.moveTo(_p(x, y).dx, _p(x, y).dy) : trail.lineTo(_p(x, y).dx, _p(x, y).dy);
-      }
-      final here = _p(sim.xM, sim.yM);
-      trail.lineTo(here.dx, here.dy);
-      canvas.drawPath(trail, Paint()..color = AppColors.bg.withValues(alpha: 0.8)..style = PaintingStyle.stroke..strokeWidth = 7..strokeJoin = StrokeJoin.round..strokeCap = StrokeCap.round);
-      canvas.drawPath(trail, Paint()..color = AppColors.cyan..style = PaintingStyle.stroke..strokeWidth = 4..strokeJoin = StrokeJoin.round..strokeCap = StrokeCap.round);
-      canvas.drawCircle(here, 15, Paint()..color = AppColors.cyan.withValues(alpha: 0.18));
-      canvas.drawCircle(here, 15, Paint()..color = AppColors.cyan..style = PaintingStyle.stroke..strokeWidth = 1);
-      // Flecha del rumbo (0° = norte, hacia arriba).
-      final a = sim.headingDeg * math.pi / 180;
-      final dir = Offset(math.sin(a), -math.cos(a));
-      final side = Offset(-dir.dy, dir.dx);
-      final arrow = Path()
-        ..moveTo(here.dx + dir.dx * 11, here.dy + dir.dy * 11)
-        ..lineTo(here.dx - dir.dx * 7 + side.dx * 7, here.dy - dir.dy * 7 + side.dy * 7)
-        ..lineTo(here.dx - dir.dx * 3, here.dy - dir.dy * 3)
-        ..lineTo(here.dx - dir.dx * 7 - side.dx * 7, here.dy - dir.dy * 7 - side.dy * 7)
-        ..close();
-      canvas.drawPath(arrow, Paint()..color = AppColors.cyan);
-      canvas.drawPath(arrow, Paint()..color = AppColors.bg..style = PaintingStyle.stroke..strokeWidth = 1.5);
     }
   }
 
