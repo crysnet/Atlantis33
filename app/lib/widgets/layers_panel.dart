@@ -119,15 +119,16 @@ class _Legend extends StatelessWidget {
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(l.legendTitle, style: AppText.label()),
-        const SizedBox(height: 10),
-        item(AppColors.slopeNominal, l.legendNominal),
-        item(AppColors.slopeCaution, l.legendCaution),
-        item(AppColors.slopeHigh, l.legendHigh),
-        item(AppColors.slopeForbidden, l.legendForbidden),
-        if (on('slope15')) item(const Color(0xFFE74C3C), l.legendSlope15),
-        if (on('transit')) ...[
+        if (on('slope')) ...[
+          Text(l.legendTitle, style: AppText.label()),
+          const SizedBox(height: 10),
+          item(AppColors.slopeNominal, l.legendNominal),
+          item(AppColors.slopeCaution, l.legendCaution),
+          item(AppColors.slopeHigh, l.legendHigh),
+          item(AppColors.slopeForbidden, l.legendForbidden),
           const SizedBox(height: 6),
+        ],
+        if (on('transit')) ...[
           Text(l.legendTransitTitle, style: AppText.label()),
           const SizedBox(height: 6),
           item(const Color(0xFF3CAA5C), l.legendTransitGreen),
@@ -135,24 +136,15 @@ class _Legend extends StatelessWidget {
           item(const Color(0xFFD23232), l.legendTransitRed),
           item(const Color(0xFF969696), l.legendTransitNone),
           Text(l.transitNote, style: AppText.body(10.5, color: AppColors.textMute, height: 1.35)),
+          const SizedBox(height: 6),
         ],
         if (on('aqueous_pts') || on('hydrous_pts') || on('valleys')) ...[
-          const SizedBox(height: 6),
           Text(l.legendBiosigTitle, style: AppText.label()),
           const SizedBox(height: 6),
-          if (on('aqueous_pts')) ...[
-            item(kMineralColors['phyllosilicate']!, l.legendPhyllo),
-            item(kMineralColors['carbonate']!, l.legendCarbonate),
-          ],
+          if (on('aqueous_pts')) item(kMineralColors['phyllosilicate']!, l.legendPhyllo),
           if (on('hydrous_pts')) item(kMineralColors['hydrous']!, l.legendHydrous),
           if (on('valleys')) item(kValleyColor, l.legendValleys),
           Text(l.legendBiosigNote, style: AppText.body(10.5, color: AppColors.textMute, height: 1.35)),
-        ],
-        if (on('geology')) ...[
-          const SizedBox(height: 6),
-          Text(l.legendGeologyTitle, style: AppText.label()),
-          const SizedBox(height: 6),
-          Text(l.legendGeologyNote, style: AppText.body(10.5, color: AppColors.textMute, height: 1.35)),
         ],
         if (on('craters')) ...[const SizedBox(height: 6), item(AppColors.text, l.legendCraters)],
         if (on('names')) item(AppColors.text, l.legendNames),

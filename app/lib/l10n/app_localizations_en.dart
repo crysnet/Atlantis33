@@ -13,7 +13,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'ARES PATH';
 
   @override
-  String get siteName => 'Gale · Boxwork ridges';
+  String get siteName => 'Meridiani · Regional context (100 km)';
 
   @override
   String get navPlan => 'PLAN';
@@ -45,7 +45,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get layerHillshade => 'Relief (hillshade)';
 
   @override
-  String get layerSlope => 'Slope';
+  String get layerSlope => 'Relief';
 
   @override
   String get layerForbidden => 'Forbidden zones';
@@ -84,13 +84,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get legendNominal => '< 10° nominal';
 
   @override
-  String get legendCaution => '10–20° caution';
+  String get legendCaution => '10–12° caution';
 
   @override
-  String get legendHigh => '20–25° high caution';
+  String get legendHigh => '12–15° high caution';
 
   @override
-  String get legendForbidden => '> 25° forbidden';
+  String get legendForbidden => '> 15° forbidden';
 
   @override
   String get routesTitle => 'ROUTE COMPARISON';
@@ -1074,7 +1074,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get legendBiosigNote =>
-      'Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. No carbonates are recorded in Meridiani; sulfates are not shown.';
+      'Phyllosilicates and hydrous minerals: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not in-situ samples.';
 
   @override
   String get layerZones => 'Exploration zones';
@@ -1130,7 +1130,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transitNote =>
-      'The thresholds are team assumptions without a reference. DCI and thermal inertia come from TES at 3.5 and 7.5 km: in a window of a few kilometres the layer has one or two colours.';
+      'Measured by MGS-TES (NASA/ASU) at 3.5 km/px (DCI) and 7.5 km/px (thermal inertia). The red zone (DCI < 0.94 and inertia < 150) is automatically blocked as a dust trap in route calculation.';
 
   @override
   String get srcTitle => 'Sources and data';
@@ -1197,4 +1197,197 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get siteReachNote =>
       'Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km).';
+
+  @override
+  String mapTraceLegend(
+    String viewW,
+    String viewH,
+    String traceW,
+    String traceH,
+  ) {
+    return 'Current view: $viewW × $viewH km  ·  Available trace: $traceW × $traceH km';
+  }
+
+  @override
+  String get routeAutoTitle => 'ROUTE & OBJECTIVE';
+
+  @override
+  String get routeAutoHint =>
+      'Automatic route from the habitat to the selected objective (based on terrain slope, roughness, and distance).';
+
+  @override
+  String get routeSelectObjective =>
+      'Click an objective on the map or use \"Add objective\" to trace the route and view its real data.';
+
+  @override
+  String get objectiveCoords => 'Coordinates';
+
+  @override
+  String get objectiveElev => 'Elevation';
+
+  @override
+  String get objectiveSlope => 'Local slope';
+
+  @override
+  String get metricElevRange => 'Ascent / descent';
+
+  @override
+  String get objectiveEditBtn => 'Edit';
+
+  @override
+  String get routeStartLabel => 'Starting point';
+
+  @override
+  String get routeSetStart => 'Set as start';
+
+  @override
+  String get routeActiveStart => 'Active start';
+
+  @override
+  String get routeTracedTitle => 'TRACED ROUTES';
+
+  @override
+  String get routeBackToHab => 'Trace return to habitat';
+
+  @override
+  String get routeNoRoutes => 'No traced routes.';
+
+  @override
+  String get routeEndLabel => 'Destination';
+
+  @override
+  String get routeSwapTooltip => 'Swap start and destination';
+
+  @override
+  String get routeTraceBtn => 'Trace route';
+
+  @override
+  String get routeSelectDestHint => 'Select destination...';
+
+  @override
+  String get objectivesSelectMode => 'Select';
+
+  @override
+  String get objectivesSelectAll => 'All';
+
+  @override
+  String get objectivesSelectNone => 'None';
+
+  @override
+  String objectivesDeleteSelected(int count) {
+    return 'Delete ($count)';
+  }
+
+  @override
+  String get objectivesCancel => 'Cancel';
+
+  @override
+  String get routeTracePickStart => 'Tap starting point (Habitat or objective)';
+
+  @override
+  String get routeTracePickEnd => 'Tap destination (Habitat or objective)';
+
+  @override
+  String get routeNoneSelected => '—';
+
+  @override
+  String get navRouteCalc => 'ROUTE CALCULATION';
+
+  @override
+  String get rcTitle => 'Safety model & A* routing criteria';
+
+  @override
+  String get rcSubtitle =>
+      'Real NASA/USGS/ASU datasets and thresholds used by the Meridiani Planum pathfinder to keep astronauts safe.';
+
+  @override
+  String get rcFormulaSection => 'A* COST FUNCTION (SAFEST PROFILE)';
+
+  @override
+  String get rcFormulaDesc =>
+      'Each step between adjacent cells weighs real ground distance in meters, a quadratic slope penalty from the smoothed orbital DEM, and a normalized surface dust-trap index (40% DCI + 40% TI + 20% THEMIS-IR Night). Cells outside the valid CTX footprint, steeper than 15°, or inside critical dust traps are blocked.';
+
+  @override
+  String get rcHardConstraintsSection => 'HARD CONSTRAINTS (NO-GO)';
+
+  @override
+  String get rcHardSlopeTitle =>
+      'Maximum passable slope: ≤ 15.0° (caution ≥ 12.0°)';
+
+  @override
+  String get rcHardSlopeDesc =>
+      'Project safety margin on NASA baseline: NASA operational rover/EVA limits (Apollo LRV & Artemis mobility studies) allow up to ~20° on locally surveyed ground. Because our HRSC+MOLA orbital DEM is 200 m/px and smooths sub-pixel scarps, we apply a conservative 15.0° hard cutoff (caution above 12.0°). Areas outside valid CTX mosaic coverage are also blocked.';
+
+  @override
+  String get rcHardDustTitle =>
+      'Critical dust & soft-soil traps: DCI < 0.94 and TI < 150';
+
+  @override
+  String get rcHardDustDesc =>
+      'Cells combining heavy dust cover (Dust Cover Index < 0.94) and very low thermal inertia (TI < 150 J·m⁻²·K⁻¹·s⁻¹/²) indicate unconsolidated fine silt with high sinkage/entrapment hazard (analogous to Meridiani dunes that bogged MER Opportunity) and are marked impassable.';
+
+  @override
+  String get rcCriteriaSection => 'SCIENTIFIC CRITERIA & DATA SOURCES';
+
+  @override
+  String get rcCritSlopeTitle => 'Topographic slope & elevation (DEM)';
+
+  @override
+  String get rcCritSlopeSource =>
+      'MEASURED · USGS Astrogeology HRSC+MOLA 200 m/px · weight w_slope = 2.5';
+
+  @override
+  String get rcCritSlopeDesc =>
+      'Surface gradient computed with a Gaussian filter (σ = 1.5 cells at 640 m grid spacing) from the 200 m/px HRSC+MOLA orbital DEM. Enters A* cost as (slope / 15°)² × 2.5 and forbids any cell exceeding 15.0°.';
+
+  @override
+  String get rcCritDciTitle => 'Dust Cover Index (DCI)';
+
+  @override
+  String get rcCritDciSource =>
+      'MEASURED · NASA / ASU Mars Global Surveyor TES 16 ppd · 40% of surface index';
+
+  @override
+  String get rcCritDciDesc =>
+      'Ruff & Christensen (2002) spectral emissivity index across 1350–1400 cm⁻¹. Low values (< 0.94) reveal thick mantling dust; high values (≥ 0.98) indicate dust-free bedrock or firm coarse sand.';
+
+  @override
+  String get rcCritTiTitle => 'Thermal Inertia (TI)';
+
+  @override
+  String get rcCritTiSource =>
+      'MEASURED · NASA / ASU TES Meridiani 0.125°/px · 40% of surface index';
+
+  @override
+  String get rcCritTiDesc =>
+      'Bulk thermal inertia of the upper few centimeters (J·m⁻²·K⁻¹·s⁻¹/²). Low inertia (< 150) signals loose fine dust with poor bearing strength; higher inertia (250–350+) reflects indurated regolith or exposed bedrock.';
+
+  @override
+  String get rcCritThemisTitle =>
+      'Nighttime Thermal Infrared brightness (THEMIS-IR)';
+
+  @override
+  String get rcCritThemisSource =>
+      'MEASURED · NASA / Mars Odyssey THEMIS via Mars Trek ~100 m/px · 20% of surface index';
+
+  @override
+  String get rcCritThemisDesc =>
+      'Normalized nighttime infrared mosaic (2–98% stretch). Fine loose dust cools rapidly overnight (dark = higher penalty) whereas competent rock retains daytime heat (bright = lower penalty). Relative brightness only, not calibrated Kelvin temperature.';
+
+  @override
+  String get rcCritMobilityTitle => 'EVA pacing & traversal effort model';
+
+  @override
+  String get rcCritMobilitySource =>
+      'MODELED · Tobler (1993) hiking function + NASA EVA limit · surface weight w_rough = 4.0';
+
+  @override
+  String get rcCritMobilityDesc =>
+      'Estimates sortie travel time using Tobler\'s slope-dependent walking curve anchored at 4.0 km/h flat speed (0.95× uphill) combined with the composite dust/surface index across the 512×512 grid.';
+
+  @override
+  String get rcActiveRouteSection => 'ACTIVE ROUTE AUDIT';
+
+  @override
+  String get rcCellsEvaluated => 'A* cells evaluated';
 }

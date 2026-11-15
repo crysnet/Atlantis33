@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
   "appName": "ARES PATH",
-  "siteName": "Gale · Boxwork ridges",
+  "siteName": "Meridiani · Regional context (100 km)",
   "navPlan": "PLAN",
   "navSafety": "SAFETY",
   "navScience": "SCIENCE",
@@ -18,7 +18,7 @@
   "layersReset": "RESET",
   "layerOptical": "Optical surface",
   "layerHillshade": "Relief (hillshade)",
-  "layerSlope": "Slope",
+  "layerSlope": "Relief",
   "layerForbidden": "Forbidden zones",
   "layerCuriosity": "Curiosity track",
   "layerThermal": "Thermal (THEMIS-IR day)",
@@ -31,9 +31,9 @@
   "opacity": "OPACITY",
   "legendTitle": "SLOPE LEGEND",
   "legendNominal": "< 10° nominal",
-  "legendCaution": "10–20° caution",
-  "legendHigh": "20–25° high caution",
-  "legendForbidden": "> 25° forbidden",
+  "legendCaution": "10–12° caution",
+  "legendHigh": "12–15° high caution",
+  "legendForbidden": "> 15° forbidden",
   "routesTitle": "ROUTE COMPARISON",
   "routeSafe": "Safest",
   "routeFast": "Fastest",
@@ -448,7 +448,7 @@
   "legendBiosigTitle": "Biosignature search (from orbit)",
   "legendCarbonate": "Carbonate",
   "legendValleys": "Valley network (ancient water)",
-  "legendBiosigNote": "Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. No carbonates are recorded in Meridiani; sulfates are not shown.",
+  "legendBiosigNote": "Phyllosilicates and hydrous minerals: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not in-situ samples.",
   "layerZones": "Exploration zones",
   "legendTransitTitle": "Transit zones (TES, 3.5 km per pixel)",
   "legendTransitGreen": "Best transit: DCI > 0.96 and inertia > 300",
@@ -466,7 +466,7 @@
   "legendRoi": "Region of interest",
   "legendEzRadius": "100 km radius",
   "legendSlope15": "Slope above 15 % (avoid for a base)",
-  "transitNote": "The thresholds are team assumptions without a reference. DCI and thermal inertia come from TES at 3.5 and 7.5 km: in a window of a few kilometres the layer has one or two colours.",
+  "transitNote": "Measured by MGS-TES (NASA/ASU) at 3.5 km/px (DCI) and 7.5 km/px (thermal inertia). The red zone (DCI < 0.94 and inertia < 150) is automatically blocked as a dust trap in route calculation.",
   "srcTitle": "Sources and data",
   "srcIntro": "Every value in the app is one of three kinds: real data from NASA, USGS or ASU; a value computed by the team from that data; or a team assumption. Source files and dates are listed in the project notes (RECURSOS.md).",
   "srcReal": "Real data",
@@ -486,5 +486,83 @@
   "legendNames": "Official place name (IAU)",
   "contextNote": "Outside the dashed frame there is a coarser image (CTX) for context. Routes are only calculated inside the frame.",
   "siteReachTag": "Long range",
-  "siteReachNote": "Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km)."
+  "siteReachNote": "Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km).",
+  "mapTraceLegend": "Current view: {viewW} × {viewH} km  ·  Available trace: {traceW} × {traceH} km",
+  "routeAutoTitle": "ROUTE & OBJECTIVE",
+  "routeAutoHint": "Automatic route from the habitat to the selected objective (based on terrain slope, roughness, and distance).",
+  "routeSelectObjective": "Click an objective on the map or use \"Add objective\" to trace the route and view its real data.",
+  "objectiveCoords": "Coordinates",
+  "objectiveElev": "Elevation",
+  "objectiveSlope": "Local slope",
+  "metricElevRange": "Ascent / descent",
+  "objectiveEditBtn": "Edit",
+  "routeStartLabel": "Starting point",
+  "routeSetStart": "Set as start",
+  "routeActiveStart": "Active start",
+  "routeTracedTitle": "TRACED ROUTES",
+  "routeBackToHab": "Trace return to habitat",
+  "routeNoRoutes": "No traced routes.",
+  "@mapTraceLegend": {
+    "placeholders": {
+      "viewW": {
+        "type": "String"
+      },
+      "viewH": {
+        "type": "String"
+      },
+      "traceW": {
+        "type": "String"
+      },
+      "traceH": {
+        "type": "String"
+      }
+    }
+  },
+  "routeEndLabel": "Destination",
+  "routeSwapTooltip": "Swap start and destination",
+  "routeTraceBtn": "Trace route",
+  "routeSelectDestHint": "Select destination...",
+  "objectivesSelectMode": "Select",
+  "objectivesSelectAll": "All",
+  "objectivesSelectNone": "None",
+  "objectivesDeleteSelected": "Delete ({count})",
+  "@objectivesDeleteSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "objectivesCancel": "Cancel",
+  "routeTracePickStart": "Tap starting point (Habitat or objective)",
+  "routeTracePickEnd": "Tap destination (Habitat or objective)",
+  "routeNoneSelected": "—",
+  "navRouteCalc": "ROUTE CALCULATION",
+  "rcTitle": "Safety model & A* routing criteria",
+  "rcSubtitle": "Real NASA/USGS/ASU datasets and thresholds used by the Meridiani Planum pathfinder to keep astronauts safe.",
+  "rcFormulaSection": "A* COST FUNCTION (SAFEST PROFILE)",
+  "rcFormulaDesc": "Each step between adjacent cells weighs real ground distance in meters, a quadratic slope penalty from the smoothed orbital DEM, and a normalized surface dust-trap index (40% DCI + 40% TI + 20% THEMIS-IR Night). Cells outside the valid CTX footprint, steeper than 15°, or inside critical dust traps are blocked.",
+  "rcHardConstraintsSection": "HARD CONSTRAINTS (NO-GO)",
+  "rcHardSlopeTitle": "Maximum passable slope: ≤ 15.0° (caution ≥ 12.0°)",
+  "rcHardSlopeDesc": "Project safety margin on NASA baseline: NASA operational rover/EVA limits (Apollo LRV & Artemis mobility studies) allow up to ~20° on locally surveyed ground. Because our HRSC+MOLA orbital DEM is 200 m/px and smooths sub-pixel scarps, we apply a conservative 15.0° hard cutoff (caution above 12.0°). Areas outside valid CTX mosaic coverage are also blocked.",
+  "rcHardDustTitle": "Critical dust & soft-soil traps: DCI < 0.94 and TI < 150",
+  "rcHardDustDesc": "Cells combining heavy dust cover (Dust Cover Index < 0.94) and very low thermal inertia (TI < 150 J·m⁻²·K⁻¹·s⁻¹/²) indicate unconsolidated fine silt with high sinkage/entrapment hazard (analogous to Meridiani dunes that bogged MER Opportunity) and are marked impassable.",
+  "rcCriteriaSection": "SCIENTIFIC CRITERIA & DATA SOURCES",
+  "rcCritSlopeTitle": "Topographic slope & elevation (DEM)",
+  "rcCritSlopeSource": "MEASURED · USGS Astrogeology HRSC+MOLA 200 m/px · weight w_slope = 2.5",
+  "rcCritSlopeDesc": "Surface gradient computed with a Gaussian filter (σ = 1.5 cells at 640 m grid spacing) from the 200 m/px HRSC+MOLA orbital DEM. Enters A* cost as (slope / 15°)² × 2.5 and forbids any cell exceeding 15.0°.",
+  "rcCritDciTitle": "Dust Cover Index (DCI)",
+  "rcCritDciSource": "MEASURED · NASA / ASU Mars Global Surveyor TES 16 ppd · 40% of surface index",
+  "rcCritDciDesc": "Ruff & Christensen (2002) spectral emissivity index across 1350–1400 cm⁻¹. Low values (< 0.94) reveal thick mantling dust; high values (≥ 0.98) indicate dust-free bedrock or firm coarse sand.",
+  "rcCritTiTitle": "Thermal Inertia (TI)",
+  "rcCritTiSource": "MEASURED · NASA / ASU TES Meridiani 0.125°/px · 40% of surface index",
+  "rcCritTiDesc": "Bulk thermal inertia of the upper few centimeters (J·m⁻²·K⁻¹·s⁻¹/²). Low inertia (< 150) signals loose fine dust with poor bearing strength; higher inertia (250–350+) reflects indurated regolith or exposed bedrock.",
+  "rcCritThemisTitle": "Nighttime Thermal Infrared brightness (THEMIS-IR)",
+  "rcCritThemisSource": "MEASURED · NASA / Mars Odyssey THEMIS via Mars Trek ~100 m/px · 20% of surface index",
+  "rcCritThemisDesc": "Normalized nighttime infrared mosaic (2–98% stretch). Fine loose dust cools rapidly overnight (dark = higher penalty) whereas competent rock retains daytime heat (bright = lower penalty). Relative brightness only, not calibrated Kelvin temperature.",
+  "rcCritMobilityTitle": "EVA pacing & traversal effort model",
+  "rcCritMobilitySource": "MODELED · Tobler (1993) hiking function + NASA EVA limit · surface weight w_rough = 4.0",
+  "rcCritMobilityDesc": "Estimates sortie travel time using Tobler's slope-dependent walking curve anchored at 4.0 km/h flat speed (0.95× uphill) combined with the composite dust/surface index across the 512×512 grid.",
+  "rcActiveRouteSection": "ACTIVE ROUTE AUDIT",
+  "rcCellsEvaluated": "A* cells evaluated"
 }

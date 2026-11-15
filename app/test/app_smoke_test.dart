@@ -31,15 +31,15 @@ void main() {
     await tester.pump();
     expect(tester.takeException(), isNull, reason: 'pestaña Plan');
 
-    // Capas de contexto de Gale (minerales, zonas, nombres, cráteres, geología): se dibujan sin errores con el marco de contexto.
-    final gale = AppScope.of(tester.element(find.byType(Scaffold).first));
-    for (final id in ['aqueous_pts', 'hydrous_pts', 'zones', 'names', 'craters', 'geology']) {
-      gale.toggleLayer(id, true);
+    // Capas de contexto (minerales, zonas, nombres, cráteres): se dibujan sin errores con el marco de contexto.
+    final site = AppScope.of(tester.element(find.byType(Scaffold).first));
+    for (final id in ['aqueous_pts', 'hydrous_pts', 'zones', 'names', 'craters']) {
+      site.toggleLayer(id, true);
     }
     await tester.pump(const Duration(milliseconds: 500));
-    expect(tester.takeException(), isNull, reason: 'capas de contexto en Gale');
-    for (final id in ['aqueous_pts', 'hydrous_pts', 'zones', 'names', 'craters', 'geology']) {
-      gale.toggleLayer(id, false);
+    expect(tester.takeException(), isNull, reason: 'capas de contexto');
+    for (final id in ['aqueous_pts', 'hydrous_pts', 'zones', 'names', 'craters']) {
+      site.toggleLayer(id, false);
     }
 
     // Modo con rover: recalcula las tres rutas con el rover aparcado y las dibuja.
@@ -89,22 +89,12 @@ void main() {
     expect(tester.takeException(), isNull, reason: 'recalculo tras cambiar el transporte');
     expect(model.route?.metrics?.roverM, isNotNull);
 
-    for (final tab in ['SAFETY', 'SCIENCE', 'MISSION', 'HELMET', 'PLAN']) {
+    for (final tab in ['SAFETY', 'SCIENCE', 'PLAN']) {
       await tester.tap(find.text(tab));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
       final e = tester.takeException();
       expect(e, isNull, reason: 'pestaña $tab: $e');
-      if (tab == 'MISSION') {
-        // Simulación: reproducir un momento, con el marcador y la telemetría en pantalla, y pausar.
-        await tester.tap(find.byIcon(Icons.play_arrow));
-        await tester.pump(const Duration(seconds: 2));
-        final sim = tester.takeException();
-        expect(sim, isNull, reason: 'simulación en marcha: $sim');
-        expect(find.byIcon(Icons.pause), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.pause));
-        await tester.pump();
-      }
     }
 
     // Misiones guardadas: se abre la lista desde la barra superior y se crea una misión nueva.

@@ -7,7 +7,7 @@ import '../data/mission_store.dart';
 import '../data/site_data.dart';
 import '../data/site_registry.dart';
 import '../routing/routing.dart';
-import '../util/sim_pos.dart';
+import '../theme/app_theme.dart';
 
 /// Modo de salida: a pie, con rover aparcado en un punto de la ruta, a pie con un rover de apoyo en el hábitat, en pareja
 /// con los objetivos repartidos entre los dos astronautas, o por objetivo (cada objetivo trae su transporte).
@@ -35,15 +35,22 @@ class LayerState {
   double opacity;
 }
 
+/// Ruta trazada entre dos puntos (`habitat` o cualquier objetivo).
+class PlannedRoute {
+  const PlannedRoute({required this.id, required this.fromId, required this.toId, required this.result});
+
+  final String id;
+  final String fromId;
+  final String toId;
+  final RouteResult result;
+}
+
 const List<LayerDef> kLayers = [
-  LayerDef('optical', LayerKind.measured, 'HiRISE 0.25 m'),
-  LayerDef('hillshade', LayerKind.measured, 'DEM 1 m'),
-  LayerDef('slope', LayerKind.modeled, '4 m'),
-  LayerDef('forbidden', LayerKind.modeled, '> 25°', hasOpacity: true),
+  LayerDef('optical', LayerKind.measured, 'CTX 40 m'),
+  LayerDef('slope', LayerKind.modeled, 'HRSC·MOLA 200 m'),
   LayerDef('curiosity', LayerKind.measured, 'MSL', hasOpacity: true),
   LayerDef('thermal', LayerKind.measured, 'THEMIS-IR 100 m'),
   LayerDef('minerals', LayerKind.example, 'CRISM', hasData: false),
-  LayerDef('slope15', LayerKind.modeled, '> 15 %'),
   LayerDef('transit', LayerKind.modeled, 'TES 3.5 km'),
   LayerDef('thermal_night', LayerKind.measured, 'THEMIS-IR 100 m'),
   LayerDef('aqueous_pts', LayerKind.measured, 'Mars Trek'),
@@ -52,13 +59,12 @@ const List<LayerDef> kLayers = [
   LayerDef('zones', LayerKind.measured, 'NASA EMC 2015'),
   LayerDef('names', LayerKind.measured, 'UAI · Trek'),
   LayerDef('craters', LayerKind.measured, 'Robbins ≥ 1 km'),
-  LayerDef('geology', LayerKind.measured, 'USGS SIM 3292'),
 ];
 
 /// Estado de la aplicación: capas, objetivos, rutas calculadas y selección.
 class AppModel extends ChangeNotifier {
   AppModel(this.data, {this.registry = SiteRegistry.empty, String? siteId, MissionBook? book, MissionStore? store})
-      : siteId = siteId ?? (registry.defaultId.isEmpty ? 'gale_boxwork' : registry.defaultId),
+      : siteId = siteId ?? (registry.defaultId.isEmpty ? 'meridiani_regional' : registry.defaultId),
         store = store ?? MemoryMissionStore(),
         objectives = List.of(book?.current.objectives ?? data.objectives) {
     for (final l in kLayers) {
@@ -83,7 +89,7 @@ class AppModel extends ChangeNotifier {
   }
 
   static const _defaultVisible = {'optical': true, 'slope': true, 'curiosity': true, 'aqueous_pts': true, 'hydrous_pts': true, 'valleys': true};
-  static const _defaultOpacity = {'optical': 1.0, 'hillshade': 0.6, 'slope': 0.4, 'forbidden': 0.6, 'curiosity': 0.9, 'thermal': 0.6, 'slope15': 0.55, 'transit': 0.55, 'thermal_night': 0.6, 'geology': 0.9, 'valleys': 0.9};
+  static const _defaultOpacity = {'optical': 1.0, 'slope': 0.4, 'curiosity': 0.9, 'thermal': 0.6, 'transit': 0.55, 'thermal_night': 0.6, 'valleys': 0.9};
 
   /// Datos del sitio abierto. Cambian al llamar a [switchSite].
   SiteData data;
@@ -121,74 +127,8 @@ class AppModel extends ChangeNotifier {
   int _gen = 0;
   int _nextId = 1;
 
-  /// Simulación del recorrido: avance en la ruta seleccionada (0 a 1), reproducción y velocidad.
-  double simT = 0.0;
-  bool simPlaying = false;
-  int simSpeed = 1;
-  Timer? _simTimer;
-  SimPos? _simPos;
-  RouteResult? _simRoute;
-  double _simPosT = -1;
-
-  /// Posición simulada y datos derivados; null si no hay ruta calculada. Se guarda mientras no cambien ruta ni avance.
-  SimPos? get simPos {
-    final r = route;
-    if (r == null || r.metrics == null || r.cells.length < 2) return null;
-    if (!identical(r, _simRoute) || simT != _simPosT) {
-      _simPos = SimPos.compute(data, objectives, r, simT);
-      _simRoute = r;
-      _simPosT = simT;
-    }
-    return _simPos;
-  }
-
-  /// La simulación se muestra en el mapa mientras haya avance o reproducción.
-  bool get simActive => simT > 0 || simPlaying;
-
-  void setSimT(double v) {
-    simT = v.clamp(0.0, 1.0);
-    notifyListeners();
-  }
-
-  void setSimSpeed(int v) {
-    simSpeed = v;
-    notifyListeners();
-  }
-
-  void toggleSim() {
-    if (simPlaying) {
-      _stopSim();
-      notifyListeners();
-      return;
-    }
-    if (simT >= 1.0) simT = 0.0;
-    simPlaying = true;
-    _simTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
-      simT += 0.003 * simSpeed;
-      if (simT >= 1.0) {
-        simT = 1.0;
-        _stopSim();
-      }
-      notifyListeners();
-    });
-    notifyListeners();
-  }
-
-  void resetSim() {
-    _stopSim();
-    simT = 0.0;
-    notifyListeners();
-  }
-
-  void _stopSim() {
-    _simTimer?.cancel();
-    _simTimer = null;
-    simPlaying = false;
-  }
-
   @override
   void dispose() {
-    _simTimer?.cancel();
     if (_saveTimer?.isActive ?? false) {
       _saveTimer!.cancel();
       store.save(book);
@@ -263,12 +203,17 @@ class AppModel extends ChangeNotifier {
   void _showMission() {
     final m = book.current;
     _gen++;
-    _stopSim();
-    simT = 0.0;
     objectives = List.of(m.objectives);
     exitMode = _parseMode(m.exitMode);
     selectedRoute = exitMode == ExitMode.pair ? 'pair1' : 'safe';
     routes = {};
+    tracedRoutes = [];
+    activeRouteId = null;
+    routeStartId = 'habitat';
+    routeEndId = null;
+    traceMode = false;
+    traceDraftStart = null;
+    highlightConnectedRoutes = false;
     pairResult = null;
     selectedObjective = null;
     addMode = false;
@@ -369,10 +314,34 @@ class AppModel extends ChangeNotifier {
   void setMissionItems({List<MissionItem>? consumables, List<MissionItem>? equipment}) =>
       _editMission((m) => m.copyWith(consumables: consumables, equipment: equipment));
 
-  RouteResult? get route => routes[selectedRoute];
+  String routeStartId = 'habitat';
+  String? routeEndId;
+  bool traceMode = false;
+  String? traceDraftStart;
+  bool highlightConnectedRoutes = false;
+  List<PlannedRoute> tracedRoutes = [];
+  String? activeRouteId;
 
-  /// Ids de las rutas del modo actual, en el orden en que se muestran.
-  List<String> get routeIds => exitMode == ExitMode.pair ? const ['pair1', 'pair2'] : const ['safe', 'fast', 'science'];
+  PlannedRoute? get activePlannedRoute {
+    if (activeRouteId == null) return null;
+    for (final r in tracedRoutes) {
+      if (r.id == activeRouteId) return r;
+    }
+    return null;
+  }
+
+  RouteResult? get route => activePlannedRoute?.result ?? routes[selectedRoute];
+
+  Objective? get activeObjective {
+    if (selectedObjective != null) {
+      final found = objective(selectedObjective!);
+      if (found != null) return found;
+    }
+    return objectives.isNotEmpty ? objectives.first : null;
+  }
+
+  /// Id de la ruta única calculada automáticamente.
+  List<String> get routeIds => const ['safe'];
 
   void setLocale(Locale l) {
     locale = l;
@@ -410,24 +379,227 @@ class AppModel extends ChangeNotifier {
     if (exitMode == v) return;
     exitMode = v;
     selectedRoute = v == ExitMode.pair ? 'pair1' : 'safe';
-    resetSim();
     _persist();
     recompute();
   }
 
   void selectRoute(String id) {
     selectedRoute = id;
-    resetSim();
     notifyListeners();
   }
 
+  void toggleTraceMode() {
+    if (objectives.isEmpty) return;
+    traceMode = !traceMode;
+    traceDraftStart = null;
+    if (traceMode) addMode = false;
+    notifyListeners();
+  }
+
+  void pickTracePoint(String pointId) {
+    if (!traceMode) return;
+    if (traceDraftStart == null) {
+      traceDraftStart = pointId;
+      notifyListeners();
+      return;
+    }
+    if (traceDraftStart == pointId) return;
+    final from = traceDraftStart!;
+    traceDraftStart = null;
+    traceMode = false;
+    traceRoute(from, pointId);
+  }
+
   void selectObjective(String? id) {
+    if (id == null) {
+      if (selectedObjective == null && !highlightConnectedRoutes) return;
+      selectedObjective = null;
+      highlightConnectedRoutes = false;
+      notifyListeners();
+      return;
+    }
+    final connected = [
+      for (final r in tracedRoutes)
+        if (r.toId == id || r.fromId == id) r,
+    ];
+    PlannedRoute? match;
+    if (connected.isNotEmpty) {
+      if (selectedObjective == id && connected.length > 1) {
+        final curIdx = connected.indexWhere((r) => r.id == activeRouteId);
+        match = connected[(curIdx + 1) % connected.length];
+      } else if (selectedObjective != id || !highlightConnectedRoutes) {
+        match = connected.firstWhere((r) => r.toId == id, orElse: () => connected.first);
+      }
+    }
     selectedObjective = id;
+    highlightConnectedRoutes = true;
+    if (match != null) {
+      activeRouteId = match.id;
+      routeStartId = match.fromId;
+      routeEndId = match.toId;
+      selectedRoute = 'safe';
+      routes = {'safe': match.result};
+    }
+    notifyListeners();
+  }
+
+  void setRouteStart(String id) {
+    if (id != 'habitat' && objective(id) == null) return;
+    routeStartId = id;
+    if (routeEndId != null && routeEndId != id) {
+      traceRoute(id, routeEndId!);
+    } else {
+      notifyListeners();
+    }
+  }
+
+  void setRouteEnd(String id) {
+    if (id != 'habitat' && objective(id) == null) return;
+    routeEndId = id;
+    if (id != 'habitat') selectedObjective = id;
+    if (id != routeStartId) {
+      traceRoute(routeStartId, id);
+    } else {
+      notifyListeners();
+    }
+  }
+
+  void swapRouteEndpoints() {
+    final active = activePlannedRoute;
+    final from = active?.fromId ?? routeStartId;
+    final to = active?.toId ?? routeEndId ?? activeObjective?.id;
+    if (to == null || from == to) return;
+    routeStartId = to;
+    routeEndId = from;
+    if (routeEndId != 'habitat') selectedObjective = routeEndId;
+    traceRoute(routeStartId, routeEndId!);
+  }
+
+  void selectTracedRoute(String id) {
+    for (final r in tracedRoutes) {
+      if (r.id == id) {
+        activeRouteId = id;
+        routeStartId = r.fromId;
+        routeEndId = r.toId;
+        highlightConnectedRoutes = false;
+        selectedRoute = 'safe';
+        routes = {'safe': r.result};
+        if (r.toId != 'habitat') {
+          selectedObjective = r.toId;
+        } else if (r.fromId != 'habitat') {
+          selectedObjective = r.fromId;
+        }
+        notifyListeners();
+        return;
+      }
+    }
+  }
+
+  void removeTracedRoute(String id) {
+    tracedRoutes = tracedRoutes.where((r) => r.id != id).toList();
+    if (activeRouteId == id) {
+      if (tracedRoutes.isNotEmpty) {
+        final next = tracedRoutes.last;
+        activeRouteId = next.id;
+        routeStartId = next.fromId;
+        routeEndId = next.toId;
+        routes = {'safe': next.result};
+      } else {
+        activeRouteId = null;
+        routeEndId = null;
+        routes = {};
+      }
+    }
+    notifyListeners();
+  }
+
+  int? _cellForPoint(String id) {
+    if (id == 'habitat') return data.grid.habitat;
+    final o = objective(id);
+    if (o == null) return null;
+    return data.grid.cellOf(o.xM, o.yM);
+  }
+
+  RouteResult _computeLeg(String fromId, String toId) {
+    final start = _cellForPoint(fromId);
+    final goal = _cellForPoint(toId);
+    final visited = toId == 'habitat' ? const <String>[] : [toId];
+    final skipped = toId == 'habitat'
+        ? const <Map<String, String>>[]
+        : [
+            {'id': toId, 'reason': 'unreachable'},
+          ];
+    if (start == null || goal == null || fromId == toId) {
+      return RouteResult(
+        profile: 'safe',
+        status: 'unreachable',
+        visited: const [],
+        skipped: skipped,
+        weightedCost: 0,
+        cells: const [],
+      );
+    }
+    final path = astar(data.grid, data.model, data.model.profiles['safe']!, start, goal);
+    if (path == null) {
+      return RouteResult(
+        profile: 'safe',
+        status: 'unreachable',
+        visited: const [],
+        skipped: skipped,
+        weightedCost: 0,
+        cells: const [],
+      );
+    }
+    return RouteResult(
+      profile: 'safe',
+      status: 'ok',
+      visited: visited,
+      skipped: const [],
+      weightedCost: path.cost,
+      cells: path.cells,
+      metrics: evaluate(data.grid, data.model, path.cells, const {}),
+    );
+  }
+
+  Future<void> traceRoute(String fromId, String toId) async {
+    if (fromId == toId) return;
+    routeStartId = fromId;
+    routeEndId = toId;
+    highlightConnectedRoutes = false;
+    final routeId = '$fromId->$toId';
+    for (final existing in tracedRoutes) {
+      if (existing.id == routeId) {
+        activeRouteId = routeId;
+        selectedRoute = 'safe';
+        routes = {'safe': existing.result};
+        notifyListeners();
+        return;
+      }
+    }
+    final gen = ++_gen;
+    computing = true;
+    notifyListeners();
+    await Future<void>.delayed(const Duration(milliseconds: 20));
+    final sw = Stopwatch()..start();
+    final res = _computeLeg(fromId, toId);
+    if (gen != _gen) return;
+    computeMs = sw.elapsedMilliseconds;
+    final planned = PlannedRoute(id: routeId, fromId: fromId, toId: toId, result: res);
+    tracedRoutes = [...tracedRoutes.where((r) => r.id != routeId), planned];
+    activeRouteId = routeId;
+    pairResult = null;
+    selectedRoute = 'safe';
+    routes = {'safe': res};
+    computing = false;
     notifyListeners();
   }
 
   void toggleAddMode() {
     addMode = !addMode;
+    if (addMode) {
+      traceMode = false;
+      traceDraftStart = null;
+    }
     notifyListeners();
   }
 
@@ -438,22 +610,30 @@ class AppModel extends ChangeNotifier {
     return null;
   }
 
-  /// Calcula las tres rutas. Primero repinta con el indicador y después calcula, porque A* bloquea el hilo.
+  /// Recalcula las rutas trazadas (o traza la ruta al objetivo activo si no hay ninguna).
   Future<void> recompute() async {
     final gen = ++_gen;
     computing = true;
     notifyListeners();
     await Future<void>.delayed(const Duration(milliseconds: 50));
     final sw = Stopwatch()..start();
-    final planner = Planner(data.grid, data.model, objectives, withRover: exitMode == ExitMode.rover, withSupport: exitMode == ExitMode.support, byObjective: exitMode == ExitMode.byObjective);
-    final PairResult? pair = exitMode == ExitMode.pair ? planner.pair() : null;
-    final result = pair?.routes ?? planner.allThree();
+    final validIds = {'habitat', for (final o in objectives) o.id};
+    final updated = <PlannedRoute>[];
+    for (final r in tracedRoutes) {
+      if (validIds.contains(r.fromId) && validIds.contains(r.toId)) {
+        updated.add(PlannedRoute(id: r.id, fromId: r.fromId, toId: r.toId, result: _computeLeg(r.fromId, r.toId)));
+      }
+    }
     if (gen != _gen) return;
     computeMs = sw.elapsedMilliseconds;
-    pairResult = pair;
-    routes = result;
-    _stopSim();
-    simT = 0.0;
+    tracedRoutes = updated;
+    if (activeRouteId == null || !tracedRoutes.any((r) => r.id == activeRouteId)) {
+      activeRouteId = tracedRoutes.isNotEmpty ? tracedRoutes.last.id : null;
+    }
+    pairResult = null;
+    selectedRoute = 'safe';
+    final active = activePlannedRoute;
+    routes = active != null ? {'safe': active.result} : {};
     computing = false;
     notifyListeners();
   }
@@ -467,7 +647,7 @@ class AppModel extends ChangeNotifier {
     selectedObjective = id;
     addMode = false;
     _persist();
-    recompute();
+    notifyListeners();
     return id;
   }
 
@@ -491,12 +671,70 @@ class AppModel extends ChangeNotifier {
     recompute();
   }
 
-  void removeObjective(String id) {
-    objectives = objectives.where((o) => o.id != id).toList();
-    if (selectedObjective == id) selectedObjective = null;
+  void removeObjective(String id) => removeObjectives({id});
+
+  void removeObjectives(Set<String> ids) {
+    if (ids.isEmpty) return;
+    objectives = objectives.where((o) => !ids.contains(o.id)).toList();
+    if (selectedObjective != null && ids.contains(selectedObjective)) selectedObjective = null;
+    if (ids.contains(routeStartId)) routeStartId = 'habitat';
+    if (routeEndId != null && ids.contains(routeEndId)) {
+      routeEndId = null;
+    }
+    if (traceDraftStart != null && ids.contains(traceDraftStart)) {
+      traceDraftStart = null;
+    }
+    if (objectives.isEmpty) {
+      traceMode = false;
+    }
+    tracedRoutes = tracedRoutes.where((r) => !ids.contains(r.fromId) && !ids.contains(r.toId)).toList();
+    if (activeRouteId != null && !tracedRoutes.any((r) => r.id == activeRouteId)) {
+      activeRouteId = tracedRoutes.isNotEmpty ? tracedRoutes.last.id : null;
+    }
     _persist();
     recompute();
   }
+}
+
+const _kLinkedRouteColors = [
+  Color(0xFFE040FB),
+  Color(0xFFFF5252),
+  Color(0xFF7C4DFF),
+  Color(0xFFFFEB3B),
+  Color(0xFFFF4081),
+  Color(0xFF69F0AE),
+];
+
+/// Indica si la ruta debe dibujarse destacada en el mapa y en la lista.
+bool isTracedRouteHighlighted(AppModel m, PlannedRoute r) {
+  final sel = m.selectedObjective;
+  if (m.highlightConnectedRoutes && sel != null) {
+    final connected = [
+      for (final x in m.tracedRoutes)
+        if (x.fromId == sel || x.toId == sel) x,
+    ];
+    if (connected.length > 1) {
+      return r.fromId == sel || r.toId == sel;
+    }
+  }
+  return r.id == m.activeRouteId;
+}
+
+/// Color único de cada tramo tanto en el mapa como en la lista de rutas trazadas.
+Color tracedRouteColor(AppModel m, PlannedRoute r) {
+  final sel = m.selectedObjective;
+  if (m.highlightConnectedRoutes && sel != null) {
+    final connected = [
+      for (final x in m.tracedRoutes)
+        if (x.fromId == sel || x.toId == sel) x,
+    ];
+    if (connected.length > 1) {
+      final idx = connected.indexWhere((x) => x.id == r.id);
+      if (idx >= 0) return _kLinkedRouteColors[idx % _kLinkedRouteColors.length];
+      return AppColors.green;
+    }
+  }
+  return r.id == m.activeRouteId ? AppColors.cyan : AppColors.green;
 }
 
 /// Entrega el [AppModel] a todo el árbol.

@@ -54,11 +54,11 @@ void main() {
     expect(far.transport, isNotNull);
   });
 
-  test('el registro marca este sitio como de largo alcance', () async {
-    final r = await SiteRegistry.load();
-    final e = r.byId('gale_reach')!;
+  test('el sitio está marcado como de largo alcance', () {
+    const e = SiteEntry(id: 'gale_reach', assetDir: 'site_gale_reach', available: true, names: {'en': 'Gale'}, layers: [], quality: 'reach');
     expect(e.reach, isTrue);
     expect(e.indicative, isFalse);
     expect(e.available, isTrue);
+    expect(d.site['quality'], 'reach');
   });
 }

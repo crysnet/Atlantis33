@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @siteName.
   ///
   /// In en, this message translates to:
-  /// **'Gale · Boxwork ridges'**
+  /// **'Meridiani · Regional context (100 km)'**
   String get siteName;
 
   /// No description provided for @navPlan.
@@ -167,7 +167,7 @@ abstract class AppLocalizations {
   /// No description provided for @layerSlope.
   ///
   /// In en, this message translates to:
-  /// **'Slope'**
+  /// **'Relief'**
   String get layerSlope;
 
   /// No description provided for @layerForbidden.
@@ -245,19 +245,19 @@ abstract class AppLocalizations {
   /// No description provided for @legendCaution.
   ///
   /// In en, this message translates to:
-  /// **'10–20° caution'**
+  /// **'10–12° caution'**
   String get legendCaution;
 
   /// No description provided for @legendHigh.
   ///
   /// In en, this message translates to:
-  /// **'20–25° high caution'**
+  /// **'12–15° high caution'**
   String get legendHigh;
 
   /// No description provided for @legendForbidden.
   ///
   /// In en, this message translates to:
-  /// **'> 25° forbidden'**
+  /// **'> 15° forbidden'**
   String get legendForbidden;
 
   /// No description provided for @routesTitle.
@@ -2099,7 +2099,7 @@ abstract class AppLocalizations {
   /// No description provided for @legendBiosigNote.
   ///
   /// In en, this message translates to:
-  /// **'Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. No carbonates are recorded in Meridiani; sulfates are not shown.'**
+  /// **'Phyllosilicates and hydrous minerals: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not in-situ samples.'**
   String get legendBiosigNote;
 
   /// No description provided for @layerZones.
@@ -2207,7 +2207,7 @@ abstract class AppLocalizations {
   /// No description provided for @transitNote.
   ///
   /// In en, this message translates to:
-  /// **'The thresholds are team assumptions without a reference. DCI and thermal inertia come from TES at 3.5 and 7.5 km: in a window of a few kilometres the layer has one or two colours.'**
+  /// **'Measured by MGS-TES (NASA/ASU) at 3.5 km/px (DCI) and 7.5 km/px (thermal inertia). The red zone (DCI < 0.94 and inertia < 150) is automatically blocked as a dust trap in route calculation.'**
   String get transitNote;
 
   /// No description provided for @srcTitle.
@@ -2329,6 +2329,341 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km).'**
   String get siteReachNote;
+
+  /// No description provided for @mapTraceLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'Current view: {viewW} × {viewH} km  ·  Available trace: {traceW} × {traceH} km'**
+  String mapTraceLegend(
+    String viewW,
+    String viewH,
+    String traceW,
+    String traceH,
+  );
+
+  /// No description provided for @routeAutoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ROUTE & OBJECTIVE'**
+  String get routeAutoTitle;
+
+  /// No description provided for @routeAutoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic route from the habitat to the selected objective (based on terrain slope, roughness, and distance).'**
+  String get routeAutoHint;
+
+  /// No description provided for @routeSelectObjective.
+  ///
+  /// In en, this message translates to:
+  /// **'Click an objective on the map or use \"Add objective\" to trace the route and view its real data.'**
+  String get routeSelectObjective;
+
+  /// No description provided for @objectiveCoords.
+  ///
+  /// In en, this message translates to:
+  /// **'Coordinates'**
+  String get objectiveCoords;
+
+  /// No description provided for @objectiveElev.
+  ///
+  /// In en, this message translates to:
+  /// **'Elevation'**
+  String get objectiveElev;
+
+  /// No description provided for @objectiveSlope.
+  ///
+  /// In en, this message translates to:
+  /// **'Local slope'**
+  String get objectiveSlope;
+
+  /// No description provided for @metricElevRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Ascent / descent'**
+  String get metricElevRange;
+
+  /// No description provided for @objectiveEditBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get objectiveEditBtn;
+
+  /// No description provided for @routeStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting point'**
+  String get routeStartLabel;
+
+  /// No description provided for @routeSetStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Set as start'**
+  String get routeSetStart;
+
+  /// No description provided for @routeActiveStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Active start'**
+  String get routeActiveStart;
+
+  /// No description provided for @routeTracedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'TRACED ROUTES'**
+  String get routeTracedTitle;
+
+  /// No description provided for @routeBackToHab.
+  ///
+  /// In en, this message translates to:
+  /// **'Trace return to habitat'**
+  String get routeBackToHab;
+
+  /// No description provided for @routeNoRoutes.
+  ///
+  /// In en, this message translates to:
+  /// **'No traced routes.'**
+  String get routeNoRoutes;
+
+  /// No description provided for @routeEndLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Destination'**
+  String get routeEndLabel;
+
+  /// No description provided for @routeSwapTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap start and destination'**
+  String get routeSwapTooltip;
+
+  /// No description provided for @routeTraceBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Trace route'**
+  String get routeTraceBtn;
+
+  /// No description provided for @routeSelectDestHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select destination...'**
+  String get routeSelectDestHint;
+
+  /// No description provided for @objectivesSelectMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get objectivesSelectMode;
+
+  /// No description provided for @objectivesSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get objectivesSelectAll;
+
+  /// No description provided for @objectivesSelectNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get objectivesSelectNone;
+
+  /// No description provided for @objectivesDeleteSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete ({count})'**
+  String objectivesDeleteSelected(int count);
+
+  /// No description provided for @objectivesCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get objectivesCancel;
+
+  /// No description provided for @routeTracePickStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap starting point (Habitat or objective)'**
+  String get routeTracePickStart;
+
+  /// No description provided for @routeTracePickEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap destination (Habitat or objective)'**
+  String get routeTracePickEnd;
+
+  /// No description provided for @routeNoneSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get routeNoneSelected;
+
+  /// No description provided for @navRouteCalc.
+  ///
+  /// In en, this message translates to:
+  /// **'ROUTE CALCULATION'**
+  String get navRouteCalc;
+
+  /// No description provided for @rcTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety model & A* routing criteria'**
+  String get rcTitle;
+
+  /// No description provided for @rcSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Real NASA/USGS/ASU datasets and thresholds used by the Meridiani Planum pathfinder to keep astronauts safe.'**
+  String get rcSubtitle;
+
+  /// No description provided for @rcFormulaSection.
+  ///
+  /// In en, this message translates to:
+  /// **'A* COST FUNCTION (SAFEST PROFILE)'**
+  String get rcFormulaSection;
+
+  /// No description provided for @rcFormulaDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Each step between adjacent cells weighs real ground distance in meters, a quadratic slope penalty from the smoothed orbital DEM, and a normalized surface dust-trap index (40% DCI + 40% TI + 20% THEMIS-IR Night). Cells outside the valid CTX footprint, steeper than 15°, or inside critical dust traps are blocked.'**
+  String get rcFormulaDesc;
+
+  /// No description provided for @rcHardConstraintsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'HARD CONSTRAINTS (NO-GO)'**
+  String get rcHardConstraintsSection;
+
+  /// No description provided for @rcHardSlopeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum passable slope: ≤ 15.0° (caution ≥ 12.0°)'**
+  String get rcHardSlopeTitle;
+
+  /// No description provided for @rcHardSlopeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Project safety margin on NASA baseline: NASA operational rover/EVA limits (Apollo LRV & Artemis mobility studies) allow up to ~20° on locally surveyed ground. Because our HRSC+MOLA orbital DEM is 200 m/px and smooths sub-pixel scarps, we apply a conservative 15.0° hard cutoff (caution above 12.0°). Areas outside valid CTX mosaic coverage are also blocked.'**
+  String get rcHardSlopeDesc;
+
+  /// No description provided for @rcHardDustTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical dust & soft-soil traps: DCI < 0.94 and TI < 150'**
+  String get rcHardDustTitle;
+
+  /// No description provided for @rcHardDustDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Cells combining heavy dust cover (Dust Cover Index < 0.94) and very low thermal inertia (TI < 150 J·m⁻²·K⁻¹·s⁻¹/²) indicate unconsolidated fine silt with high sinkage/entrapment hazard (analogous to Meridiani dunes that bogged MER Opportunity) and are marked impassable.'**
+  String get rcHardDustDesc;
+
+  /// No description provided for @rcCriteriaSection.
+  ///
+  /// In en, this message translates to:
+  /// **'SCIENTIFIC CRITERIA & DATA SOURCES'**
+  String get rcCriteriaSection;
+
+  /// No description provided for @rcCritSlopeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Topographic slope & elevation (DEM)'**
+  String get rcCritSlopeTitle;
+
+  /// No description provided for @rcCritSlopeSource.
+  ///
+  /// In en, this message translates to:
+  /// **'MEASURED · USGS Astrogeology HRSC+MOLA 200 m/px · weight w_slope = 2.5'**
+  String get rcCritSlopeSource;
+
+  /// No description provided for @rcCritSlopeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Surface gradient computed with a Gaussian filter (σ = 1.5 cells at 640 m grid spacing) from the 200 m/px HRSC+MOLA orbital DEM. Enters A* cost as (slope / 15°)² × 2.5 and forbids any cell exceeding 15.0°.'**
+  String get rcCritSlopeDesc;
+
+  /// No description provided for @rcCritDciTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dust Cover Index (DCI)'**
+  String get rcCritDciTitle;
+
+  /// No description provided for @rcCritDciSource.
+  ///
+  /// In en, this message translates to:
+  /// **'MEASURED · NASA / ASU Mars Global Surveyor TES 16 ppd · 40% of surface index'**
+  String get rcCritDciSource;
+
+  /// No description provided for @rcCritDciDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Ruff & Christensen (2002) spectral emissivity index across 1350–1400 cm⁻¹. Low values (< 0.94) reveal thick mantling dust; high values (≥ 0.98) indicate dust-free bedrock or firm coarse sand.'**
+  String get rcCritDciDesc;
+
+  /// No description provided for @rcCritTiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Thermal Inertia (TI)'**
+  String get rcCritTiTitle;
+
+  /// No description provided for @rcCritTiSource.
+  ///
+  /// In en, this message translates to:
+  /// **'MEASURED · NASA / ASU TES Meridiani 0.125°/px · 40% of surface index'**
+  String get rcCritTiSource;
+
+  /// No description provided for @rcCritTiDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk thermal inertia of the upper few centimeters (J·m⁻²·K⁻¹·s⁻¹/²). Low inertia (< 150) signals loose fine dust with poor bearing strength; higher inertia (250–350+) reflects indurated regolith or exposed bedrock.'**
+  String get rcCritTiDesc;
+
+  /// No description provided for @rcCritThemisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nighttime Thermal Infrared brightness (THEMIS-IR)'**
+  String get rcCritThemisTitle;
+
+  /// No description provided for @rcCritThemisSource.
+  ///
+  /// In en, this message translates to:
+  /// **'MEASURED · NASA / Mars Odyssey THEMIS via Mars Trek ~100 m/px · 20% of surface index'**
+  String get rcCritThemisSource;
+
+  /// No description provided for @rcCritThemisDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Normalized nighttime infrared mosaic (2–98% stretch). Fine loose dust cools rapidly overnight (dark = higher penalty) whereas competent rock retains daytime heat (bright = lower penalty). Relative brightness only, not calibrated Kelvin temperature.'**
+  String get rcCritThemisDesc;
+
+  /// No description provided for @rcCritMobilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'EVA pacing & traversal effort model'**
+  String get rcCritMobilityTitle;
+
+  /// No description provided for @rcCritMobilitySource.
+  ///
+  /// In en, this message translates to:
+  /// **'MODELED · Tobler (1993) hiking function + NASA EVA limit · surface weight w_rough = 4.0'**
+  String get rcCritMobilitySource;
+
+  /// No description provided for @rcCritMobilityDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimates sortie travel time using Tobler\'s slope-dependent walking curve anchored at 4.0 km/h flat speed (0.95× uphill) combined with the composite dust/surface index across the 512×512 grid.'**
+  String get rcCritMobilityDesc;
+
+  /// No description provided for @rcActiveRouteSection.
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVE ROUTE AUDIT'**
+  String get rcActiveRouteSection;
+
+  /// No description provided for @rcCellsEvaluated.
+  ///
+  /// In en, this message translates to:
+  /// **'A* cells evaluated'**
+  String get rcCellsEvaluated;
 }
 
 class _AppLocalizationsDelegate
