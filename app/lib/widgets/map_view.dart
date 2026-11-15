@@ -569,16 +569,34 @@ class _OverlayPainter extends CustomPainter {
         if (z.name.isNotEmpty) _label(canvas, z.name, c + const Offset(10, -8));
       }
     }
-    final minerals = model.layers['minerals_pts']!;
-    if (minerals.visible) {
-      for (final q in d.vectors.minerals) {
-        final c = _p(q.x, q.y);
-        final color = switch (q.cls) {
-          'sulfate' => const Color(0xFFE6AA28),
-          'phyllosilicate' => const Color(0xFFD63DA8),
-          _ => AppColors.cyan,
+    // Redes de valles (Hynek 2010): búsqueda de biofirmas.
+    final valleys = model.layers['valleys']!;
+    if (valleys.visible && d.vectors.valleys.isNotEmpty) {
+      final line = Paint()
+        ..color = kValleyColor.withValues(alpha: valleys.opacity)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..strokeJoin = StrokeJoin.round;
+      for (final v in d.vectors.valleys) {
+        for (final pts in v.paths) {
+          final path = Path();
+          for (var i = 0; i < pts.length; i++) {
+            final o = _p(pts[i].$1, pts[i].$2);
+            i == 0 ? path.moveTo(o.dx, o.dy) : path.lineTo(o.dx, o.dy);
+          }
+          canvas.drawPath(path, line);
         }
-            .withValues(alpha: minerals.opacity);
+      }
+    }
+    // Minerales desde órbita, en dos capas: acuosos con más probabilidad de biofirmas (filosilicatos y carbonatos) e hidratados.
+    final aqueous = model.layers['aqueous_pts']!;
+    final hydrous = model.layers['hydrous_pts']!;
+    if (aqueous.visible || hydrous.visible) {
+      for (final q in d.vectors.minerals) {
+        final layer = q.cls == 'hydrous' ? hydrous : aqueous;
+        if (!layer.visible || !kMineralColors.containsKey(q.cls)) continue;
+        final c = _p(q.x, q.y);
+        final color = kMineralColors[q.cls]!.withValues(alpha: layer.opacity);
         final diamond = Path()..moveTo(c.dx, c.dy - 6)..lineTo(c.dx + 6, c.dy)..lineTo(c.dx, c.dy + 6)..lineTo(c.dx - 6, c.dy)..close();
         canvas.drawPath(diamond, Paint()..color = color);
         canvas.drawPath(diamond, Paint()..color = AppColors.bg..style = PaintingStyle.stroke..strokeWidth = 1.2);

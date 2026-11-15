@@ -1055,6 +1055,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get layerMineralsPts => 'Aqueous and hydrous minerals';
 
   @override
+  String get layerAqueousPts => 'Aqueous minerals · biosignatures';
+
+  @override
+  String get layerHydrousPts => 'Hydrous minerals (CRISM, OMEGA)';
+
+  @override
+  String get layerValleys => 'Valley networks (Hynek 2010)';
+
+  @override
+  String get legendBiosigTitle => 'Biosignature search (from orbit)';
+
+  @override
+  String get legendCarbonate => 'Carbonate';
+
+  @override
+  String get legendValleys => 'Valley network (ancient water)';
+
+  @override
+  String get legendBiosigNote =>
+      'Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. No carbonates are recorded in Meridiani; sulfates are not shown.';
+
+  @override
   String get layerZones => 'Exploration zones';
 
   @override
