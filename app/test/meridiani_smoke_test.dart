@@ -31,7 +31,7 @@ void main() {
     expect(tester.takeException(), isNull, reason: 'cambio de sitio');
     expect(find.text('Indicative routes: the relief comes from a 200 m model, so local slopes are smoothed and the roughness is unknown. Use them as an approximation, not to avoid rocks or small slopes.'), findsOneWidget);
     // Todas las capas científicas y de tránsito encendidas, con la leyenda abierta.
-    for (final id in ['transit', 'thermal_night', 'slope15', 'minerals_pts', 'zones', 'names', 'craters', 'geology']) {
+    for (final id in ['transit', 'thermal_night', 'slope15', 'aqueous_pts', 'hydrous_pts', 'valleys', 'zones', 'names', 'craters', 'geology']) {
       model.toggleLayer(id, true);
     }
     await tester.pump(const Duration(milliseconds: 500));

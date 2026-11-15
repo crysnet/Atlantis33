@@ -1057,6 +1057,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get layerMineralsPts => 'Minerales acuosos e hidratados';
 
   @override
+  String get layerAqueousPts => 'Minerales acuosos · biofirmas';
+
+  @override
+  String get layerHydrousPts => 'Minerales hidratados (CRISM, OMEGA)';
+
+  @override
+  String get layerValleys => 'Redes de valles (Hynek 2010)';
+
+  @override
+  String get legendBiosigTitle => 'Búsqueda de biofirmas (desde órbita)';
+
+  @override
+  String get legendCarbonate => 'Carbonato';
+
+  @override
+  String get legendValleys => 'Red de valles (agua antigua)';
+
+  @override
+  String get legendBiosigNote =>
+      'Filosilicatos y carbonatos: suelo con más probabilidad de conservar biofirmas. Detecciones orbitales de Mars Trek (NASA), no muestras. En Meridiani no hay carbonatos registrados; los sulfatos no se muestran.';
+
+  @override
   String get layerZones => 'Zonas de exploración';
 
   @override
