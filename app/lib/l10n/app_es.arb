@@ -482,5 +482,24 @@
         "type": "String"
       }
     }
-  }
+  },
+  "routeEndLabel": "Punto final",
+  "routeSwapTooltip": "Invertir partida y destino",
+  "routeTraceBtn": "Trazar ruta",
+  "routeSelectDestHint": "Selecciona un destino...",
+  "objectivesSelectMode": "Seleccionar",
+  "objectivesSelectAll": "Todos",
+  "objectivesSelectNone": "Ninguno",
+  "objectivesDeleteSelected": "Eliminar ({count})",
+  "@objectivesDeleteSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "objectivesCancel": "Cancelar",
+  "routeTracePickStart": "Toca el punto de partida (Hábitat u objetivo)",
+  "routeTracePickEnd": "Toca el punto final (Hábitat u objetivo)",
+  "routeNoneSelected": "—"
 }

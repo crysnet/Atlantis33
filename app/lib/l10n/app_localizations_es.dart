@@ -1253,4 +1253,43 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get routeNoRoutes => 'Sin rutas trazadas.';
+
+  @override
+  String get routeEndLabel => 'Punto final';
+
+  @override
+  String get routeSwapTooltip => 'Invertir partida y destino';
+
+  @override
+  String get routeTraceBtn => 'Trazar ruta';
+
+  @override
+  String get routeSelectDestHint => 'Selecciona un destino...';
+
+  @override
+  String get objectivesSelectMode => 'Seleccionar';
+
+  @override
+  String get objectivesSelectAll => 'Todos';
+
+  @override
+  String get objectivesSelectNone => 'Ninguno';
+
+  @override
+  String objectivesDeleteSelected(int count) {
+    return 'Eliminar ($count)';
+  }
+
+  @override
+  String get objectivesCancel => 'Cancelar';
+
+  @override
+  String get routeTracePickStart =>
+      'Toca el punto de partida (Hábitat u objetivo)';
+
+  @override
+  String get routeTracePickEnd => 'Toca el punto final (Hábitat u objetivo)';
+
+  @override
+  String get routeNoneSelected => '—';
 }

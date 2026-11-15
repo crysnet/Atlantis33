@@ -190,13 +190,15 @@ class _MapViewState extends State<MapView> {
                 return;
               }
               final hit = _hitObjective(m, d.localPosition);
-              if (hit != null) {
-                m.selectObjective(hit);
-              } else if (_hitHabitat(m, d.localPosition) && m.routeStartId != 'habitat') {
-                m.traceRoute(m.routeStartId, 'habitat');
-              } else {
-                m.selectObjective(null);
+              if (m.traceMode) {
+                if (hit != null) {
+                  m.pickTracePoint(hit);
+                } else if (_hitHabitat(m, d.localPosition)) {
+                  m.pickTracePoint('habitat');
+                }
+                return;
               }
+              m.selectObjective(hit);
             },
             child: ClipRect(
               child: Stack(
@@ -223,9 +225,25 @@ class _MapViewState extends State<MapView> {
                       _toolbar(l),
                       const SizedBox(width: 8),
                       _addObjectiveBtn(m, l),
+                      if (m.objectives.isNotEmpty) ...[
+                        const SizedBox(width: 8),
+                        _traceRouteBtn(m, l),
+                      ],
                     ]),
                   ),
                   if (m.addMode) Positioned(top: 12, left: 0, right: 0, child: Center(child: _banner(l.objectivesAddActive))),
+                  if (m.traceMode)
+                    Positioned(
+                      top: 12,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: _banner(
+                          m.traceDraftStart == null ? l.routeTracePickStart : l.routeTracePickEnd,
+                          color: AppColors.cyan,
+                        ),
+                      ),
+                    ),
                   if (m.computing) Positioned(top: 12, left: 0, right: 0, child: Center(child: _banner(l.computing, color: AppColors.amber))),
                   Positioned(left: 12, bottom: 12, child: _readout(m, l)),
                   Positioned(right: 12, bottom: 12, child: _scaleBar()),
@@ -311,6 +329,30 @@ class _MapViewState extends State<MapView> {
             Icon(active ? Icons.close : Icons.add_location_alt_outlined, size: 15, color: color),
             const SizedBox(width: 6),
             Text(active ? l.objectivesAddActive : l.objectivesAdd, style: AppText.label(color: color)),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  Widget _traceRouteBtn(AppModel m, AppLocalizations l) {
+    final active = m.traceMode;
+    final color = active ? AppColors.amber : AppColors.cyan;
+    return Material(
+      color: AppColors.panel.withValues(alpha: 0.92),
+      child: InkWell(
+        onTap: m.toggleTraceMode,
+        child: Container(
+          height: 36,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: active ? AppColors.amber.withValues(alpha: 0.14) : Colors.transparent,
+            border: Border.all(color: color),
+          ),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Icon(active ? Icons.close : Icons.alt_route, size: 15, color: color),
+            const SizedBox(width: 6),
+            Text(l.routeTraceBtn.toUpperCase(), style: AppText.label(color: color)),
           ]),
         ),
       ),
@@ -654,28 +696,31 @@ class _OverlayPainter extends CustomPainter {
     _frame(canvas, d);
     _vectors(canvas, d);
 
-    // Rutas: las no seleccionadas atenuadas, la activa resaltada.
+    // Rutas: las no seleccionadas atenuadas, la activa y las conectadas al objetivo seleccionado resaltadas.
     canvas.save();
     canvas.translate(origin.dx, origin.dy);
     canvas.scale(scale);
     if (model.tracedRoutes.isNotEmpty) {
-      for (final sel in [false, true]) {
+      final selObj = model.selectedObjective;
+      for (final pass in [0, 1, 2]) {
         for (final r in model.tracedRoutes) {
-          final isSel = r.id == model.activeRouteId;
-          if (isSel != sel || r.result.cells.isEmpty) continue;
-          final color = isSel ? AppColors.cyan : AppColors.amber;
+          final isAct = r.id == model.activeRouteId;
+          final isConn = selObj != null && (r.fromId == selObj || r.toId == selObj);
+          final rank = isAct ? 2 : (isConn ? 1 : 0);
+          if (rank != pass || r.result.cells.isEmpty) continue;
+          final color = isAct ? AppColors.cyan : (isConn ? AppColors.green : AppColors.amber);
           final casing = Paint()
             ..color = AppColors.bg.withValues(alpha: 0.7)
             ..style = PaintingStyle.stroke
             ..strokeJoin = StrokeJoin.round
             ..strokeCap = StrokeCap.round
-            ..strokeWidth = (isSel ? 7.0 : 4.5) / scale;
+            ..strokeWidth = (rank > 0 ? 7.0 : 4.5) / scale;
           final stroke = Paint()
-            ..color = color.withValues(alpha: isSel ? 1.0 : 0.55)
+            ..color = color.withValues(alpha: isAct ? 1.0 : (isConn ? 0.9 : 0.45))
             ..style = PaintingStyle.stroke
             ..strokeJoin = StrokeJoin.round
             ..strokeCap = StrokeCap.round
-            ..strokeWidth = (isSel ? 3.5 : 2.0) / scale;
+            ..strokeWidth = (isAct ? 3.5 : (isConn ? 3.0 : 2.0)) / scale;
           final path = _routePath(r.result);
           canvas.drawPath(path, casing);
           canvas.drawPath(path, stroke);
@@ -709,13 +754,15 @@ class _OverlayPainter extends CustomPainter {
 
     final r = model.route;
 
+    final activeStartId = model.traceMode ? model.traceDraftStart : model.activePlannedRoute?.fromId;
+
     // Hábitat.
     final h = _p(d.habitatX, d.habitatY);
     final hr = Rect.fromCenter(center: h, width: 18, height: 18);
     canvas.drawRect(hr, Paint()..color = AppColors.panel.withValues(alpha: 0.9));
     canvas.drawRect(hr, Paint()..color = AppColors.green..style = PaintingStyle.stroke..strokeWidth = 2);
     canvas.drawCircle(h, 2.5, Paint()..color = AppColors.green);
-    if (model.routeStartId == 'habitat') {
+    if (activeStartId == 'habitat') {
       canvas.drawCircle(h, 16, Paint()..color = AppColors.orange.withValues(alpha: 0.75)..style = PaintingStyle.stroke..strokeWidth = 1.5);
     }
     _label(canvas, habitatLabel, h + const Offset(14, -9), color: AppColors.green, border: AppColors.green);
@@ -726,7 +773,7 @@ class _OverlayPainter extends CustomPainter {
       final c = _p(o.xM, o.yM);
       final blocked = d.isBlocked(o.xM, o.yM);
       final sel = model.selectedObjective == o.id;
-      final isStart = model.routeStartId == o.id;
+      final isStart = activeStartId == o.id;
       final color = blocked ? AppColors.red : AppColors.cyan;
       final dia = Path()
         ..moveTo(c.dx, c.dy - 10)

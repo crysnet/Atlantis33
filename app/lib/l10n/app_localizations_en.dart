@@ -1251,4 +1251,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get routeNoRoutes => 'No traced routes.';
+
+  @override
+  String get routeEndLabel => 'Destination';
+
+  @override
+  String get routeSwapTooltip => 'Swap start and destination';
+
+  @override
+  String get routeTraceBtn => 'Trace route';
+
+  @override
+  String get routeSelectDestHint => 'Select destination...';
+
+  @override
+  String get objectivesSelectMode => 'Select';
+
+  @override
+  String get objectivesSelectAll => 'All';
+
+  @override
+  String get objectivesSelectNone => 'None';
+
+  @override
+  String objectivesDeleteSelected(int count) {
+    return 'Delete ($count)';
+  }
+
+  @override
+  String get objectivesCancel => 'Cancel';
+
+  @override
+  String get routeTracePickStart => 'Tap starting point (Habitat or objective)';
+
+  @override
+  String get routeTracePickEnd => 'Tap destination (Habitat or objective)';
+
+  @override
+  String get routeNoneSelected => '—';
 }

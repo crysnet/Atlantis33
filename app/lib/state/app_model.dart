@@ -209,6 +209,9 @@ class AppModel extends ChangeNotifier {
     tracedRoutes = [];
     activeRouteId = null;
     routeStartId = 'habitat';
+    routeEndId = null;
+    traceMode = false;
+    traceDraftStart = null;
     pairResult = null;
     selectedObjective = null;
     addMode = false;
@@ -310,6 +313,9 @@ class AppModel extends ChangeNotifier {
       _editMission((m) => m.copyWith(consumables: consumables, equipment: equipment));
 
   String routeStartId = 'habitat';
+  String? routeEndId;
+  bool traceMode = false;
+  String? traceDraftStart;
   List<PlannedRoute> tracedRoutes = [];
   String? activeRouteId;
 
@@ -379,29 +385,105 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleTraceMode() {
+    if (objectives.isEmpty) return;
+    traceMode = !traceMode;
+    traceDraftStart = null;
+    if (traceMode) addMode = false;
+    notifyListeners();
+  }
+
+  void pickTracePoint(String pointId) {
+    if (!traceMode) return;
+    if (traceDraftStart == null) {
+      traceDraftStart = pointId;
+      notifyListeners();
+      return;
+    }
+    if (traceDraftStart == pointId) return;
+    final from = traceDraftStart!;
+    traceDraftStart = null;
+    traceMode = false;
+    traceRoute(from, pointId);
+  }
+
   void selectObjective(String? id) {
-    final changed = selectedObjective != id;
+    if (id == null) {
+      if (selectedObjective == null) return;
+      selectedObjective = null;
+      notifyListeners();
+      return;
+    }
+    final connected = [
+      for (final r in tracedRoutes)
+        if (r.toId == id || r.fromId == id) r,
+    ];
+    PlannedRoute? match;
+    if (connected.isNotEmpty) {
+      if (selectedObjective == id && connected.length > 1) {
+        final curIdx = connected.indexWhere((r) => r.id == activeRouteId);
+        match = connected[(curIdx + 1) % connected.length];
+      } else if (selectedObjective != id) {
+        match = connected.firstWhere((r) => r.toId == id, orElse: () => connected.first);
+      }
+    }
+    if (selectedObjective == id && match == null) return;
     selectedObjective = id;
-    if (changed && id != null && id != routeStartId) {
+    if (match != null) {
+      activeRouteId = match.id;
+      routeStartId = match.fromId;
+      routeEndId = match.toId;
+      selectedRoute = 'safe';
+      routes = {'safe': match.result};
+    }
+    notifyListeners();
+  }
+
+  void setRouteStart(String id) {
+    if (id != 'habitat' && objective(id) == null) return;
+    routeStartId = id;
+    if (routeEndId != null && routeEndId != id) {
+      traceRoute(id, routeEndId!);
+    } else {
+      notifyListeners();
+    }
+  }
+
+  void setRouteEnd(String id) {
+    if (id != 'habitat' && objective(id) == null) return;
+    routeEndId = id;
+    if (id != 'habitat') selectedObjective = id;
+    if (id != routeStartId) {
       traceRoute(routeStartId, id);
     } else {
       notifyListeners();
     }
   }
 
-  void setRouteStart(String id) {
-    if (id != 'habitat' && objective(id) == null) return;
-    routeStartId = id;
-    notifyListeners();
+  void swapRouteEndpoints() {
+    final active = activePlannedRoute;
+    final from = active?.fromId ?? routeStartId;
+    final to = active?.toId ?? routeEndId ?? activeObjective?.id;
+    if (to == null || from == to) return;
+    routeStartId = to;
+    routeEndId = from;
+    if (routeEndId != 'habitat') selectedObjective = routeEndId;
+    traceRoute(routeStartId, routeEndId!);
   }
 
   void selectTracedRoute(String id) {
     for (final r in tracedRoutes) {
       if (r.id == id) {
         activeRouteId = id;
+        routeStartId = r.fromId;
+        routeEndId = r.toId;
         selectedRoute = 'safe';
         routes = {'safe': r.result};
-        if (r.toId != 'habitat') selectedObjective = r.toId;
+        if (r.toId != 'habitat') {
+          selectedObjective = r.toId;
+        } else if (r.fromId != 'habitat') {
+          selectedObjective = r.fromId;
+        }
         notifyListeners();
         return;
       }
@@ -412,10 +494,14 @@ class AppModel extends ChangeNotifier {
     tracedRoutes = tracedRoutes.where((r) => r.id != id).toList();
     if (activeRouteId == id) {
       if (tracedRoutes.isNotEmpty) {
-        activeRouteId = tracedRoutes.last.id;
-        routes = {'safe': tracedRoutes.last.result};
+        final next = tracedRoutes.last;
+        activeRouteId = next.id;
+        routeStartId = next.fromId;
+        routeEndId = next.toId;
+        routes = {'safe': next.result};
       } else {
         activeRouteId = null;
+        routeEndId = null;
         routes = {};
       }
     }
@@ -472,6 +558,8 @@ class AppModel extends ChangeNotifier {
 
   Future<void> traceRoute(String fromId, String toId) async {
     if (fromId == toId) return;
+    routeStartId = fromId;
+    routeEndId = toId;
     final routeId = '$fromId->$toId';
     for (final existing in tracedRoutes) {
       if (existing.id == routeId) {
@@ -502,6 +590,10 @@ class AppModel extends ChangeNotifier {
 
   void toggleAddMode() {
     addMode = !addMode;
+    if (addMode) {
+      traceMode = false;
+      traceDraftStart = null;
+    }
     notifyListeners();
   }
 
@@ -524,13 +616,6 @@ class AppModel extends ChangeNotifier {
     for (final r in tracedRoutes) {
       if (validIds.contains(r.fromId) && validIds.contains(r.toId)) {
         updated.add(PlannedRoute(id: r.id, fromId: r.fromId, toId: r.toId, result: _computeLeg(r.fromId, r.toId)));
-      }
-    }
-    if (updated.isEmpty) {
-      final target = activeObjective;
-      if (target != null && target.id != routeStartId) {
-        final id = '$routeStartId->${target.id}';
-        updated.add(PlannedRoute(id: id, fromId: routeStartId, toId: target.id, result: _computeLeg(routeStartId, target.id)));
       }
     }
     if (gen != _gen) return;
@@ -556,7 +641,7 @@ class AppModel extends ChangeNotifier {
     selectedObjective = id;
     addMode = false;
     _persist();
-    traceRoute(routeStartId, id);
+    notifyListeners();
     return id;
   }
 
@@ -580,11 +665,23 @@ class AppModel extends ChangeNotifier {
     recompute();
   }
 
-  void removeObjective(String id) {
-    objectives = objectives.where((o) => o.id != id).toList();
-    if (selectedObjective == id) selectedObjective = null;
-    if (routeStartId == id) routeStartId = 'habitat';
-    tracedRoutes = tracedRoutes.where((r) => r.fromId != id && r.toId != id).toList();
+  void removeObjective(String id) => removeObjectives({id});
+
+  void removeObjectives(Set<String> ids) {
+    if (ids.isEmpty) return;
+    objectives = objectives.where((o) => !ids.contains(o.id)).toList();
+    if (selectedObjective != null && ids.contains(selectedObjective)) selectedObjective = null;
+    if (ids.contains(routeStartId)) routeStartId = 'habitat';
+    if (routeEndId != null && ids.contains(routeEndId)) {
+      routeEndId = null;
+    }
+    if (traceDraftStart != null && ids.contains(traceDraftStart)) {
+      traceDraftStart = null;
+    }
+    if (objectives.isEmpty) {
+      traceMode = false;
+    }
+    tracedRoutes = tracedRoutes.where((r) => !ids.contains(r.fromId) && !ids.contains(r.toId)).toList();
     if (activeRouteId != null && !tracedRoutes.any((r) => r.id == activeRouteId)) {
       activeRouteId = tracedRoutes.isNotEmpty ? tracedRoutes.last.id : null;
     }

@@ -517,5 +517,24 @@
         "type": "String"
       }
     }
-  }
+  },
+  "routeEndLabel": "Destination",
+  "routeSwapTooltip": "Swap start and destination",
+  "routeTraceBtn": "Trace route",
+  "routeSelectDestHint": "Select destination...",
+  "objectivesSelectMode": "Select",
+  "objectivesSelectAll": "All",
+  "objectivesSelectNone": "None",
+  "objectivesDeleteSelected": "Delete ({count})",
+  "@objectivesDeleteSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "objectivesCancel": "Cancel",
+  "routeTracePickStart": "Tap starting point (Habitat or objective)",
+  "routeTracePickEnd": "Tap destination (Habitat or objective)",
+  "routeNoneSelected": "—"
 }

@@ -2424,6 +2424,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No traced routes.'**
   String get routeNoRoutes;
+
+  /// No description provided for @routeEndLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Destination'**
+  String get routeEndLabel;
+
+  /// No description provided for @routeSwapTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap start and destination'**
+  String get routeSwapTooltip;
+
+  /// No description provided for @routeTraceBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Trace route'**
+  String get routeTraceBtn;
+
+  /// No description provided for @routeSelectDestHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select destination...'**
+  String get routeSelectDestHint;
+
+  /// No description provided for @objectivesSelectMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get objectivesSelectMode;
+
+  /// No description provided for @objectivesSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get objectivesSelectAll;
+
+  /// No description provided for @objectivesSelectNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get objectivesSelectNone;
+
+  /// No description provided for @objectivesDeleteSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete ({count})'**
+  String objectivesDeleteSelected(int count);
+
+  /// No description provided for @objectivesCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get objectivesCancel;
+
+  /// No description provided for @routeTracePickStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap starting point (Habitat or objective)'**
+  String get routeTracePickStart;
+
+  /// No description provided for @routeTracePickEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap destination (Habitat or objective)'**
+  String get routeTracePickEnd;
+
+  /// No description provided for @routeNoneSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get routeNoneSelected;
 }
 
 class _AppLocalizationsDelegate

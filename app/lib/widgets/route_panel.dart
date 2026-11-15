@@ -65,6 +65,13 @@ String _pointLabel(AppModel m, AppLocalizations l, String id) {
   return o == null ? id.toUpperCase() : o.id.toUpperCase();
 }
 
+String _pointFullName(AppModel m, AppLocalizations l, String? id) {
+  if (id == null) return l.routeNoneSelected;
+  if (id == 'habitat') return l.habitat;
+  final o = m.objective(id);
+  return o == null ? id.toUpperCase() : '${o.id.toUpperCase()} · ${o.name}';
+}
+
 class _RouteStartBlock extends StatelessWidget {
   const _RouteStartBlock();
 
@@ -72,45 +79,51 @@ class _RouteStartBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final m = AppScope.of(context);
     final l = AppLocalizations.of(context)!;
-    final items = <(String, String)>[
-      ('habitat', l.habitat),
-      for (final o in m.objectives) (o.id, '${o.id.toUpperCase()} · ${o.name}'),
-    ];
-    final current = items.any((e) => e.$1 == m.routeStartId) ? m.routeStartId : 'habitat';
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(color: AppColors.panel, border: Border.all(color: AppColors.hairline)),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+    final active = m.activePlannedRoute;
+    final startId = m.traceMode ? m.traceDraftStart : active?.fromId;
+    final endId = m.traceMode ? null : active?.toId;
+    final canSwap = !m.traceMode && active != null;
+
+    Widget endpointRow(IconData icon, Color color, String label, String value, bool activeValue) {
+      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Row(children: [
-          const Icon(Icons.trip_origin, size: 13, color: AppColors.orange),
+          Icon(icon, size: 13, color: color),
           const SizedBox(width: 6),
-          Text(l.routeStartLabel.toUpperCase(), style: AppText.label(color: AppColors.orange)),
-          const Spacer(),
-          if (current != 'habitat')
-            InkWell(
-              onTap: () => m.traceRoute(current, 'habitat'),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                decoration: BoxDecoration(border: Border.all(color: AppColors.green)),
-                child: Text(l.routeBackToHab.toUpperCase(), style: AppText.label(color: AppColors.green)),
-              ),
-            ),
+          Text(label.toUpperCase(), style: AppText.label(color: color)),
         ]),
-        const SizedBox(height: 4),
-        DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
-            value: current,
-            isExpanded: true,
-            isDense: true,
-            dropdownColor: AppColors.panel2,
-            style: AppText.body(12, color: AppColors.text),
-            items: [
-              for (final e in items)
-                DropdownMenuItem(value: e.$1, child: Text(e.$2, overflow: TextOverflow.ellipsis)),
-            ],
-            onChanged: (v) {
-              if (v != null) m.setRouteStart(v);
-            },
+        const SizedBox(height: 3),
+        Text(
+          value,
+          style: AppText.body(12.5, color: activeValue ? AppColors.text : AppColors.textMute, weight: activeValue ? FontWeight.w500 : FontWeight.w400),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ]);
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(color: AppColors.panel, border: Border.all(color: AppColors.hairline)),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            endpointRow(Icons.trip_origin, AppColors.orange, l.routeStartLabel, _pointFullName(m, l, startId), startId != null),
+            const Divider(height: 14, color: AppColors.hairline),
+            endpointRow(Icons.place_outlined, AppColors.cyan, l.routeEndLabel, _pointFullName(m, l, endId), endId != null),
+          ]),
+        ),
+        const SizedBox(width: 8),
+        Tooltip(
+          message: l.routeSwapTooltip,
+          child: InkWell(
+            onTap: canSwap ? m.swapRouteEndpoints : null,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                border: Border.all(color: canSwap ? AppColors.hairline : AppColors.hairline.withValues(alpha: 0.4)),
+              ),
+              child: Icon(Icons.swap_vert, size: 18, color: canSwap ? AppColors.textDim : AppColors.textMute),
+            ),
           ),
         ),
       ]),
@@ -178,28 +191,10 @@ class _SelectedRouteCard extends StatelessWidget {
                   ),
                 ]),
                 const SizedBox(height: 4),
-                Row(children: [
-                  Expanded(
-                    child: Text(
-                      '${o.id.toUpperCase()} · ${l.priorityLabel(o.priority)} · ${typeName(l, o.type)}',
-                      style: AppText.mono(10.5, color: AppColors.cyan),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: m.routeStartId == o.id ? null : () => m.setRouteStart(o.id),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: m.routeStartId == o.id ? AppColors.orange.withValues(alpha: 0.16) : Colors.transparent,
-                        border: Border.all(color: AppColors.orange),
-                      ),
-                      child: Text(
-                        (m.routeStartId == o.id ? l.routeActiveStart : l.routeSetStart).toUpperCase(),
-                        style: AppText.label(color: AppColors.orange),
-                      ),
-                    ),
-                  ),
-                ]),
+                Text(
+                  '${o.id.toUpperCase()} · ${l.priorityLabel(o.priority)} · ${typeName(l, o.type)}',
+                  style: AppText.mono(10.5, color: AppColors.cyan),
+                ),
                 const SizedBox(height: 8),
                 Text(f.latLon(lon, lat), style: AppText.mono(11, color: AppColors.textDim)),
                 const SizedBox(height: 10),
@@ -312,14 +307,36 @@ class _TracedRoutesBlock extends StatelessWidget {
   }
 }
 
-class _ObjectivesBlock extends StatelessWidget {
+class _ObjectivesBlock extends StatefulWidget {
   const _ObjectivesBlock();
+
+  @override
+  State<_ObjectivesBlock> createState() => _ObjectivesBlockState();
+}
+
+class _ObjectivesBlockState extends State<_ObjectivesBlock> {
+  bool _selecting = false;
+  final Set<String> _selected = {};
+
+  void _toggleSelect(String id) {
+    setState(() {
+      if (_selected.contains(id)) {
+        _selected.remove(id);
+      } else {
+        _selected.add(id);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final m = AppScope.of(context);
     final l = AppLocalizations.of(context)!;
     final activeId = m.activeObjective?.id;
+    final allIds = m.objectives.map((o) => o.id).toSet();
+    final selectedValid = _selected.intersection(allIds);
+    final allSelected = m.objectives.isNotEmpty && selectedValid.length == m.objectives.length;
+
     return Container(
       decoration: BoxDecoration(color: AppColors.panel, border: Border.all(color: AppColors.hairline)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -328,19 +345,108 @@ class _ObjectivesBlock extends StatelessWidget {
           child: Row(children: [
             Text(l.objectivesTitle, style: AppText.label()),
             const Spacer(),
+            if (m.objectives.isNotEmpty && !_selecting) ...[
+              InkWell(
+                onTap: () => setState(() {
+                  _selecting = true;
+                  _selected.clear();
+                }),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  decoration: BoxDecoration(border: Border.all(color: AppColors.hairline)),
+                  child: Text(l.objectivesSelectMode.toUpperCase(), style: AppText.label(color: AppColors.textDim)),
+                ),
+              ),
+              const SizedBox(width: 6),
+            ],
+            if (_selecting) ...[
+              InkWell(
+                onTap: () => setState(() {
+                  _selecting = false;
+                  _selected.clear();
+                }),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  decoration: BoxDecoration(border: Border.all(color: AppColors.hairline)),
+                  child: Text(l.objectivesCancel.toUpperCase(), style: AppText.label(color: AppColors.textDim)),
+                ),
+              ),
+              const SizedBox(width: 6),
+            ],
             Tag('${m.objectives.length}', color: AppColors.cyan),
           ]),
         ),
+        if (_selecting && m.objectives.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+            child: Row(children: [
+              InkWell(
+                onTap: () => setState(() {
+                  if (allSelected) {
+                    _selected.clear();
+                  } else {
+                    _selected
+                      ..clear()
+                      ..addAll(allIds);
+                  }
+                }),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(border: Border.all(color: AppColors.hairline)),
+                  child: Text(
+                    (allSelected ? l.objectivesSelectNone : l.objectivesSelectAll).toUpperCase(),
+                    style: AppText.label(color: AppColors.cyan),
+                  ),
+                ),
+              ),
+              const Spacer(),
+              InkWell(
+                onTap: selectedValid.isEmpty
+                    ? null
+                    : () {
+                        m.removeObjectives(selectedValid);
+                        setState(() {
+                          _selecting = false;
+                          _selected.clear();
+                        });
+                      },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: selectedValid.isEmpty ? Colors.transparent : AppColors.red.withValues(alpha: 0.14),
+                    border: Border.all(color: selectedValid.isEmpty ? AppColors.hairline : AppColors.red),
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Icon(Icons.delete_outline, size: 13, color: selectedValid.isEmpty ? AppColors.textMute : AppColors.red),
+                    const SizedBox(width: 4),
+                    Text(
+                      l.objectivesDeleteSelected(selectedValid.length).toUpperCase(),
+                      style: AppText.label(color: selectedValid.isEmpty ? AppColors.textMute : AppColors.red),
+                    ),
+                  ]),
+                ),
+              ),
+            ]),
+          ),
         if (m.objectives.isEmpty)
           Padding(padding: const EdgeInsets.all(12), child: Text(l.objectivesEmpty, style: AppText.body(12, color: AppColors.textDim))),
         for (final o in m.objectives)
           InkWell(
-            onTap: () => m.selectObjective(o.id),
+            onTap: () => _selecting ? _toggleSelect(o.id) : m.selectObjective(o.id),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              color: activeId == o.id ? AppColors.panel2 : Colors.transparent,
+              color: _selecting
+                  ? (selectedValid.contains(o.id) ? AppColors.red.withValues(alpha: 0.08) : Colors.transparent)
+                  : (activeId == o.id ? AppColors.panel2 : Colors.transparent),
               child: Row(children: [
-                Icon(Icons.diamond_outlined, size: 16, color: m.data.isBlocked(o.xM, o.yM) ? AppColors.red : AppColors.cyan),
+                if (_selecting)
+                  Icon(
+                    selectedValid.contains(o.id) ? Icons.check_box : Icons.check_box_outline_blank,
+                    size: 16,
+                    color: selectedValid.contains(o.id) ? AppColors.red : AppColors.textMute,
+                  )
+                else
+                  Icon(Icons.diamond_outlined, size: 16, color: m.data.isBlocked(o.xM, o.yM) ? AppColors.red : AppColors.cyan),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -354,12 +460,13 @@ class _ObjectivesBlock extends StatelessWidget {
                     ),
                   ]),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.edit_outlined, size: 14, color: AppColors.textMute),
-                  visualDensity: VisualDensity.compact,
-                  tooltip: l.objectiveEditBtn,
-                  onPressed: () => showObjectiveDialog(context, m, o.id),
-                ),
+                if (!_selecting)
+                  IconButton(
+                    icon: const Icon(Icons.edit_outlined, size: 14, color: AppColors.textMute),
+                    visualDensity: VisualDensity.compact,
+                    tooltip: l.objectiveEditBtn,
+                    onPressed: () => showObjectiveDialog(context, m, o.id),
+                  ),
               ]),
             ),
           ),
