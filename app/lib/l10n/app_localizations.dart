@@ -2329,6 +2329,17 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km).'**
   String get siteReachNote;
+
+  /// No description provided for @mapTraceLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'Current view: {viewW} × {viewH} km  ·  Available trace: {traceW} × {traceH} km'**
+  String mapTraceLegend(
+    String viewW,
+    String viewH,
+    String traceW,
+    String traceH,
+  );
 }
 
 class _AppLocalizationsDelegate

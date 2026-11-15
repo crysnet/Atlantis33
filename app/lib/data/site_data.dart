@@ -146,6 +146,17 @@ class SiteData {
   double get sizeM =>
       ((site['frame'] as Map<String, dynamic>)['size_m'] as num).toDouble();
 
+  Rect? get validBounds {
+    final b = (site['frame'] as Map<String, dynamic>)['bounds_m'] as List?;
+    if (b == null || b.length != 4) return null;
+    return Rect.fromLTRB(
+      (b[0] as num).toDouble(),
+      (b[1] as num).toDouble(),
+      (b[2] as num).toDouble(),
+      (b[3] as num).toDouble(),
+    );
+  }
+
   double get habitatX =>
       ((site['habitat'] as Map<String, dynamic>)['x_m'] as num).toDouble();
 

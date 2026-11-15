@@ -47,7 +47,13 @@ class _MapViewState extends State<MapView> {
   double _worldM = 4000;
   final Expando<Path> _pathCache = Expando<Path>();
 
-  double get _minScale => math.min(_size.width, _size.height) / (_site?.base?.sizeM ?? _site?.context?.sizeM ?? _worldM) * 0.8;
+  double get _minScale {
+    final b = _site?.validBounds;
+    if (b != null && _size.width > 0 && _size.height > 0) {
+      return math.max(_size.width / b.width, _size.height / b.height);
+    }
+    return math.min(_size.width, _size.height) / (_site?.base?.sizeM ?? _site?.context?.sizeM ?? _worldM) * 0.8;
+  }
   static const double _maxScale = 4.0;
 
   @override
@@ -63,7 +69,30 @@ class _MapViewState extends State<MapView> {
     _fitted = false;
   }
 
+  void _clampOrigin() {
+    final b = _site?.validBounds;
+    if (b == null || _size.width <= 0 || _size.height <= 0) return;
+    final minX = _size.width - b.right * _scale;
+    final maxX = -b.left * _scale;
+    final minY = _size.height - b.bottom * _scale;
+    final maxY = -b.top * _scale;
+    _origin = Offset(
+      minX <= maxX ? _origin.dx.clamp(minX, maxX) : (minX + maxX) / 2,
+      minY <= maxY ? _origin.dy.clamp(minY, maxY) : (minY + maxY) / 2,
+    );
+  }
+
   void _fit() {
+    final b = _site?.validBounds;
+    if (b != null && _size.width > 0 && _size.height > 0) {
+      _scale = math.max(_size.width / b.width, _size.height / b.height);
+      _origin = Offset(
+        (_size.width - b.width * _scale) / 2 - b.left * _scale,
+        (_size.height - b.height * _scale) / 2 - b.top * _scale,
+      );
+      _clampOrigin();
+      return;
+    }
     final s = math.min(_size.width, _size.height) / _worldM * 0.96;
     _scale = s;
     _origin = Offset((_size.width - _worldM * s) / 2, (_size.height - _worldM * s) / 2);
@@ -79,6 +108,7 @@ class _MapViewState extends State<MapView> {
     setState(() {
       _scale = ns;
       _origin = focal - w * ns;
+      _clampOrigin();
     });
   }
 
@@ -100,13 +130,15 @@ class _MapViewState extends State<MapView> {
     final m = AppScope.of(context);
     final l = AppLocalizations.of(context)!;
     _ensureSite(m.data);
-    return LayoutBuilder(builder: (context, c) {
-      _size = c.biggest;
-      if (!_fitted && _size.width > 0) {
-        _fit();
-        _fitted = true;
-      }
-      return Listener(
+    return Column(children: [
+      Expanded(
+        child: LayoutBuilder(builder: (context, c) {
+          _size = c.biggest;
+          if (!_fitted && _size.width > 0) {
+            _fit();
+            _fitted = true;
+          }
+          return Listener(
         onPointerSignal: (e) {
           if (e is PointerScrollEvent) _zoomAt(e.localPosition, math.exp(-e.scrollDelta.dy / 400));
         },
@@ -135,6 +167,7 @@ class _MapViewState extends State<MapView> {
                 setState(() {
                   _scale = ns;
                   _origin = d.localFocalPoint - _w0 * ns;
+                  _clampOrigin();
                 });
               }
             },
@@ -186,7 +219,40 @@ class _MapViewState extends State<MapView> {
           ),
         ),
       );
-    });
+    }),
+      ),
+      _traceFooter(m, l),
+    ]);
+  }
+
+  Widget _traceFooter(AppModel m, AppLocalizations l) {
+    final f = Fmt(m.locale);
+    final b = m.data.validBounds;
+    final traceWKm = (b?.width ?? m.data.sizeM) / 1000.0;
+    final traceHKm = (b?.height ?? m.data.sizeM) / 1000.0;
+    final viewWKm = _size.width > 0 && _scale > 0
+        ? math.min(_size.width / _scale / 1000.0, traceWKm)
+        : traceWKm;
+    final viewHKm = _size.height > 0 && _scale > 0
+        ? math.min(_size.height / _scale / 1000.0, traceHKm)
+        : traceHKm;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      decoration: const BoxDecoration(
+        color: AppColors.panel,
+        border: Border(top: BorderSide(color: AppColors.hairline)),
+      ),
+      child: Text(
+        l.mapTraceLegend(
+          f.num(viewWKm, 1),
+          f.num(viewHKm, 1),
+          f.num(traceWKm, 1),
+          f.num(traceHKm, 1),
+        ),
+        style: AppText.mono(10, color: AppColors.textDim),
+      ),
+    );
   }
 
   Widget _banner(String text, {Color color = AppColors.cyan}) => Container(

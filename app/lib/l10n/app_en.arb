@@ -486,5 +486,22 @@
   "legendNames": "Official place name (IAU)",
   "contextNote": "Outside the dashed frame there is a coarser image (CTX) for context. Routes are only calculated inside the frame.",
   "siteReachTag": "Long range",
-  "siteReachNote": "Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km)."
+  "siteReachNote": "Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km).",
+  "mapTraceLegend": "Current view: {viewW} × {viewH} km  ·  Available trace: {traceW} × {traceH} km",
+  "@mapTraceLegend": {
+    "placeholders": {
+      "viewW": {
+        "type": "String"
+      },
+      "viewH": {
+        "type": "String"
+      },
+      "traceW": {
+        "type": "String"
+      },
+      "traceH": {
+        "type": "String"
+      }
+    }
+  }
 }

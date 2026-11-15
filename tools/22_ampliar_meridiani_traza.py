@@ -294,6 +294,17 @@ def actualizar_vectores(mascara_valida):
                     [round(pt[0] + dx, 1), round(pt[1] + dy, 1)]
                     for pt in nf["ring"]
                 ]
+            if kind == "zone":
+                if "x_m" in nf and nf["x_m"] is not None:
+                    if not _en_traza(nf["x_m"], nf["y_m"], mascara_valida):
+                        continue
+                elif "ring" in nf and nf["ring"]:
+                    xs = [pt[0] for pt in nf["ring"]]
+                    ys = [pt[1] for pt in nf["ring"]]
+                    cx = (min(xs) + max(xs)) / 2.0
+                    cy = (min(ys) + max(ys)) / 2.0
+                    if not _en_traza(cx, cy, mascara_valida):
+                        continue
             conservados.append(nf)
         elif kind == "valley":
             nf = dict(feat)
@@ -495,7 +506,11 @@ def main():
             "formula_lon_deg": "(origin_easting_m + x_m) / radius_m * 180 / pi",
             "formula_lat_deg": "(origin_northing_m - y_m) / radius_m * 180 / pi",
         },
-        "frame": {"size_m": SIZE_M, "pixel_m": CELL_M},
+        "frame": {
+            "size_m": SIZE_M,
+            "pixel_m": CELL_M,
+            "bounds_m": [7000.0, 37000.0, 320300.0, 290200.0],
+        },
         "habitat": {
             "x_m": hab_x,
             "y_m": hab_y,

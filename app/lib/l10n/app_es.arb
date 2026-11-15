@@ -451,5 +451,22 @@
   "legendNames": "Nombre oficial de un rasgo (UAI)",
   "contextNote": "Fuera del recuadro punteado hay una imagen más gruesa (CTX) de contexto. Las rutas solo se calculan dentro del recuadro.",
   "siteReachTag": "Largo alcance",
-  "siteReachNote": "Rutas de largo alcance: la rejilla es de 16 m sobre un relieve real, así que no ve obstáculos pequeños y la rugosidad no se conoce. El sitio de 4 km tiene el detalle; este llega a todo el alcance de la EVA (unos 12 km)."
+  "siteReachNote": "Rutas de largo alcance: la rejilla es de 16 m sobre un relieve real, así que no ve obstáculos pequeños y la rugosidad no se conoce. El sitio de 4 km tiene el detalle; este llega a todo el alcance de la EVA (unos 12 km).",
+  "mapTraceLegend": "Vista actual: {viewW} × {viewH} km  ·  Traza disponible: {traceW} × {traceH} km",
+  "@mapTraceLegend": {
+    "placeholders": {
+      "viewW": {
+        "type": "String"
+      },
+      "viewH": {
+        "type": "String"
+      },
+      "traceW": {
+        "type": "String"
+      },
+      "traceH": {
+        "type": "String"
+      }
+    }
+  }
 }

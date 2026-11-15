@@ -1199,4 +1199,14 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get siteReachNote =>
       'Rutas de largo alcance: la rejilla es de 16 m sobre un relieve real, así que no ve obstáculos pequeños y la rugosidad no se conoce. El sitio de 4 km tiene el detalle; este llega a todo el alcance de la EVA (unos 12 km).';
+
+  @override
+  String mapTraceLegend(
+    String viewW,
+    String viewH,
+    String traceW,
+    String traceH,
+  ) {
+    return 'Vista actual: $viewW × $viewH km  ·  Traza disponible: $traceW × $traceH km';
+  }
 }
