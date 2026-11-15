@@ -32,19 +32,32 @@ class AresApp extends StatefulWidget {
   State<AresApp> createState() => _AresAppState();
 }
 
-class _AresAppState extends State<AresApp> {
+class _AresAppState extends State<AresApp> with WidgetsBindingObserver {
   AppModel? _model;
   Object? _error;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _open().then((m) {
       setState(() => _model = m);
       m.recompute();
     }).catchError((Object e) {
       setState(() => _error = e);
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Al pasar a segundo plano o cerrarse la app, guarda ya los cambios pendientes (el guardado normal espera 400 ms).
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) _model?.flushSave();
   }
 
   /// Lee el registro de sitios y las misiones guardadas, y abre la misión que estaba abierta (o el sitio por defecto).
@@ -73,7 +86,7 @@ class _AresAppState extends State<AresApp> {
         entry = registry.byId(pick.siteId)!;
       }
     }
-    return AppModel(await SiteData.load(entry.assetDir), registry: registry, siteId: entry.id, book: book, store: store);
+    return AppModel(await SiteData.load(entry.assetDir), registry: registry, siteId: entry.id, book: book, store: store, useWorker: true);
   }
 
   @override

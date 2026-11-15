@@ -1177,4 +1177,100 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get siteReachNote =>
       'Rutas de largo alcance: la rejilla es de 16 m sobre un relieve real, así que no ve obstáculos pequeños y la rugosidad no se conoce. El sitio de 4 km tiene el detalle; este llega a todo el alcance de la EVA (unos 12 km).';
+
+  @override
+  String get probeTitle => 'INFO DEL PUNTO';
+
+  @override
+  String get probeClose => 'Cerrar';
+
+  @override
+  String get probeCoords => 'Coordenadas';
+
+  @override
+  String get probeLocal => 'Posición local';
+
+  @override
+  String get probeSlope => 'Pendiente';
+
+  @override
+  String get probeRough => 'Rugosidad';
+
+  @override
+  String get probeTerrain => 'Terreno';
+
+  @override
+  String get probeTerrainOk => 'Transitable a pie';
+
+  @override
+  String get probeTerrainBlocked =>
+      'Prohibido o sin dato (pendiente sobre el límite)';
+
+  @override
+  String get probeToHabitat => 'Distancia al hábitat';
+
+  @override
+  String get probeToRoute => 'Distancia a la ruta elegida';
+
+  @override
+  String get probeNoRoute => 'Sin ruta calculada';
+
+  @override
+  String get probeGeology => 'Unidad geológica';
+
+  @override
+  String get probeDune => 'Campo de dunas';
+
+  @override
+  String get probeNearName => 'Rasgo con nombre más cercano';
+
+  @override
+  String get probeCuriosity => 'Recorrido de Curiosity';
+
+  @override
+  String get probeMineral => 'Mineral detectado más cercano';
+
+  @override
+  String get probeCreate => 'Crear objetivo aquí';
+
+  @override
+  String get probeOutside =>
+      'Fuera de la ventana de rutas: aquí no hay datos de terreno, solo la imagen.';
+
+  @override
+  String get probeMineralSulfate => 'Sulfato';
+
+  @override
+  String get probeMineralPhyllo => 'Filosilicato';
+
+  @override
+  String get probeMineralHydrous => 'Mineral hidratado';
+
+  @override
+  String get probeNoData => 'sin dato';
+
+  @override
+  String get probeNearObjective => 'Objetivo más cercano';
+
+  @override
+  String get probeMeasureFrom => 'Medir desde aquí';
+
+  @override
+  String get probeMeasureClear => 'Quitar medida';
+
+  @override
+  String get probeMeasured => 'Desde el punto de medida';
+
+  @override
+  String get probePhoto => 'Foto del rover';
+
+  @override
+  String get layerOpportunity => 'Recorrido de Opportunity';
+
+  @override
+  String get probeOpportunity => 'Recorrido de Opportunity';
+
+  @override
+  String get legendOpportunity =>
+      'Recorrido de Opportunity (MER-B, posición corregida)';
 }

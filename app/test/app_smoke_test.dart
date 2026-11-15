@@ -44,7 +44,7 @@ void main() {
 
     // Modo con rover: recalcula las tres rutas con el rover aparcado y las dibuja.
     await tester.tap(find.text('WITH ROVER'));
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100)); // vence la espera de 50 ms antes de calcular
     await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 8)));
     await tester.pump(const Duration(milliseconds: 300));
     expect(tester.takeException(), isNull, reason: 'modo con rover');
@@ -52,7 +52,7 @@ void main() {
 
     // Rover de apoyo en el hábitat.
     await tester.tap(find.text('SUPPORT'));
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100)); // vence la espera de 50 ms antes de calcular
     await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 8)));
     await tester.pump(const Duration(milliseconds: 300));
     expect(tester.takeException(), isNull, reason: 'modo con rover de apoyo');
@@ -60,7 +60,7 @@ void main() {
 
     // Salida en pareja: dos astronautas con los objetivos repartidos.
     await tester.tap(find.text('PAIR'));
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100)); // vence la espera de 50 ms antes de calcular
     await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 25)));
     await tester.pump(const Duration(milliseconds: 300));
     expect(tester.takeException(), isNull, reason: 'modo en pareja');
@@ -68,7 +68,7 @@ void main() {
 
     // Modo por objetivo: cada objetivo trae su transporte. Se cambia el de t1 desde el diálogo del objetivo.
     await tester.tap(find.text('BY OBJECTIVE'));
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100)); // vence la espera de 50 ms antes de calcular
     await tester.runAsync(() => Future<void>.delayed(const Duration(seconds: 25)));
     await tester.pump(const Duration(milliseconds: 300));
     expect(tester.takeException(), isNull, reason: 'modo por objetivo');

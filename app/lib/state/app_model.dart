@@ -6,6 +6,7 @@ import '../data/mission.dart';
 import '../data/mission_store.dart';
 import '../data/site_data.dart';
 import '../data/site_registry.dart';
+import '../routing/route_worker.dart';
 import '../routing/routing.dart';
 import '../util/sim_pos.dart';
 
@@ -41,8 +42,8 @@ const List<LayerDef> kLayers = [
   LayerDef('slope', LayerKind.modeled, '4 m'),
   LayerDef('forbidden', LayerKind.modeled, '> 25°', hasOpacity: true),
   LayerDef('curiosity', LayerKind.measured, 'MSL', hasOpacity: true),
+  LayerDef('opportunity', LayerKind.measured, 'MER-B', hasOpacity: true),
   LayerDef('thermal', LayerKind.measured, 'THEMIS-IR 100 m'),
-  LayerDef('minerals', LayerKind.example, 'CRISM', hasData: false),
   LayerDef('slope15', LayerKind.modeled, '> 15 %'),
   LayerDef('transit', LayerKind.modeled, 'TES 3.5 km'),
   LayerDef('thermal_night', LayerKind.measured, 'THEMIS-IR 100 m'),
@@ -55,7 +56,7 @@ const List<LayerDef> kLayers = [
 
 /// Estado de la aplicación: capas, objetivos, rutas calculadas y selección.
 class AppModel extends ChangeNotifier {
-  AppModel(this.data, {this.registry = SiteRegistry.empty, String? siteId, MissionBook? book, MissionStore? store})
+  AppModel(this.data, {this.registry = SiteRegistry.empty, String? siteId, MissionBook? book, MissionStore? store, this.useWorker = false})
       : siteId = siteId ?? (registry.defaultId.isEmpty ? 'gale_boxwork' : registry.defaultId),
         store = store ?? MemoryMissionStore(),
         objectives = List.of(book?.current.objectives ?? data.objectives) {
@@ -80,8 +81,8 @@ class AppModel extends ChangeNotifier {
     _nextId = _nextUserId();
   }
 
-  static const _defaultVisible = {'optical': true, 'slope': true, 'curiosity': true};
-  static const _defaultOpacity = {'optical': 1.0, 'hillshade': 0.6, 'slope': 0.4, 'forbidden': 0.6, 'curiosity': 0.9, 'thermal': 0.6, 'slope15': 0.55, 'transit': 0.55, 'thermal_night': 0.6, 'geology': 0.9};
+  static const _defaultVisible = {'optical': true, 'slope': true, 'curiosity': true, 'opportunity': true};
+  static const _defaultOpacity = {'optical': 1.0, 'hillshade': 0.6, 'slope': 0.4, 'forbidden': 0.6, 'curiosity': 0.9, 'opportunity': 0.9, 'thermal': 0.6, 'slope15': 0.55, 'transit': 0.55, 'thermal_night': 0.6, 'geology': 0.9};
 
   /// Datos del sitio abierto. Cambian al llamar a [switchSite].
   SiteData data;
@@ -90,6 +91,24 @@ class AppModel extends ChangeNotifier {
   late MissionBook book;
   final MissionStore store;
   Timer? _saveTimer;
+
+  /// Calcular las rutas en un isolate de fondo (la interfaz no se bloquea). Falso en las pruebas.
+  final bool useWorker;
+  RouteWorker? _worker;
+
+  RouteWorker _workerFor(SiteData d) {
+    var w = _worker;
+    if (w == null || !identical(w.grid, d.grid)) {
+      w?.dispose();
+      w = _worker = RouteWorker(d.grid, d.model);
+    }
+    return w;
+  }
+
+  /// Guarda ya lo que esté pendiente (la app pasa a segundo plano o se cierra).
+  Future<void> flushSave() async {
+    if (_saveTimer?.isActive ?? false) await _saveNow();
+  }
 
   /// Sitios conocidos y el id del abierto.
   final SiteRegistry registry;
@@ -187,6 +206,7 @@ class AppModel extends ChangeNotifier {
   @override
   void dispose() {
     _simTimer?.cancel();
+    _worker?.dispose();
     if (_saveTimer?.isActive ?? false) {
       _saveTimer!.cancel();
       store.save(book);
@@ -443,13 +463,28 @@ class AppModel extends ChangeNotifier {
     notifyListeners();
     await Future<void>.delayed(const Duration(milliseconds: 50));
     final sw = Stopwatch()..start();
-    final planner = Planner(data.grid, data.model, objectives, withRover: exitMode == ExitMode.rover, withSupport: exitMode == ExitMode.support, byObjective: exitMode == ExitMode.byObjective);
-    final PairResult? pair = exitMode == ExitMode.pair ? planner.pair() : null;
-    final result = pair?.routes ?? planner.allThree();
-    if (gen != _gen) return;
+    final req = PlanRequest(
+      List.of(objectives),
+      withRover: exitMode == ExitMode.rover,
+      withSupport: exitMode == ExitMode.support,
+      byObjective: exitMode == ExitMode.byObjective,
+      pair: exitMode == ExitMode.pair,
+    );
+    final PlanOutput? out;
+    try {
+      out = useWorker ? await _workerFor(data).run(req) : runPlan(data.grid, data.model, req);
+    } catch (_) {
+      if (gen == _gen) {
+        computing = false;
+        notifyListeners();
+      }
+      rethrow;
+    }
+    // null: otro pedido más nuevo reemplazó a este; gen distinto: cambió el sitio o la misión.
+    if (out == null || gen != _gen) return;
     computeMs = sw.elapsedMilliseconds;
-    pairResult = pair;
-    routes = result;
+    pairResult = out.pair;
+    routes = out.routes;
     _stopSim();
     simT = 0.0;
     computing = false;

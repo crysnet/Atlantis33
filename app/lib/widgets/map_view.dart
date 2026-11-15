@@ -12,6 +12,7 @@ import '../state/app_model.dart';
 import '../theme/app_theme.dart';
 import '../util/format.dart';
 import 'objective_dialog.dart';
+import 'point_info.dart';
 import 'tile_layer.dart';
 
 Color routeColor(String profile) => switch (profile) {
@@ -45,6 +46,12 @@ class _MapViewState extends State<MapView> {
   double _s0 = 1;
   Offset _w0 = Offset.zero;
   String? _dragId;
+
+  /// Punto tocado en el mapa (metros locales) cuyo detalle muestra la tarjeta; null si no hay.
+  Offset? _probe;
+
+  /// Origen de la medida de distancia (metros locales), o null.
+  Offset? _anchor;
   final ValueNotifier<Offset?> _hover = ValueNotifier(null);
   ui.Image? _forbidden;
   SiteData? _site;
@@ -68,6 +75,8 @@ class _MapViewState extends State<MapView> {
     // Sitio nuevo: se rehace la imagen de zonas prohibidas y se reajusta la vista al recuadro.
     _site = d;
     _worldM = d.sizeM;
+    _probe = null;
+    _anchor = null;
     _fitted = false;
     _forbidden?.dispose();
     _forbidden = null;
@@ -173,7 +182,11 @@ class _MapViewState extends State<MapView> {
                 m.finishMove();
               }
             },
+            // Con el dedo no hay cursor: la lectura de abajo sigue al último toque o pulsación larga.
+            onLongPressStart: (d) => _hover.value = d.localPosition,
+            onLongPressMoveUpdate: (d) => _hover.value = d.localPosition,
             onTapUp: (d) {
+              _hover.value = d.localPosition;
               final w = _toWorld(d.localPosition);
               if (m.addMode) {
                 if (w.dx >= 0 && w.dy >= 0 && w.dx < m.data.sizeM && w.dy < m.data.sizeM) {
@@ -184,7 +197,12 @@ class _MapViewState extends State<MapView> {
               }
               final hit = _hitObjective(m, d.localPosition);
               m.selectObjective(hit);
-              if (hit != null) showObjectiveDialog(context, m, hit);
+              if (hit != null) {
+                setState(() => _probe = null);
+                showObjectiveDialog(context, m, hit);
+              } else {
+                setState(() => _probe = w);
+              }
             },
             child: ClipRect(
               child: Stack(
@@ -202,12 +220,37 @@ class _MapViewState extends State<MapView> {
                         pnrLabel: l.pnrShort,
                         frameLabel: l.routeAreaLabel,
                         showSim: widget.forceSim || m.simActive,
+                        probe: _probe,
+                        anchor: _anchor,
                       ),
                     ),
                   ),
                   Positioned(left: 12, top: 12, child: _toolbar(l)),
                   if (m.addMode) Positioned(top: 12, left: 0, right: 0, child: Center(child: _banner(l.objectivesAddActive))),
                   if (m.computing) Positioned(top: 12, left: 0, right: 0, child: Center(child: _banner(l.computing, color: AppColors.amber))),
+                  if (_probe != null)
+                    Positioned(
+                      right: 12,
+                      top: 52,
+                      bottom: 64,
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: PointInfoCard(
+                          model: m,
+                          x: _probe!.dx,
+                          y: _probe!.dy,
+                          anchor: _anchor,
+                          onAnchor: () => setState(() => _anchor = _anchor == null ? _probe : null),
+                          onClose: () => setState(() => _probe = null),
+                          onCreate: () {
+                            final p = _probe!;
+                            setState(() => _probe = null);
+                            final id = m.addObjective(p.dx, p.dy, l.objectiveNewName);
+                            showObjectiveDialog(context, m, id);
+                          },
+                        ),
+                      ),
+                    ),
                   Positioned(left: 12, bottom: 12, child: _readout(m, l)),
                   Positioned(right: 12, bottom: 12, child: _scaleBar()),
                 ],
@@ -412,6 +455,8 @@ class _OverlayPainter extends CustomPainter {
     required this.pnrLabel,
     required this.frameLabel,
     required this.showSim,
+    this.probe,
+    this.anchor,
   });
 
   final AppModel model;
@@ -422,6 +467,12 @@ class _OverlayPainter extends CustomPainter {
   final String pnrLabel;
   final String frameLabel;
   final bool showSim;
+
+  /// Punto tocado, en metros locales.
+  final Offset? probe;
+
+  /// Origen de la medida, en metros locales.
+  final Offset? anchor;
 
   Offset _p(double x, double y) => Offset(origin.dx + x * scale, origin.dy + y * scale);
 
@@ -590,14 +641,17 @@ class _OverlayPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final d = model.data;
     // Recorrido real de Curiosity.
-    final cur = model.layers['curiosity']!;
+    // En Meridiani el recorrido del rover es el de Opportunity (capa propia); en Gale, el de Curiosity.
+    final opp = model.layerDefs.any((x) => x.id == 'opportunity');
+    final cur = model.layers[opp ? 'opportunity' : 'curiosity']!;
+    final gap = opp ? 400.0 : 120.0;
     if (cur.visible) {
       final a = cur.opacity;
       final line = Paint()..color = AppColors.text.withValues(alpha: 0.5 * a)..style = PaintingStyle.stroke..strokeWidth = 1.2;
       final camp = Paint()..color = AppColors.cyan.withValues(alpha: 0.9 * a)..style = PaintingStyle.stroke..strokeWidth = 1.8;
       CuriosityPoint? prev;
       for (final pt in d.curiosity) {
-        if (prev != null && math.sqrt(math.pow(pt.x - prev.x, 2) + math.pow(pt.y - prev.y, 2)) < 120) {
+        if (prev != null && math.sqrt(math.pow(pt.x - prev.x, 2) + math.pow(pt.y - prev.y, 2)) < gap) {
           canvas.drawLine(_p(prev.x, prev.y), _p(pt.x, pt.y), pt.campaign && prev.campaign ? camp : line);
         }
         prev = pt;
@@ -702,8 +756,31 @@ class _OverlayPainter extends CustomPainter {
       canvas.drawPath(arrow, Paint()..color = AppColors.cyan);
       canvas.drawPath(arrow, Paint()..color = AppColors.bg..style = PaintingStyle.stroke..strokeWidth = 1.5);
     }
+    _probeMark(canvas);
   }
 
   @override
   bool shouldRepaint(_OverlayPainter old) => true;
+
+  /// Mira sobre el punto tocado.
+  void _probeMark(Canvas canvas) {
+    final q = probe;
+    final a0 = anchor;
+    if (a0 != null) {
+      final a = _p(a0.dx, a0.dy);
+      final amber = Paint()..color = AppColors.amber..style = PaintingStyle.stroke..strokeWidth = 2;
+      if (q != null) canvas.drawLine(a, _p(q.dx, q.dy), amber);
+      canvas.drawCircle(a, 6, Paint()..color = AppColors.amber);
+      canvas.drawCircle(a, 6, Paint()..color = AppColors.bg..style = PaintingStyle.stroke..strokeWidth = 1.5);
+    }
+    if (q == null) return;
+    final c = _p(q.dx, q.dy);
+    final paint = Paint()..color = AppColors.cyan..style = PaintingStyle.stroke..strokeWidth = 2;
+    canvas.drawCircle(c, 9, Paint()..color = AppColors.bg.withValues(alpha: 0.55));
+    canvas.drawCircle(c, 9, paint);
+    canvas.drawLine(c + const Offset(-16, 0), c + const Offset(-5, 0), paint);
+    canvas.drawLine(c + const Offset(5, 0), c + const Offset(16, 0), paint);
+    canvas.drawLine(c + const Offset(0, -16), c + const Offset(0, -5), paint);
+    canvas.drawLine(c + const Offset(0, 5), c + const Offset(0, 16), paint);
+  }
 }

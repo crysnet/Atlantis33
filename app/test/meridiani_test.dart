@@ -20,7 +20,8 @@ void main() {
         expect(((d.site['grid'] as Map<String, dynamic>)['cell_m'] as num).toDouble(), baseCell);
         expect(d.grid.cellM, routeCell);
         expect(d.assetDir, dir);
-        expect(d.curiosity, isEmpty);
+        // recorrido de Opportunity: todos los sitios de Meridiani lo traen salvo la zona habitable (Opportunity nunca pasó por ahí)
+        expect(d.curiosity.isEmpty, dir.endsWith('habitat'));
         expect(d.roverPhotos, isEmpty);
         expect(d.tileCount, dir.endsWith('habitat') ? 3 : (dir.endsWith('regional') ? 4 : 5));
         expect(d.tileSizeM(0), closeTo(d.tileSizeM(1) * 2, 1e-6));

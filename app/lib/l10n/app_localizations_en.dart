@@ -1175,4 +1175,99 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get siteReachNote =>
       'Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km).';
+
+  @override
+  String get probeTitle => 'POINT INFO';
+
+  @override
+  String get probeClose => 'Close';
+
+  @override
+  String get probeCoords => 'Coordinates';
+
+  @override
+  String get probeLocal => 'Local position';
+
+  @override
+  String get probeSlope => 'Slope';
+
+  @override
+  String get probeRough => 'Roughness';
+
+  @override
+  String get probeTerrain => 'Terrain';
+
+  @override
+  String get probeTerrainOk => 'Passable on foot';
+
+  @override
+  String get probeTerrainBlocked => 'Forbidden or no data (slope over limit)';
+
+  @override
+  String get probeToHabitat => 'Distance to habitat';
+
+  @override
+  String get probeToRoute => 'Distance to selected route';
+
+  @override
+  String get probeNoRoute => 'No route calculated';
+
+  @override
+  String get probeGeology => 'Geologic unit';
+
+  @override
+  String get probeDune => 'Dune field';
+
+  @override
+  String get probeNearName => 'Nearest named feature';
+
+  @override
+  String get probeCuriosity => 'Curiosity track';
+
+  @override
+  String get probeMineral => 'Nearest mineral detection';
+
+  @override
+  String get probeCreate => 'Create objective here';
+
+  @override
+  String get probeOutside =>
+      'Outside the route window: no terrain data here, only the image.';
+
+  @override
+  String get probeMineralSulfate => 'Sulfate';
+
+  @override
+  String get probeMineralPhyllo => 'Phyllosilicate';
+
+  @override
+  String get probeMineralHydrous => 'Hydrated mineral';
+
+  @override
+  String get probeNoData => 'no data';
+
+  @override
+  String get probeNearObjective => 'Nearest objective';
+
+  @override
+  String get probeMeasureFrom => 'Measure from here';
+
+  @override
+  String get probeMeasureClear => 'Clear measurement';
+
+  @override
+  String get probeMeasured => 'From the measure point';
+
+  @override
+  String get probePhoto => 'Rover photo';
+
+  @override
+  String get layerOpportunity => 'Opportunity track';
+
+  @override
+  String get probeOpportunity => 'Opportunity track';
+
+  @override
+  String get legendOpportunity =>
+      'Opportunity track (MER-B, corrected position)';
 }

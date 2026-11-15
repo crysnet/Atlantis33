@@ -2287,6 +2287,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km).'**
   String get siteReachNote;
+
+  /// No description provided for @probeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'POINT INFO'**
+  String get probeTitle;
+
+  /// No description provided for @probeClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get probeClose;
+
+  /// No description provided for @probeCoords.
+  ///
+  /// In en, this message translates to:
+  /// **'Coordinates'**
+  String get probeCoords;
+
+  /// No description provided for @probeLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local position'**
+  String get probeLocal;
+
+  /// No description provided for @probeSlope.
+  ///
+  /// In en, this message translates to:
+  /// **'Slope'**
+  String get probeSlope;
+
+  /// No description provided for @probeRough.
+  ///
+  /// In en, this message translates to:
+  /// **'Roughness'**
+  String get probeRough;
+
+  /// No description provided for @probeTerrain.
+  ///
+  /// In en, this message translates to:
+  /// **'Terrain'**
+  String get probeTerrain;
+
+  /// No description provided for @probeTerrainOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Passable on foot'**
+  String get probeTerrainOk;
+
+  /// No description provided for @probeTerrainBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Forbidden or no data (slope over limit)'**
+  String get probeTerrainBlocked;
+
+  /// No description provided for @probeToHabitat.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance to habitat'**
+  String get probeToHabitat;
+
+  /// No description provided for @probeToRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance to selected route'**
+  String get probeToRoute;
+
+  /// No description provided for @probeNoRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'No route calculated'**
+  String get probeNoRoute;
+
+  /// No description provided for @probeGeology.
+  ///
+  /// In en, this message translates to:
+  /// **'Geologic unit'**
+  String get probeGeology;
+
+  /// No description provided for @probeDune.
+  ///
+  /// In en, this message translates to:
+  /// **'Dune field'**
+  String get probeDune;
+
+  /// No description provided for @probeNearName.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearest named feature'**
+  String get probeNearName;
+
+  /// No description provided for @probeCuriosity.
+  ///
+  /// In en, this message translates to:
+  /// **'Curiosity track'**
+  String get probeCuriosity;
+
+  /// No description provided for @probeMineral.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearest mineral detection'**
+  String get probeMineral;
+
+  /// No description provided for @probeCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create objective here'**
+  String get probeCreate;
+
+  /// No description provided for @probeOutside.
+  ///
+  /// In en, this message translates to:
+  /// **'Outside the route window: no terrain data here, only the image.'**
+  String get probeOutside;
+
+  /// No description provided for @probeMineralSulfate.
+  ///
+  /// In en, this message translates to:
+  /// **'Sulfate'**
+  String get probeMineralSulfate;
+
+  /// No description provided for @probeMineralPhyllo.
+  ///
+  /// In en, this message translates to:
+  /// **'Phyllosilicate'**
+  String get probeMineralPhyllo;
+
+  /// No description provided for @probeMineralHydrous.
+  ///
+  /// In en, this message translates to:
+  /// **'Hydrated mineral'**
+  String get probeMineralHydrous;
+
+  /// No description provided for @probeNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'no data'**
+  String get probeNoData;
+
+  /// No description provided for @probeNearObjective.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearest objective'**
+  String get probeNearObjective;
+
+  /// No description provided for @probeMeasureFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure from here'**
+  String get probeMeasureFrom;
+
+  /// No description provided for @probeMeasureClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear measurement'**
+  String get probeMeasureClear;
+
+  /// No description provided for @probeMeasured.
+  ///
+  /// In en, this message translates to:
+  /// **'From the measure point'**
+  String get probeMeasured;
+
+  /// No description provided for @probePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Rover photo'**
+  String get probePhoto;
+
+  /// No description provided for @layerOpportunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opportunity track'**
+  String get layerOpportunity;
+
+  /// No description provided for @probeOpportunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opportunity track'**
+  String get probeOpportunity;
+
+  /// No description provided for @legendOpportunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opportunity track (MER-B, corrected position)'**
+  String get legendOpportunity;
 }
 
 class _AppLocalizationsDelegate

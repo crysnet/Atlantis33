@@ -172,20 +172,7 @@ class SafetyScreen extends StatelessWidget {
             : Column(children: [terrain, const SizedBox(height: 10), cons]);
       }),
       const SizedBox(height: 10),
-      LayoutBuilder(builder: (context, c) {
-        final wide = c.maxWidth >= 900;
-        const dust = _DustPanel();
-        const rules = _RulesPanel();
-        return wide
-            ? IntrinsicHeight(
-                child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                  Expanded(flex: 4, child: dust),
-                  SizedBox(width: 10),
-                  Expanded(flex: 6, child: rules),
-                ]),
-              )
-            : const Column(children: [dust, SizedBox(height: 10), rules]);
-      }),
+      const _RulesPanel(),
     ]);
   }
 }
@@ -530,30 +517,6 @@ class _TempPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_TempPainter old) => true;
-}
-
-class _DustPanel extends StatelessWidget {
-  const _DustPanel();
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    return _Box(
-      icon: Icons.blur_on,
-      title: l.panelDust,
-      tag: Tag(l.kindExample, color: AppColors.textMute),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(border: Border.all(color: AppColors.hairline)),
-        child: Column(children: [
-          const Icon(Icons.hourglass_empty, size: 22, color: AppColors.textMute),
-          const SizedBox(height: 8),
-          Text(l.dustNone, textAlign: TextAlign.center, style: AppText.body(12, color: AppColors.textMute, height: 1.4)),
-        ]),
-      ),
-    );
-  }
 }
 
 /// Muestra los umbrales de GO / NO-GO, que son supuestos del equipo.
