@@ -1,206 +1,35 @@
 {
-  "id": "meridiani_regional",
-  "name": "Meridiani Planum: regional context (100 km)",
-  "frame": {
-    "description": "Local plane in metres. x grows east, y grows south, origin at the north-west corner of the box.",
-    "size_m": 100000.0
-  },
+  "name": "Meridiani Planum — Sinus Meridiani (CTX)",
+  "quality": "indicative",
+  "crs": "+proj=eqc +lat_ts=0 +lat_0=0 +lon_0=0 +a=3396190 +b=3396190 +units=m +no_defs",
   "georeference": {
-    "projection": "Mars equirectangular, sphere radius 3396190 m, central meridian 0, planetocentric latitude",
+    "projection": "Equirectangular (sphere R = 3396190 m, lon_0 = 0, lat_0 = 0)",
+    "origin": "top_left (northwest corner of the site box)",
+    "origin_easting_m": -486526.7172712975,
+    "origin_northing_m": 770.5710678029809,
+    "origin_lon_deg": -8.208,
+    "origin_lat_deg": 0.013,
+    "x_axis": "east (+m from origin)",
+    "y_axis": "south (+m from origin)",
     "radius_m": 3396190.0,
-    "origin_easting_m": -376010.8363781842,
-    "origin_northing_m": -132862.4418593997,
-    "easting_m": "origin_easting_m + x_m",
-    "northing_m": "origin_northing_m - y_m",
-    "lon_deg": "degrees(easting_m / radius_m)",
-    "lat_deg": "degrees(northing_m / radius_m)",
-    "center_lon_deg": -5.5,
-    "center_lat_deg": -3.085
+    "formula_lon_deg": "(origin_easting_m + x_m) / radius_m * 180 / pi",
+    "formula_lat_deg": "(origin_northing_m - y_m) / radius_m * 180 / pi"
   },
-  "grid": {
-    "cell_m": 400.0,
-    "width": 250,
-    "height": 250,
-    "order": "row-major, north to south, west to east",
-    "components": {
-      "slope": {
-        "file": "slope.bin",
-        "dtype": "uint8",
-        "unit_deg": 0.5,
-        "nodata": 255
-      },
-      "rough": {
-        "file": "rough.bin",
-        "dtype": "uint8",
-        "unit_cm": 0.5,
-        "nodata": 255,
-        "saturates_at": 254
-      },
-      "forbidden": {
-        "file": "forbidden.bin",
-        "dtype": "uint8",
-        "values": {
-          "0": "walkable",
-          "1": "forbidden"
-        }
-      },
-      "elev": {
-        "file": "elev.bin",
-        "dtype": "uint16-le",
-        "unit_m": 0.05,
-        "offset_m": -3030.0,
-        "nodata": 65535
-      }
-    }
-  },
-  "tiles": {
-    "template": "ortho/{z}/{x}/{y}.jpg",
-    "tile_px": 512,
-    "min_zoom": 0,
-    "max_zoom": 3,
-    "world_size_m": 102400.0,
-    "m_per_px": [
-      200.0,
-      100.0,
-      50.0,
-      25.0
-    ],
-    "covered_size_m": 100000.0
+  "frame": {
+    "size_m": 327680.0,
+    "pixel_m": 640.0
   },
   "habitat": {
-    "x_m": 50200.0,
-    "y_m": 50200.0,
-    "col": 125,
-    "row": 125,
-    "lon": -5.496625879028377,
-    "lat": -3.0883741209716233,
-    "elevation_m": -1610.0,
-    "flat_radius_m": 6905.070600652827,
-    "kind": "assumption",
+    "x_m": 160715.9,
+    "y_m": 183833.0,
+    "row": 287,
+    "col": 251,
+    "elev_m": -1608.0,
+    "slope_deg": 0.93,
     "note": "Habitation zone of NASA's first Exploration Zone workshop (EZMars layer of Mars Trek), moved to the nearest walkable cell."
   },
-  "layers": [
-    {
-      "id": "optical",
-      "kind": "measured",
-      "file": "tiles",
-      "source": "CTX (MRO) mosaic of Meridiani Planum - Sinus Meridiani, via NASA Mars Trek (WMTS level 11, 20 m/px)",
-      "resolution_m": 20.35
-    },
-    {
-      "id": "hillshade",
-      "kind": "measured",
-      "file": "layers/hillshade.png",
-      "source": "USGS MOLA and HRSC blended DEM, 200 m/px, read at 400 m/px: local slopes are strongly smoothed",
-      "resolution_m": 400.0
-    },
-    {
-      "id": "slope",
-      "kind": "modeled",
-      "file": "layers/slope.png",
-      "source": "Computed from the DEM above",
-      "resolution_m": 400.0
-    },
-    {
-      "id": "forbidden",
-      "kind": "modeled",
-      "file": "grid/forbidden.bin",
-      "source": "Slope above limit",
-      "resolution_m": 400.0
-    },
-    {
-      "id": "slope15",
-      "kind": "modeled",
-      "file": "layers/slope15.png",
-      "source": "Slope above 15 % (8.5 deg), computed from the DEM above",
-      "resolution_m": 400.0
-    },
-    {
-      "id": "transit",
-      "kind": "modeled",
-      "file": "layers/transit.png",
-      "source": "TES Dust Cover Index (ASU, 3.5 km/px) and TES thermal inertia (ASU, 7.5 km/px) combined with the team's thresholds",
-      "resolution_m": 3500.0,
-      "stats": {
-        "dci_min": 0.9514173269271851,
-        "dci_max": 0.9883464574813843,
-        "ti_min": 187.0,
-        "ti_max": 264.0,
-        "fractions": {
-          "green": 0.0,
-          "yellow": 1.0,
-          "red": 0.0,
-          "none": 0.0
-        }
-      }
-    },
-    {
-      "id": "thermal_night",
-      "kind": "measured",
-      "file": "layers/thermal_night.png",
-      "source": "THEMIS-IR night mosaic (Mars Odyssey) via NASA Mars Trek; relative brightness, a proxy for thermal inertia",
-      "resolution_m": 100.0
-    },
-    {
-      "id": "minerals_pts",
-      "kind": "measured",
-      "file": "vectors.json",
-      "source": "Aqueous mineral distribution and hydrous mineral detections (CRISM, OMEGA) via NASA Mars Trek",
-      "resolution_m": null
-    },
-    {
-      "id": "zones",
-      "kind": "measured",
-      "file": "vectors.json",
-      "source": "Exploration zones, habitation zones, landing sites and regions of interest (NASA EMC workshop, 2015) via NASA Mars Trek",
-      "resolution_m": null
-    },
-    {
-      "id": "names",
-      "kind": "measured",
-      "file": "vectors.json",
-      "source": "IAU place names via NASA Mars Trek",
-      "resolution_m": null
-    },
-    {
-      "id": "craters",
-      "kind": "measured",
-      "file": "vectors.json",
-      "source": "Robbins crater database, craters of 1 km and larger (USGS Astrogeology)",
-      "resolution_m": null
-    },
-    {
-      "id": "geology",
-      "kind": "measured",
-      "file": "vectors.json",
-      "source": "Global geologic map SIM 3292 (USGS Astrogeology) and dune field database (via NASA Mars Trek); global scale",
-      "resolution_m": null
-    }
-  ],
-  "quality": "indicative",
-  "regional": true,
-  "context": {
-    "x_m": -50000.0,
-    "y_m": -50000.0,
-    "size_m": 200000.0,
-    "template": "context/{z}/{x}/{y}.jpg",
-    "tile_px": 512,
-    "min_zoom": 0,
-    "max_zoom": 2,
-    "world_size_m": 204800.0,
-    "m_per_px": [
-      400.0,
-      200.0,
-      100.0
-    ],
-    "source": "CTX (MRO) mosaic of Meridiani Planum - Sinus Meridiani, via NASA Mars Trek (WMTS level 9, 81 m/px)",
-    "resolution_m": 81.4
-  },
-  "base": {
+  "tiles": {
     "asset_dir": "base_meridiani",
-    "x_m": -110515.88089311327,
-    "y_m": -133633.01292720268,
-    "size_m": 327680.0,
     "tile_px": 512,
     "max_zoom": 4,
     "world_size_m": 327680.0,
@@ -210,8 +39,54 @@
       160.0,
       80.0,
       40.0
-    ],
-    "source": "CTX (MRO) mosaic of Meridiani Planum - Sinus Meridiani, via NASA Mars Trek (WMTS level 10, 40 m/px)",
-    "resolution_m": 40.7
+    ]
+  },
+  "layers": {
+    "slope": {
+      "file": "layers/slope.png",
+      "width": 1024,
+      "height": 1024
+    },
+    "transit": {
+      "file": "layers/transit.png",
+      "width": 1024,
+      "height": 1024
+    },
+    "thermal_night": {
+      "file": "layers/thermal_night.png",
+      "width": 1024,
+      "height": 1024
+    }
+  },
+  "grid": {
+    "width": 512,
+    "height": 512,
+    "cell_m": 640.0,
+    "order": "row_major_north_to_south_west_to_east",
+    "components": {
+      "slope": {
+        "file": "grid/slope.bin",
+        "dtype": "u8",
+        "unit_deg": 0.25,
+        "nodata": 255
+      },
+      "rough": {
+        "file": "grid/rough.bin",
+        "dtype": "u8",
+        "unit_cm": 0.5,
+        "nodata": 255
+      },
+      "forbidden": {
+        "file": "grid/forbidden.bin",
+        "dtype": "u8"
+      },
+      "elev": {
+        "file": "grid/elev.bin",
+        "dtype": "u16le",
+        "unit_m": 0.1,
+        "offset_m": -3022,
+        "nodata": 65535
+      }
+    }
   }
 }

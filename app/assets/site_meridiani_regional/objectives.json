@@ -8,10 +8,11 @@
       "type": "image",
       "priority": 4,
       "work_min": 30,
-      "x_m": 52200.0,
-      "y_m": 47400.0,
+      "x_m": 162715.9,
+      "y_m": 181033.0,
       "transport": "hybrid",
-      "source": "Example point chosen by the team from the terrain (not a science target)"
+      "source": "Example point chosen by the team from the terrain (not a science target)",
+      "elev_m": -1551.0
     },
     {
       "id": "e2",
@@ -19,10 +20,11 @@
       "type": "measurement",
       "priority": 3,
       "work_min": 25,
-      "x_m": 49800.0,
-      "y_m": 47800.0,
+      "x_m": 160315.9,
+      "y_m": 181433.0,
       "transport": "vehicle",
-      "source": "Example point chosen by the team from the terrain (not a science target)"
+      "source": "Example point chosen by the team from the terrain (not a science target)",
+      "elev_m": -1587.0
     },
     {
       "id": "e4",
@@ -30,10 +32,11 @@
       "type": "equipment",
       "priority": 2,
       "work_min": 20,
-      "x_m": 49800.0,
-      "y_m": 48200.0,
+      "x_m": 160315.9,
+      "y_m": 181833.0,
       "transport": "vehicle",
-      "source": "Example point chosen by the team from the terrain (not a science target)"
+      "source": "Example point chosen by the team from the terrain (not a science target)",
+      "elev_m": -1575.0
     }
   ]
 }

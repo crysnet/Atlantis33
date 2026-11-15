@@ -135,6 +135,14 @@ class SiteData {
 
   String assetPath(String rel) => 'assets/$assetDir/$rel';
 
+  String tileAssetPath(int z, int tx, int ty) {
+    final tiles = site['tiles'] as Map<String, dynamic>;
+    final dir = tiles['asset_dir'] as String?;
+    return dir != null
+        ? 'assets/$dir/$z/$tx/$ty.jpg'
+        : assetPath('ortho/$z/$tx/$ty.jpg');
+  }
+
   double get sizeM =>
       ((site['frame'] as Map<String, dynamic>)['size_m'] as num).toDouble();
 

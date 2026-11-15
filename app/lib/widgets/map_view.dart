@@ -239,7 +239,7 @@ class _MapViewState extends State<MapView> {
   }
 
   Widget _scaleBar() {
-    const nice = [10, 20, 50, 100, 200, 500, 1000, 2000];
+    const nice = [10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000];
     var meters = nice.first;
     for (final n in nice) {
       if (n * _scale <= 150) meters = n;

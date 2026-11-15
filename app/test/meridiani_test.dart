@@ -10,7 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  for (final (dir, size, baseCell, routeCell, indicative) in [('site_meridiani_endeavour', 4000.0, 2.0, 4.0, false), ('site_meridiani_habitat', 20000.0, 100.0, 100.0, true), ('site_meridiani_regional', 100000.0, 400.0, 400.0, true), ('site_meridiani_endeavour_reach', 22000.0, 16.0, 16.0, false)]) {
+  for (final (dir, size, baseCell, routeCell, indicative) in [('site_meridiani_endeavour', 4000.0, 2.0, 4.0, false), ('site_meridiani_habitat', 20000.0, 100.0, 100.0, true), ('site_meridiani_regional', 327680.0, 640.0, 640.0, true), ('site_meridiani_endeavour_reach', 22000.0, 16.0, 16.0, false)]) {
     group(dir, () {
       late SiteData d;
       setUpAll(() async => d = await SiteData.load(dir));
@@ -22,7 +22,7 @@ void main() {
         expect(d.assetDir, dir);
         expect(d.curiosity, isEmpty);
         expect(d.roverPhotos, isEmpty);
-        expect(d.tileCount, dir.endsWith('habitat') ? 3 : (dir.endsWith('regional') ? 4 : 5));
+        expect(d.tileCount, dir.endsWith('habitat') ? 3 : 5);
         expect(d.tileSizeM(0), closeTo(d.tileSizeM(1) * 2, 1e-6));
       });
 
@@ -45,22 +45,22 @@ void main() {
 
       test('trae las capas de F5: minerales y zonas en coordenadas locales del sitio', () {
         final v = d.vectors;
+        final bx = d.base?.x ?? 0.0;
+        final by = d.base?.y ?? 0.0;
+        final bSize = d.base?.sizeM ?? d.sizeM;
         for (final q in v.minerals) {
-          // Los minerales cubren todo el mosaico CTX (tools/21_minerales_ctx.py): dentro del mapa base, no del marco de contexto.
-          final c = d.base!;
-          expect(q.x, inInclusiveRange(c.x, c.x + c.sizeM));
-          expect(q.y, inInclusiveRange(c.y, c.y + c.sizeM));
+          expect(q.x, inInclusiveRange(bx, bx + bSize));
+          expect(q.y, inInclusiveRange(by, by + bSize));
           expect(['sulfate', 'phyllosilicate', 'carbonate', 'hydrous'], contains(q.cls));
         }
         // Redes de valles (Hynek 2010) recortadas al mapa base (tools/21_minerales_ctx.py).
         expect(v.valleys, isNotEmpty);
-        final b = d.base!;
         for (final vf in v.valleys) {
           for (final p in vf.paths) {
             expect(p.length, greaterThanOrEqualTo(2));
             for (final (x, y) in p) {
-              expect(x, inInclusiveRange(b.x, b.x + b.sizeM));
-              expect(y, inInclusiveRange(b.y, b.y + b.sizeM));
+              expect(x, inInclusiveRange(bx, bx + bSize));
+              expect(y, inInclusiveRange(by, by + bSize));
             }
           }
         }
@@ -74,13 +74,19 @@ void main() {
       });
 
       test('trae el marco de contexto y los rasgos de F5b', () {
+        expect(d.vectors.craters, isNotEmpty);
+        if (dir.endsWith('regional')) {
+          // El sitio regional ya abarca toda la traza de Sinus Meridiani (327,68 km) sin marco intermedio.
+          expect(d.context, isNull);
+          expect(d.base, isNull);
+          return;
+        }
         final c = d.context!;
         expect(c.sizeM, greaterThan(size * 1.5), reason: 'el marco cubre mucho más que la ventana');
         expect(c.x, lessThan(0));
         expect(c.y, lessThan(0));
         expect(c.tileMPerPx.length, c.maxZoom + 1);
         expect(File('assets/$dir/context/0/0/0.jpg').existsSync(), isTrue);
-        expect(d.vectors.craters, isNotEmpty);
         expect(d.vectors.areas, isNotEmpty, reason: 'unidades geológicas');
         for (final a in d.vectors.areas) {
           expect(a.rings, isNotEmpty);
@@ -88,6 +94,12 @@ void main() {
       });
 
       test('trae el mapa base de toda la región, compartido', () {
+        if (dir.endsWith('regional')) {
+          expect(d.tileAssetPath(0, 0, 0), 'assets/base_meridiani/0/0/0.jpg');
+          expect(File('assets/base_meridiani/0/0/0.jpg').existsSync(), isTrue);
+          expect(File('assets/base_meridiani/4/8/8.jpg').existsSync(), isTrue);
+          return;
+        }
         final b = d.base!;
         expect(b.assetDir, 'base_meridiani');
         expect(b.sizeM, 327680);
@@ -100,7 +112,7 @@ void main() {
         final site = d.site;
         expect((site['quality'] == 'indicative'), indicative);
         for (final z in List.generate(d.tileCount, (i) => i)) {
-          expect(d.assetPath('ortho/$z/0/0.jpg'), contains(dir));
+          expect(File(d.tileAssetPath(z, 0, 0)).existsSync(), isTrue);
         }
       });
     });

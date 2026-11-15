@@ -19,7 +19,7 @@ List<Widget> tileWidgets(SiteData d, int z, double x0, double y0, double x1, dou
             width: tileM + 0.3,
             height: tileM + 0.3,
             child: Image.asset(
-              d.assetPath('ortho/$z/$tx/$ty.jpg'),
+              d.tileAssetPath(z, tx, ty),
               fit: BoxFit.fill,
               filterQuality: FilterQuality.medium,
               gaplessPlayback: true,
