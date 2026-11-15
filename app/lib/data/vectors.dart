@@ -70,6 +70,12 @@ class AreaFeature {
   final List<List<(double, double)>> rings;
 }
 
+class ValleyFeature {
+  const ValleyFeature({required this.paths});
+
+  final List<List<(double, double)>> paths;
+}
+
 List<(double, double)> _parseRing(List raw) => [
       for (final pt in raw)
         (((pt as List)[0] as num).toDouble(), (pt[1] as num).toDouble()),
@@ -82,6 +88,7 @@ class SiteVectors {
     this.craters = const [],
     this.names = const [],
     this.areas = const [],
+    this.valleys = const [],
   });
 
   static const SiteVectors empty = SiteVectors();
@@ -91,6 +98,7 @@ class SiteVectors {
   final List<CraterFeature> craters;
   final List<NameFeature> names;
   final List<AreaFeature> areas;
+  final List<ValleyFeature> valleys;
 
   factory SiteVectors.fromJson(Map<String, dynamic> j) {
     final minerals = <MineralPoint>[];
@@ -98,6 +106,7 @@ class SiteVectors {
     final craters = <CraterFeature>[];
     final names = <NameFeature>[];
     final areas = <AreaFeature>[];
+    final valleys = <ValleyFeature>[];
 
     for (final item in (j['features'] as List? ?? const [])) {
       final f = item as Map<String, dynamic>;
@@ -163,6 +172,13 @@ class SiteVectors {
               rings: [for (final r in rawRings) _parseRing(r as List)],
             ),
           );
+        case 'valley':
+          final rawPaths = f['paths'] as List? ?? const [];
+          valleys.add(
+            ValleyFeature(
+              paths: [for (final p in rawPaths) _parseRing(p as List)],
+            ),
+          );
       }
     }
 
@@ -172,6 +188,7 @@ class SiteVectors {
       craters: craters,
       names: names,
       areas: areas,
+      valleys: valleys,
     );
   }
 }
