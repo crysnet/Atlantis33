@@ -102,7 +102,7 @@ flutter run -d <id-del-dispositivo>
 Para la versión web: `flutter build web --release` y servir `app/build/web/`.
 Para la APK: `flutter build apk --release` (salida en `app/build/app/outputs/flutter-apk/`).
 
-Los datos que usa la app ya están empaquetados en `app/assets/`. Para regenerarlos (descargan de servidores de la NASA y el USGS) ver la sección «Cómo regenerar los datos» de [`RETOMAR.md`](RETOMAR.md).
+Los datos que usa la app ya están empaquetados en `app/assets/`. Para regenerarlos (descargan de servidores de la NASA y el USGS) ver la sección 6 («Datos que no están en el repositorio y cómo regenerarlos») de [`RETOMAR.md`](RETOMAR.md).
 
 ## Límites
 
