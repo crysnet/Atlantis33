@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../state/app_model.dart';
 import '../theme/app_theme.dart';
-import 'common.dart';
 import 'missions_dialog.dart';
 
 /// Barra superior: marca, sitio, pestañas, idioma y estado de la ruta seleccionada.
@@ -15,15 +14,6 @@ class TopBar extends StatelessWidget {
     final m = AppScope.of(context);
     final l = AppLocalizations.of(context)!;
     final tabs = [l.navPlan, l.navSafety, l.navScience];
-    final r = m.route;
-    final (statusText, statusColor) = r == null
-        ? ('…', AppColors.textMute)
-        : switch (r.status) {
-            'ok' => (l.statusFeasible, AppColors.green),
-            'not_feasible' => (l.statusNotFeasible, AppColors.red),
-            'unreachable' => (l.statusUnreachable, AppColors.red),
-            _ => (l.statusNoTarget, AppColors.amber),
-          };
     return Container(
       height: 54,
       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -60,8 +50,6 @@ class TopBar extends StatelessWidget {
           ),
         const Spacer(),
         _langSwitch(m),
-        const SizedBox(width: 14),
-        Tag(statusText, color: statusColor, filled: true),
       ]),
     );
   }

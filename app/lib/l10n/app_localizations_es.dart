@@ -1209,4 +1209,30 @@ class AppLocalizationsEs extends AppLocalizations {
   ) {
     return 'Vista actual: $viewW × $viewH km  ·  Traza disponible: $traceW × $traceH km';
   }
+
+  @override
+  String get routeAutoTitle => 'RUTA Y OBJETIVO';
+
+  @override
+  String get routeAutoHint =>
+      'Ruta automática desde el hábitat hasta el objetivo seleccionado (criterios de pendiente, rugosidad y distancia del terreno).';
+
+  @override
+  String get routeSelectObjective =>
+      'Haz clic en un punto objetivo del mapa o usa «Añadir objetivo» para trazar la ruta y ver sus datos reales.';
+
+  @override
+  String get objectiveCoords => 'Coordenadas';
+
+  @override
+  String get objectiveElev => 'Elevación';
+
+  @override
+  String get objectiveSlope => 'Pendiente local';
+
+  @override
+  String get metricElevRange => 'Ascenso / descenso';
+
+  @override
+  String get objectiveEditBtn => 'Editar';
 }

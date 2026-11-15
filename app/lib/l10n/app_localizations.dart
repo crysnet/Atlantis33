@@ -2340,6 +2340,54 @@ abstract class AppLocalizations {
     String traceW,
     String traceH,
   );
+
+  /// No description provided for @routeAutoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ROUTE & OBJECTIVE'**
+  String get routeAutoTitle;
+
+  /// No description provided for @routeAutoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic route from the habitat to the selected objective (based on terrain slope, roughness, and distance).'**
+  String get routeAutoHint;
+
+  /// No description provided for @routeSelectObjective.
+  ///
+  /// In en, this message translates to:
+  /// **'Click an objective on the map or use \"Add objective\" to trace the route and view its real data.'**
+  String get routeSelectObjective;
+
+  /// No description provided for @objectiveCoords.
+  ///
+  /// In en, this message translates to:
+  /// **'Coordinates'**
+  String get objectiveCoords;
+
+  /// No description provided for @objectiveElev.
+  ///
+  /// In en, this message translates to:
+  /// **'Elevation'**
+  String get objectiveElev;
+
+  /// No description provided for @objectiveSlope.
+  ///
+  /// In en, this message translates to:
+  /// **'Local slope'**
+  String get objectiveSlope;
+
+  /// No description provided for @metricElevRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Ascent / descent'**
+  String get metricElevRange;
+
+  /// No description provided for @objectiveEditBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get objectiveEditBtn;
 }
 
 class _AppLocalizationsDelegate

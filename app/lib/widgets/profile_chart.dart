@@ -7,7 +7,6 @@ import '../routing/routing.dart';
 import '../state/app_model.dart';
 import '../theme/app_theme.dart';
 import '../util/format.dart';
-import 'common.dart';
 import 'map_view.dart' show routeColor;
 
 /// Perfil de elevación de la ruta seleccionada, coloreado por clase de pendiente.
@@ -33,9 +32,7 @@ class ProfileChart extends StatelessWidget {
             const SizedBox(width: 12),
             if (r != null && r.metrics != null) ...[
               Container(width: 10, height: 3, color: routeColor(r.profile)),
-              const SizedBox(width: 6),
-              Text(routeName(l, r.profile).toUpperCase(), style: AppText.label(color: routeColor(r.profile))),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
               Flexible(
                 child: Text('${f.km(r.metrics!.distanceM)}  ·  ${l.metricMaxSlope} ${f.num(r.metrics!.maxSlopeDeg, 0)}°  ·  +${f.num(r.metrics!.ascentM, 0)} m / −${f.num(r.metrics!.descentM, 0)} m',
                     maxLines: 1, overflow: TextOverflow.ellipsis, style: AppText.mono(10.5, color: AppColors.textDim)),
@@ -130,7 +127,14 @@ class _ProfilePainter extends CustomPainter {
       canvas.drawLine(Offset(left, y), Offset(left + w, y), grid);
       _text(canvas, f.num(hi - (hi - lo) * k / 4, 0), Offset(left - 6, y - 6), align: TextAlign.right, width: 40);
     }
-    final kmStep = total > 6000 ? 1000.0 : 500.0;
+    const niceSteps = [500.0, 1000.0, 2000.0, 5000.0, 10000.0, 20000.0, 50000.0, 100000.0];
+    var kmStep = niceSteps.last;
+    for (final s in niceSteps) {
+      if (total / s <= 8) {
+        kmStep = s;
+        break;
+      }
+    }
     for (var d = 0.0; d <= total; d += kmStep) {
       final x = left + d / total * w;
       canvas.drawLine(Offset(x, top), Offset(x, top + h), grid);
@@ -178,14 +182,6 @@ class _ProfilePainter extends CustomPainter {
       _text(canvas, id.toUpperCase(), Offset(p.dx + 4, top + 1), color: AppColors.cyan, width: 30);
     }
 
-    // Punto de no retorno.
-    final nr = route.metrics!.noReturn.index;
-    if (nr >= 0 && nr < cells.length) {
-      final p = pt(nr);
-      canvas.drawLine(Offset(p.dx, top), Offset(p.dx, top + h), Paint()..color = AppColors.amber..strokeWidth = 1.2);
-      canvas.drawCircle(p, 5, Paint()..color = AppColors.amber..style = PaintingStyle.stroke..strokeWidth = 2);
-      _text(canvas, pnrLabel, Offset(p.dx + 6, top + h - 14), color: AppColors.amber, width: 30);
-    }
     _text(canvas, habitatLabel, Offset(left + 3, top + 1), color: AppColors.green, width: 60);
   }
 

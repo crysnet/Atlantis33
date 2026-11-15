@@ -488,6 +488,14 @@
   "siteReachTag": "Long range",
   "siteReachNote": "Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km).",
   "mapTraceLegend": "Current view: {viewW} × {viewH} km  ·  Available trace: {traceW} × {traceH} km",
+  "routeAutoTitle": "ROUTE & OBJECTIVE",
+  "routeAutoHint": "Automatic route from the habitat to the selected objective (based on terrain slope, roughness, and distance).",
+  "routeSelectObjective": "Click an objective on the map or use \"Add objective\" to trace the route and view its real data.",
+  "objectiveCoords": "Coordinates",
+  "objectiveElev": "Elevation",
+  "objectiveSlope": "Local slope",
+  "metricElevRange": "Ascent / descent",
+  "objectiveEditBtn": "Edit",
   "@mapTraceLegend": {
     "placeholders": {
       "viewW": {

@@ -298,8 +298,16 @@ class AppModel extends ChangeNotifier {
 
   RouteResult? get route => routes[selectedRoute];
 
-  /// Ids de las rutas del modo actual, en el orden en que se muestran.
-  List<String> get routeIds => exitMode == ExitMode.pair ? const ['pair1', 'pair2'] : const ['safe', 'fast', 'science'];
+  Objective? get activeObjective {
+    if (selectedObjective != null) {
+      final found = objective(selectedObjective!);
+      if (found != null) return found;
+    }
+    return objectives.isNotEmpty ? objectives.first : null;
+  }
+
+  /// Id de la ruta única calculada automáticamente.
+  List<String> get routeIds => const ['safe'];
 
   void setLocale(Locale l) {
     locale = l;
@@ -347,8 +355,13 @@ class AppModel extends ChangeNotifier {
   }
 
   void selectObjective(String? id) {
+    final changed = selectedObjective != id;
     selectedObjective = id;
-    notifyListeners();
+    if (changed && id != null) {
+      recompute();
+    } else {
+      notifyListeners();
+    }
   }
 
   void toggleAddMode() {
@@ -363,19 +376,25 @@ class AppModel extends ChangeNotifier {
     return null;
   }
 
-  /// Calcula las tres rutas. Primero repinta con el indicador y después calcula, porque A* bloquea el hilo.
+  /// Calcula la ruta única automática desde el hábitat hacia el objetivo activo.
   Future<void> recompute() async {
     final gen = ++_gen;
     computing = true;
     notifyListeners();
     await Future<void>.delayed(const Duration(milliseconds: 50));
     final sw = Stopwatch()..start();
-    final planner = Planner(data.grid, data.model, objectives, withRover: exitMode == ExitMode.rover, withSupport: exitMode == ExitMode.support, byObjective: exitMode == ExitMode.byObjective);
-    final PairResult? pair = exitMode == ExitMode.pair ? planner.pair() : null;
-    final result = pair?.routes ?? planner.allThree();
+    final target = activeObjective;
+    final Map<String, RouteResult> result;
+    if (target == null) {
+      result = {};
+    } else {
+      final planner = Planner(data.grid, data.model, [target]);
+      result = {'safe': planner.primary('safe')};
+    }
     if (gen != _gen) return;
     computeMs = sw.elapsedMilliseconds;
-    pairResult = pair;
+    pairResult = null;
+    selectedRoute = 'safe';
     routes = result;
     computing = false;
     notifyListeners();

@@ -1207,4 +1207,30 @@ class AppLocalizationsEn extends AppLocalizations {
   ) {
     return 'Current view: $viewW × $viewH km  ·  Available trace: $traceW × $traceH km';
   }
+
+  @override
+  String get routeAutoTitle => 'ROUTE & OBJECTIVE';
+
+  @override
+  String get routeAutoHint =>
+      'Automatic route from the habitat to the selected objective (based on terrain slope, roughness, and distance).';
+
+  @override
+  String get routeSelectObjective =>
+      'Click an objective on the map or use \"Add objective\" to trace the route and view its real data.';
+
+  @override
+  String get objectiveCoords => 'Coordinates';
+
+  @override
+  String get objectiveElev => 'Elevation';
+
+  @override
+  String get objectiveSlope => 'Local slope';
+
+  @override
+  String get metricElevRange => 'Ascent / descent';
+
+  @override
+  String get objectiveEditBtn => 'Edit';
 }

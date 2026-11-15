@@ -188,7 +188,6 @@ class _MapViewState extends State<MapView> {
               }
               final hit = _hitObjective(m, d.localPosition);
               m.selectObjective(hit);
-              if (hit != null) showObjectiveDialog(context, m, hit);
             },
             child: ClipRect(
               child: Stack(
@@ -208,7 +207,15 @@ class _MapViewState extends State<MapView> {
                       ),
                     ),
                   ),
-                  Positioned(left: 12, top: 12, child: _toolbar(l)),
+                  Positioned(
+                    left: 12,
+                    top: 12,
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      _toolbar(l),
+                      const SizedBox(width: 8),
+                      _addObjectiveBtn(m, l),
+                    ]),
+                  ),
                   if (m.addMode) Positioned(top: 12, left: 0, right: 0, child: Center(child: _banner(l.objectivesAddActive))),
                   if (m.computing) Positioned(top: 12, left: 0, right: 0, child: Center(child: _banner(l.computing, color: AppColors.amber))),
                   Positioned(left: 12, bottom: 12, child: _readout(m, l)),
@@ -277,6 +284,27 @@ class _MapViewState extends State<MapView> {
         btn(Icons.remove, l.zoomOut, () => _zoomAt(center, 1 / 1.5)),
         btn(Icons.center_focus_strong_outlined, l.zoomFit, () => setState(_fit)),
       ]),
+    );
+  }
+
+  Widget _addObjectiveBtn(AppModel m, AppLocalizations l) {
+    final active = m.addMode;
+    final color = active ? AppColors.cyan : AppColors.orange;
+    return Material(
+      color: AppColors.panel.withValues(alpha: 0.92),
+      child: InkWell(
+        onTap: m.toggleAddMode,
+        child: Container(
+          height: 36,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(border: Border.all(color: color)),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Icon(active ? Icons.close : Icons.add_location_alt_outlined, size: 15, color: color),
+            const SizedBox(width: 6),
+            Text(active ? l.objectivesAddActive : l.objectivesAdd, style: AppText.label(color: color)),
+          ]),
+        ),
+      ),
     );
   }
 
@@ -645,15 +673,7 @@ class _OverlayPainter extends CustomPainter {
     }
     canvas.restore();
 
-    // Punto de no retorno de la ruta seleccionada.
     final r = model.route;
-    if (r != null && r.metrics != null && r.cells.isNotEmpty) {
-      final nr = r.metrics!.noReturn;
-      final c = _p(nr.xM, nr.yM);
-      canvas.drawCircle(c, 8, Paint()..color = AppColors.amber..style = PaintingStyle.stroke..strokeWidth = 2);
-      canvas.drawCircle(c, 2.5, Paint()..color = AppColors.amber);
-      _label(canvas, pnrLabel, c + const Offset(12, -9), color: AppColors.amber, border: AppColors.amber);
-    }
 
     // Hábitat.
     final h = _p(d.habitatX, d.habitatY);
