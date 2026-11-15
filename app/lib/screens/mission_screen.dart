@@ -130,10 +130,10 @@ class _SuitPanel extends StatelessWidget {
               kv(l.helmetHeading, '${f.num(pos.headingDeg, 0)}° ${cardinals[((pos.headingDeg + 22.5) % 360 ~/ 45)]}'),
               kv(l.helmetNext, nextText, color: AppColors.cyan),
             ]),
-            group('SUIT', [
-              kv(l.helmetO2, f.percent(pos.o2Frac), color: o2Color),
+            group(l.missionSuit, [
+              kv(l.helmetO2, pos.o2Depleted ? l.o2Depleted : f.percent(pos.o2Frac), color: o2Color),
               kv(l.missionO2Need, f.percent(pos.o2NeedBackFrac)),
-              kv(l.missionO2Reserve, f.percent(reserve < 0 ? 0 : reserve), color: o2Color),
+              kv(l.missionO2Reserve, f.o2(reserve, l.o2Depleted), color: o2Color),
               kv(l.missionDose, '${f.num(pos.doseUGy, 0)} µGy'),
               kv(l.helmetAir, pos.airC == null ? l.wxNoData : '${f.num(pos.airC!, 0)} °C'),
             ]),

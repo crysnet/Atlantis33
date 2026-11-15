@@ -38,7 +38,7 @@
     "cell_m": 4.0,
     "slope_exponent_ref_deg": 25.0,
     "roughness_ref_cm": 40.0,
-    "safe_fast_targets": "primary",
+    "safe_fast_targets": "by_profile",
     "science_keep_comfort": true,
     "profiles": {
       "safe": { "w_slope": 12.0, "w_rough": 4.0, "w_sand": 0.0, "w_time": 0.5, "slope_limit_deg": 22.0 },

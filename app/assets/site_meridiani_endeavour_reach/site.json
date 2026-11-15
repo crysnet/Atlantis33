@@ -1,5 +1,6 @@
 {
   "id": "meridiani_endeavour_reach",
+  "zone_photos": "meridiani_opportunity",
   "name": "Meridiani Planum: Endeavour, EVA reach (22 km)",
   "frame": {
     "description": "Local plane in metres. x grows east, y grows south, origin at the north-west corner of the box.",

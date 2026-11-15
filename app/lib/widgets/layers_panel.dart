@@ -50,6 +50,7 @@ class _LayerRow extends StatelessWidget {
     final st = m.layers[def.id]!;
     final f = Fmt(m.locale);
     final enabled = def.hasData;
+    final layerTag = f.text(m.locale.languageCode == 'es' ? def.tag.replaceAll('IAU', 'UAI') : def.tag);
     final color = kindColor(def.kind);
     return Opacity(
       opacity: enabled ? 1 : 0.55,
@@ -74,7 +75,7 @@ class _LayerRow extends StatelessWidget {
           ]),
           Padding(
             padding: const EdgeInsets.only(left: 36, top: 2),
-            child: Text(enabled ? def.tag : '${def.tag} · ${l.layerNoData}', style: AppText.mono(10, color: AppColors.textMute)),
+            child: Text(enabled ? layerTag : '$layerTag · ${l.layerNoData}', style: AppText.mono(10, color: AppColors.textMute)),
           ),
           if (st.visible && enabled && def.hasOpacity)
             Padding(
@@ -143,6 +144,15 @@ class _Legend extends StatelessWidget {
           item(const Color(0xFFE6AA28), l.legendSulfate),
           item(const Color(0xFFD63DA8), l.legendPhyllo),
           item(AppColors.cyan, l.legendHydrous),
+        ],
+        if (on('aqueous_pts') || on('hydrous_pts') || on('valleys')) ...[
+          const SizedBox(height: 6),
+          Text(l.legendBiosigTitle, style: AppText.label()),
+          const SizedBox(height: 6),
+          if (on('aqueous_pts')) item(kMineralColors['phyllosilicate']!, l.legendPhyllo),
+          if (on('hydrous_pts')) item(kMineralColors['hydrous']!, l.legendHydrous),
+          if (on('valleys')) item(kValleyColor, l.legendValleys),
+          Text(l.legendBiosigNote, style: AppText.body(10.5, color: AppColors.textMute, height: 1.35)),
         ],
         if (on('geology')) ...[
           const SizedBox(height: 6),

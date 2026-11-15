@@ -312,8 +312,12 @@ class Planner {
       final c = b.o.priority.compareTo(a.o.priority);
       return c != 0 ? c : a.o.id.compareTo(b.o.id);
     });
-    final o = free.first;
-    final r = _route(profile, [o.o.id]);
+    var o = free.first;
+    var r = _route(profile, [o.o.id]);
+    if (model.safeFastByProfile && (profile == 'safe' || profile == 'fast')) {
+      final pick = _pickTarget(profile, free);
+      if (pick != null) (o, r) = pick;
+    }
     final omit = [
       for (final x in _objs)
         if (x.o.id != o.o.id) {'id': x.o.id, 'reason': x.blocked ? 'blocked' : 'not_primary'},
@@ -327,6 +331,37 @@ class Planner {
       );
     }
     return _result(profile, r, omit);
+  }
+
+  /// Con `safe_fast_targets: by_profile`, la segura y la rápida eligen entre los objetivos alcanzables.
+  ///
+  /// Solo cuentan los objetivos con al menos el 60 % de la prioridad máxima (para que ninguna ruta se vaya al más
+  /// cercano de poco valor). Entre ellos: la segura toma el de menor puntaje de peligro y la rápida el que más
+  /// prioridad da por hora (prioridad / horas de la salida). Desempate: mayor prioridad, id.
+  /// Las factibles van antes que las no factibles.
+  /// Null si ninguno es alcanzable. Referencia: `elegir_destino` en tools/routing.py.
+  (_Obj, _Plan?)? _pickTarget(String profile, List<_Obj> free) {
+    ({_Obj o, _Plan r, bool infeasible, double a, double b})? best;
+    int cmp(({_Obj o, _Plan r, bool infeasible, double a, double b}) x, ({_Obj o, _Plan r, bool infeasible, double a, double b}) y) {
+      if (x.infeasible != y.infeasible) return x.infeasible ? 1 : -1;
+      if (x.a != y.a) return x.a.compareTo(y.a);
+      if (x.b != y.b) return x.b.compareTo(y.b);
+      if (x.o.o.priority != y.o.o.priority) return y.o.o.priority.compareTo(x.o.o.priority);
+      return x.o.o.id.compareTo(y.o.o.id);
+    }
+
+    final top = free.map((e) => e.o.priority).reduce(math.max);
+    for (final e in free) {
+      if (e.o.priority < 0.6 * top) continue;
+      final r = _route(profile, [e.o.id]);
+      if (r == null) continue;
+      final m = r.metrics;
+      final pri = e.o.priority.toDouble();
+      final value = profile == 'safe' ? -computeScores(m, pri, totalPriority, model).$1.score : (m.totalH > 0 ? pri / m.totalH : 0.0);
+      final cand = (o: e, r: r, infeasible: !m.feasible, a: -value, b: 0.0);
+      if (best == null || cmp(cand, best) < 0) best = cand;
+    }
+    return best == null ? null : (best.o, best.r);
   }
 
   /// Ciencia: añade objetivos por prioridad mientras la salida siga siendo factible.

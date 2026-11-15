@@ -258,37 +258,78 @@ class _MissionsPanelState extends State<_MissionsPanel> {
     final qty = TextEditingController(text: item == null ? '1' : '${item.qty}');
     final unit = TextEditingController(text: item?.unit ?? '');
     final mass = TextEditingController(text: item == null || item.massKg == 0 ? '' : '${item.massKg}');
+    String? nameErr, qtyErr, massErr;
+    // Vacío da el valor por omisión; negativo, letras o un tope excedido se avisan y no se guardan.
+    double? parse(TextEditingController c, double dflt) {
+      final t = c.text.trim().replaceAll(',', '.');
+      if (t.isEmpty) return dflt;
+      final v = double.tryParse(t);
+      return v != null && v >= 0 && v <= 100000 ? v : null;
+    }
+
+    final numFmt = [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))];
     return showDialog<MissionItem>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l.msnAddItem.toUpperCase(), style: AppText.head(15)),
-        content: SizedBox(
-          width: 340,
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            TextField(controller: name, autofocus: true, style: AppText.body(14), decoration: _deco(l.msnItemName)),
-            const SizedBox(height: 12),
-            Row(children: [
-              Expanded(child: TextField(controller: qty, keyboardType: TextInputType.number, style: AppText.mono(14), decoration: _deco(l.msnItemQty))),
-              const SizedBox(width: 10),
-              Expanded(child: TextField(controller: unit, style: AppText.body(14), decoration: _deco(l.msnItemUnit))),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, set) => AlertDialog(
+          title: Text(l.msnAddItem.toUpperCase(), style: AppText.head(15)),
+          content: SizedBox(
+            width: 340,
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              TextField(
+                controller: name,
+                autofocus: true,
+                style: AppText.body(14),
+                decoration: _deco(l.msnItemName).copyWith(errorText: nameErr),
+                onChanged: (_) => set(() => nameErr = null),
+              ),
+              const SizedBox(height: 12),
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Expanded(
+                  child: TextField(
+                    controller: qty,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: numFmt,
+                    style: AppText.mono(14),
+                    decoration: _deco(l.msnItemQty).copyWith(errorText: qtyErr, errorMaxLines: 2),
+                    onChanged: (_) => set(() => qtyErr = null),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: TextField(controller: unit, style: AppText.body(14), decoration: _deco(l.msnItemUnit))),
+              ]),
+              const SizedBox(height: 12),
+              TextField(
+                controller: mass,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: numFmt,
+                style: AppText.mono(14),
+                decoration: _deco(l.msnItemMass).copyWith(errorText: massErr, errorMaxLines: 2),
+                onChanged: (_) => set(() => massErr = null),
+              ),
             ]),
-            const SizedBox(height: 12),
-            TextField(controller: mass, keyboardType: TextInputType.number, style: AppText.mono(14), decoration: _deco(l.msnItemMass)),
-          ]),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel.toUpperCase(), style: AppText.label())),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: AppColors.orange, foregroundColor: AppColors.bg, shape: const RoundedRectangleBorder()),
-            onPressed: () {
-              double num_(TextEditingController c, double d) => double.tryParse(c.text.trim().replaceAll(',', '.')) ?? d;
-              final n = name.text.trim();
-              if (n.isEmpty) return;
-              Navigator.pop(ctx, MissionItem(name: n, qty: num_(qty, 1).clamp(0, 100000).toDouble(), unit: unit.text.trim(), massKg: num_(mass, 0).clamp(0, 100000).toDouble()));
-            },
-            child: Text(l.save.toUpperCase(), style: AppText.label(color: AppColors.bg)),
           ),
-        ],
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l.cancel.toUpperCase(), style: AppText.label())),
+            FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: AppColors.orange, foregroundColor: AppColors.bg, shape: const RoundedRectangleBorder()),
+              onPressed: () {
+                final n = name.text.trim();
+                final q = parse(qty, 1), ms = parse(mass, 0);
+                if (n.isEmpty || q == null || ms == null) {
+                  set(() {
+                    nameErr = n.isEmpty ? l.errNameRequired : null;
+                    qtyErr = q == null ? l.errNonNegative : null;
+                    massErr = ms == null ? l.errNonNegative : null;
+                  });
+                  return;
+                }
+                Navigator.pop(ctx, MissionItem(name: n, qty: q, unit: unit.text.trim(), massKg: ms));
+              },
+              child: Text(l.save.toUpperCase(), style: AppText.label(color: AppColors.bg)),
+            ),
+          ],
+        ),
       ),
     );
   }

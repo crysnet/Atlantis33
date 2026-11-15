@@ -162,7 +162,6 @@ class _Detail extends StatelessWidget {
             Text(v, style: AppText.head(15, color: color ?? AppColors.text)),
           ]),
         );
-    Widget pendingBody(String source) => Text(l.stackPending(source), style: AppText.body(12, color: AppColors.textMute));
 
     return Container(
       color: AppColors.bg,
@@ -186,7 +185,7 @@ class _Detail extends StatelessWidget {
             Expanded(
               child: _framed(
                 l.sciOrbital,
-                'HiRISE 0.25 m',
+                f.text('HiRISE 0.25 m'),
                 AppColors.cyan,
                 OrbitalCrop(
                   data: d,
@@ -231,7 +230,7 @@ class _Detail extends StatelessWidget {
                 Text(l.sciDataStack, style: AppText.head(12)),
               ]),
             ),
-            stackRow('01', l.stackOptical, Text('HiRISE · 0.25 m/px', style: AppText.body(12, color: AppColors.textDim)), Tag(l.kindMeasured, color: AppColors.cyan)),
+            stackRow('01', l.stackOptical, Text(f.text('HiRISE · 0.25 m/px'), style: AppText.body(12, color: AppColors.textDim)), Tag(l.kindMeasured, color: AppColors.cyan)),
             stackRow(
               '02',
               l.stackTopo,
@@ -245,9 +244,8 @@ class _Detail extends StatelessWidget {
               Tag(l.kindModeled, color: AppColors.orange),
             ),
             stackRow('03', l.stackThermal, Text(l.stackThermalNote, style: AppText.body(12, color: AppColors.textDim)), Tag(l.kindMeasured, color: AppColors.cyan)),
-            stackRow('04', l.stackMinerals, pendingBody('CRISM'), Tag(l.kindExample, color: AppColors.textMute), pending: true),
             stackRow(
-              '05',
+              '04',
               l.stackRadiation,
               Text(
                 d.environment.radFor(m.envSol) == null
@@ -257,7 +255,7 @@ class _Detail extends StatelessWidget {
               ),
               Tag(l.kindMeasured, color: AppColors.cyan),
             ),
-            stackRow('06', l.stackGeology, Text(l.stackGeologyNote, style: AppText.body(12, color: AppColors.textDim)), Tag(l.kindMeasured, color: AppColors.cyan)),
+            stackRow('05', l.stackGeology, Text(l.stackGeologyNote, style: AppText.body(12, color: AppColors.textDim)), Tag(l.kindMeasured, color: AppColors.cyan)),
           ]),
         ),
       ]),

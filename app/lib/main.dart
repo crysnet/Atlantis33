@@ -6,6 +6,7 @@ import 'data/mission.dart';
 import 'data/mission_store.dart';
 import 'data/site_data.dart';
 import 'data/site_registry.dart';
+import 'data/ui_prefs.dart';
 import 'l10n/app_localizations.dart';
 import 'screens/helmet_screen.dart';
 import 'screens/mission_screen.dart';
@@ -14,6 +15,7 @@ import 'screens/safety_screen.dart';
 import 'screens/science_screen.dart';
 import 'state/app_model.dart';
 import 'theme/app_theme.dart';
+import 'util/html_lang.dart';
 import 'widgets/sources_dialog.dart';
 import 'widgets/top_bar.dart';
 
@@ -32,19 +34,32 @@ class AresApp extends StatefulWidget {
   State<AresApp> createState() => _AresAppState();
 }
 
-class _AresAppState extends State<AresApp> {
+class _AresAppState extends State<AresApp> with WidgetsBindingObserver {
   AppModel? _model;
   Object? _error;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _open().then((m) {
       setState(() => _model = m);
       m.recompute();
     }).catchError((Object e) {
       setState(() => _error = e);
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Al pasar a segundo plano o cerrarse la app, guarda ya los cambios pendientes (el guardado normal espera 400 ms).
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) _model?.flushSave();
   }
 
   /// Lee el registro de sitios y las misiones guardadas, y abre la misión que estaba abierta (o el sitio por defecto).
@@ -73,7 +88,9 @@ class _AresAppState extends State<AresApp> {
         entry = registry.byId(pick.siteId)!;
       }
     }
-    return AppModel(await SiteData.load(entry.assetDir), registry: registry, siteId: entry.id, book: book, store: store);
+    final uiStore = PrefsUiStore();
+    return AppModel(await SiteData.load(entry.assetDir),
+        registry: registry, siteId: entry.id, book: book, store: store, useWorker: true, uiStore: uiStore, uiPrefs: await uiStore.load());
   }
 
   @override
@@ -94,6 +111,7 @@ class _AresAppState extends State<AresApp> {
       model: m,
       child: Builder(builder: (context) {
         final model = AppScope.of(context);
+        setHtmlLang(model.locale.languageCode);
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'ARES PATH',

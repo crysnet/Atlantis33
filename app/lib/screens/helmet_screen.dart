@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
+import '../data/site_data.dart';
 import '../state/app_model.dart';
 import '../theme/app_theme.dart';
 import '../util/format.dart';
 import '../widgets/common.dart';
+import '../widgets/terrain_view.dart';
 
 /// Pantalla de casco: concepto visual de un HUD para la visera.
 ///
@@ -20,6 +22,9 @@ class HelmetScreen extends StatefulWidget {
 }
 
 class _HelmetScreenState extends State<HelmetScreen> {
+  /// Foto de la zona que muestra la tarjeta (se cambia tocándola).
+  int _zone = 0;
+
   @override
   Widget build(BuildContext context) {
     final m = AppScope.of(context);
@@ -60,7 +65,11 @@ class _HelmetScreenState extends State<HelmetScreen> {
     return Container(
       color: AppColors.bg,
       child: Stack(fit: StackFit.expand, children: [
-        if (photo != null) Positioned.fill(child: Image.asset(photo.asset, fit: BoxFit.cover, filterQuality: FilterQuality.medium)),
+        if (photo != null)
+          Positioned.fill(child: Image.asset(photo.asset, fit: BoxFit.cover, filterQuality: FilterQuality.medium))
+        else
+          // Sin fotos del rover (Meridiani): vista en perspectiva del relieve desde la posición y el rumbo simulados.
+          Positioned.fill(child: TerrainView(data: d, x: pos.xM, y: pos.yM, headingDeg: pos.headingDeg)),
         Positioned.fill(child: Container(color: const Color(0x8C0E0C0B))),
         // Encabezado: concepto y procedencia del fondo.
         Positioned(
@@ -75,10 +84,11 @@ class _HelmetScreenState extends State<HelmetScreen> {
             ]),
             const SizedBox(height: 6),
             Text(l.helmetNote, style: AppText.body(11, color: AppColors.textDim, height: 1.4)),
-            if (photo != null) ...[
-              const SizedBox(height: 4),
-              Text(l.helmetBackdrop('${photo.camera} · SOL ${photo.sol}'), style: AppText.body(10.5, color: AppColors.textMute, height: 1.3)),
-            ],
+            const SizedBox(height: 4),
+            Text(
+              photo != null ? l.helmetBackdrop('${photo.camera} · SOL ${photo.sol}') : l.helmetBackdropTerrain,
+              style: AppText.body(10.5, color: AppColors.textMute, height: 1.3),
+            ),
           ])),
         ),
         // Brújula.
@@ -157,9 +167,25 @@ class _HelmetScreenState extends State<HelmetScreen> {
             kv(l.helmetAir, pos.airC == null ? l.wxNoData : '${f.num(pos.airC!, 0)} °C'),
             kv('LMST', pos.lmstLabel),
             kv(l.helmetElapsed, f.hours(pos.elapsedH)),
-            kv(l.helmetO2, f.percent(pos.o2Frac)),
+            kv(l.helmetO2, pos.o2Depleted ? l.o2Depleted : f.percent(pos.o2Frac)),
           ])),
         ),
+        // Foto real de la zona (Opportunity en Endeavour): referencia de cómo se ve el lugar, no de este punto.
+        if (d.zonePhotos.isNotEmpty)
+          Positioned(
+            right: 14,
+            bottom: 150,
+            width: 300,
+            child: _ZoneCard(
+              photo: d.zonePhotos[_zone % d.zonePhotos.length],
+              index: _zone % d.zonePhotos.length,
+              count: d.zonePhotos.length,
+              onNext: () => setState(() => _zone++),
+              lang: m.locale.languageCode,
+              l: l,
+              f: f,
+            ),
+          ),
         // Control inferior: avance sobre la ruta.
         Positioned(
           left: 14,
@@ -185,6 +211,47 @@ class _HelmetScreenState extends State<HelmetScreen> {
       ]),
     );
   }
+}
+
+/// Tarjeta con una foto real de la zona, con su cámara, sol y crédito. Al tocarla pasa a la siguiente.
+class _ZoneCard extends StatelessWidget {
+  const _ZoneCard({required this.photo, required this.index, required this.count, required this.onNext, required this.lang, required this.l, required this.f});
+
+  final ZonePhoto photo;
+  final int index;
+  final int count;
+  final VoidCallback onNext;
+  final String lang;
+  final AppLocalizations l;
+  final Fmt f;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+        button: true,
+        label: l.zonePhotoNext,
+        child: InkWell(
+          onTap: onNext,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(color: const Color(0xD90E0C0B), border: Border.all(color: AppColors.hairline)),
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Expanded(child: Text(l.zonePhotoTitle.toUpperCase(), style: AppText.label(color: AppColors.textMute))),
+                Text('${index + 1}/$count', style: AppText.mono(10.5, color: AppColors.textMute)),
+                const SizedBox(width: 4),
+                const Icon(Icons.navigate_next, size: 16, color: AppColors.orange),
+              ]),
+              const SizedBox(height: 6),
+              Image.asset(photo.asset, width: 284, fit: BoxFit.fitWidth, filterQuality: FilterQuality.medium),
+              const SizedBox(height: 6),
+              Text(photo.title(lang), style: AppText.body(11, height: 1.3)),
+              Text('${photo.camera} · SOL ${photo.sol} · ${photo.credit}', style: AppText.mono(9.5, color: AppColors.textMute)),
+              const SizedBox(height: 2),
+              Text(l.zonePhotoNote, style: AppText.body(10, color: AppColors.textMute, height: 1.3)),
+            ]),
+          ),
+        ),
+      );
 }
 
 /// Cinta de brújula: marcas cada 5° alrededor del rumbo actual.

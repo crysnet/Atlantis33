@@ -1259,7 +1259,7 @@ abstract class AppLocalizations {
   /// No description provided for @rulesCrew.
   ///
   /// In en, this message translates to:
-  /// **'Assumed: the EVA is done by two astronauts; consumables and dose are computed for one. No rover is modeled.'**
+  /// **'Assumed: the EVA is done by two astronauts; consumables and dose are computed for one.'**
   String get rulesCrew;
 
   /// No description provided for @rulesNote.
@@ -2287,6 +2287,312 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km).'**
   String get siteReachNote;
+
+  /// No description provided for @probeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'POINT INFO'**
+  String get probeTitle;
+
+  /// No description provided for @probeClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get probeClose;
+
+  /// No description provided for @probeCoords.
+  ///
+  /// In en, this message translates to:
+  /// **'Coordinates'**
+  String get probeCoords;
+
+  /// No description provided for @probeLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local position'**
+  String get probeLocal;
+
+  /// No description provided for @probeSlope.
+  ///
+  /// In en, this message translates to:
+  /// **'Slope'**
+  String get probeSlope;
+
+  /// No description provided for @probeRough.
+  ///
+  /// In en, this message translates to:
+  /// **'Roughness'**
+  String get probeRough;
+
+  /// No description provided for @probeTerrain.
+  ///
+  /// In en, this message translates to:
+  /// **'Terrain'**
+  String get probeTerrain;
+
+  /// No description provided for @probeTerrainOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Passable on foot'**
+  String get probeTerrainOk;
+
+  /// No description provided for @probeTerrainBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Forbidden or no data (slope over limit)'**
+  String get probeTerrainBlocked;
+
+  /// No description provided for @probeToHabitat.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance to habitat'**
+  String get probeToHabitat;
+
+  /// No description provided for @probeToRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance to selected route'**
+  String get probeToRoute;
+
+  /// No description provided for @probeNoRoute.
+  ///
+  /// In en, this message translates to:
+  /// **'No route calculated'**
+  String get probeNoRoute;
+
+  /// No description provided for @probeGeology.
+  ///
+  /// In en, this message translates to:
+  /// **'Geologic unit'**
+  String get probeGeology;
+
+  /// No description provided for @probeDune.
+  ///
+  /// In en, this message translates to:
+  /// **'Dune field'**
+  String get probeDune;
+
+  /// No description provided for @probeNearName.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearest named feature'**
+  String get probeNearName;
+
+  /// No description provided for @probeCuriosity.
+  ///
+  /// In en, this message translates to:
+  /// **'Curiosity track'**
+  String get probeCuriosity;
+
+  /// No description provided for @probeMineral.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearest mineral detection'**
+  String get probeMineral;
+
+  /// No description provided for @probeCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create objective here'**
+  String get probeCreate;
+
+  /// No description provided for @probeOutside.
+  ///
+  /// In en, this message translates to:
+  /// **'Outside the route window: no terrain data here, only the image.'**
+  String get probeOutside;
+
+  /// No description provided for @probeMineralSulfate.
+  ///
+  /// In en, this message translates to:
+  /// **'Sulfate'**
+  String get probeMineralSulfate;
+
+  /// No description provided for @probeMineralPhyllo.
+  ///
+  /// In en, this message translates to:
+  /// **'Phyllosilicate'**
+  String get probeMineralPhyllo;
+
+  /// No description provided for @probeMineralHydrous.
+  ///
+  /// In en, this message translates to:
+  /// **'Hydrated mineral'**
+  String get probeMineralHydrous;
+
+  /// No description provided for @probeNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'no data'**
+  String get probeNoData;
+
+  /// No description provided for @probeNearObjective.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearest objective'**
+  String get probeNearObjective;
+
+  /// No description provided for @probeMeasureFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure from here'**
+  String get probeMeasureFrom;
+
+  /// No description provided for @probeMeasureClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear measurement'**
+  String get probeMeasureClear;
+
+  /// No description provided for @probeMeasured.
+  ///
+  /// In en, this message translates to:
+  /// **'From the measure point'**
+  String get probeMeasured;
+
+  /// No description provided for @probePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Rover photo'**
+  String get probePhoto;
+
+  /// No description provided for @layerOpportunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opportunity track'**
+  String get layerOpportunity;
+
+  /// No description provided for @probeOpportunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opportunity track'**
+  String get probeOpportunity;
+
+  /// No description provided for @legendOpportunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opportunity track (MER-B, corrected position)'**
+  String get legendOpportunity;
+
+  /// No description provided for @rulesRoverNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No rover is modeled in this mode.'**
+  String get rulesRoverNone;
+
+  /// No description provided for @rulesRoverUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'The rover legs of this mode use the rover model (see the assumptions in Plan).'**
+  String get rulesRoverUsed;
+
+  /// No description provided for @kindAssumption.
+  ///
+  /// In en, this message translates to:
+  /// **'ASSUMPTION'**
+  String get kindAssumption;
+
+  /// No description provided for @missionSuit.
+  ///
+  /// In en, this message translates to:
+  /// **'SUIT'**
+  String get missionSuit;
+
+  /// No description provided for @errNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name.'**
+  String get errNameRequired;
+
+  /// No description provided for @errNonNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number of 0 or more (up to 100000).'**
+  String get errNonNegative;
+
+  /// No description provided for @errRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number from {min} to {max}.'**
+  String errRange(int min, int max);
+
+  /// No description provided for @o2Depleted.
+  ///
+  /// In en, this message translates to:
+  /// **'depleted'**
+  String get o2Depleted;
+
+  /// No description provided for @layerAqueousPts.
+  ///
+  /// In en, this message translates to:
+  /// **'Aqueous minerals · biosignatures'**
+  String get layerAqueousPts;
+
+  /// No description provided for @layerHydrousPts.
+  ///
+  /// In en, this message translates to:
+  /// **'Hydrous minerals (CRISM, OMEGA)'**
+  String get layerHydrousPts;
+
+  /// No description provided for @layerValleys.
+  ///
+  /// In en, this message translates to:
+  /// **'Valley networks (Hynek 2010)'**
+  String get layerValleys;
+
+  /// No description provided for @legendBiosigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Biosignature search (from orbit)'**
+  String get legendBiosigTitle;
+
+  /// No description provided for @legendValleys.
+  ///
+  /// In en, this message translates to:
+  /// **'Valley network (ancient water)'**
+  String get legendValleys;
+
+  /// No description provided for @legendBiosigNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. Sulfates are in the layer «Aqueous and hydrous minerals».'**
+  String get legendBiosigNote;
+
+  /// No description provided for @helmetBackdropTerrain.
+  ///
+  /// In en, this message translates to:
+  /// **'Backdrop: view of the terrain drawn from the elevation model (NASA / USGS) at the simulated position and heading; it is not a photo.'**
+  String get helmetBackdropTerrain;
+
+  /// No description provided for @zonePhotoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The area, seen by Opportunity'**
+  String get zonePhotoTitle;
+
+  /// No description provided for @zonePhotoNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next photo of the area'**
+  String get zonePhotoNext;
+
+  /// No description provided for @zonePhotoNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Real photos of Perseverance Valley (Endeavour rim). They show the area, not this exact point. Tap for the next one.'**
+  String get zonePhotoNote;
+
+  /// No description provided for @cmpVsFast.
+  ///
+  /// In en, this message translates to:
+  /// **'Versus the fastest route'**
+  String get cmpVsFast;
+
+  /// No description provided for @cmpSame.
+  ///
+  /// In en, this message translates to:
+  /// **'Same objective and almost the same path as the fastest route: in this terrain the two profiles give nearly the same result.'**
+  String get cmpSame;
 }
 
 class _AppLocalizationsDelegate

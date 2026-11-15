@@ -55,6 +55,8 @@ class Modelo:
         self.hz = p["hazard"]
         self.ex = p["success"]
         self.ciencia_con_holgura = bool(r.get("science_keep_comfort", False))
+        # "primary": segura y rápida van al objetivo de mayor prioridad; "by_profile": cada una elige el suyo.
+        self.destino_segura_rapida = r.get("safe_fast_targets", "primary")
         rv = p["rover"]
         self.rover_v = rv["speed_kmh"] * 1000.0  # m por hora
         self.rover_pend = rv["slope_limit_deg"]
@@ -670,10 +672,40 @@ class Planificador:
             return {"profile": perfil, "status": "no_target", "visited": [], "skipped": [], "cells": []}
         o = sorted(libres, key=lambda o: (-o["priority"], o["id"]))[0]
         r = self.ruta(perfil, [o["id"]])
+        if self.mod.destino_segura_rapida == "by_profile" and perfil in ("safe", "fast"):
+            o, r = self.elegir_destino(perfil, libres) or (o, r)
         omit = [{"id": x["id"], "reason": "blocked" if x["bloqueado"] else "not_primary"} for x in self.obj if x["id"] != o["id"]]
         if r is None:
             return {"profile": perfil, "status": "unreachable", "visited": [], "skipped": omit + [{"id": o["id"], "reason": "unreachable"}], "cells": []}
         return self.resultado(perfil, r[0], r[1], r[2], r[3], omit)
+
+    def elegir_destino(self, perfil, libres):
+        """Con `safe_fast_targets: by_profile`, la segura y la rápida eligen entre los objetivos alcanzables.
+
+        Solo cuentan los objetivos con al menos el 60 % de la prioridad máxima (para que ninguna ruta se vaya al más
+        cercano de poco valor). Entre ellos: la segura toma el de menor puntaje de peligro y la rápida el que más
+        prioridad da por hora (prioridad / horas de la salida). Desempate: mayor prioridad, id.
+        Las factibles van antes que las no factibles.
+        Devuelve (objetivo, ruta) o None si ninguno es alcanzable.
+        """
+        mejor = None
+        tope = max(o["priority"] for o in libres)
+        for o in libres:
+            if o["priority"] < 0.6 * tope:
+                continue
+            r = self.ruta(perfil, [o["id"]])
+            if r is None:
+                continue
+            m = r[3]
+            pri = float(o["priority"])
+            if perfil == "safe":
+                valor = -puntajes(m, pri, self.pri_total, self.mod)["hazard"]["score"]
+            else:
+                valor = pri / m["total_h"] if m["total_h"] > 0 else 0.0
+            clave = (not m["feasible"], -valor, -o["priority"], o["id"])
+            if mejor is None or clave < mejor[0]:
+                mejor = (clave, o, r)
+        return None if mejor is None else (mejor[1], mejor[2])
 
     def ciencia(self, perfil="science"):
         """Ciencia: añade objetivos por prioridad mientras la salida siga siendo factible.

@@ -1,5 +1,5 @@
 # Descargas e intermedios de datos (se regeneran con tools/, ver RETOMAR.md)
-data/
+/data/
 
 # Instaladores y compilaciones
 dist/*.apk
@@ -11,3 +11,6 @@ __pycache__/
 
 # Registros sueltos
 *.log
+
+# Archivo de más de 100 MB: GitHub lo rechaza (límite por archivo); queda solo en la PC
+video/clips/video.mp4

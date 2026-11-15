@@ -173,6 +173,25 @@
       "file": "vectors.json",
       "source": "Global geologic map SIM 3292 (USGS Astrogeology) and dune field database (via NASA Mars Trek); global scale",
       "resolution_m": null
+    },
+    {
+      "id": "transit",
+      "kind": "modeled",
+      "file": "layers/transit.png",
+      "source": "TES Dust Cover Index (ASU, 3.5 km/px) and TES thermal inertia (ASU, 7.5 km/px) combined with the team's thresholds",
+      "resolution_m": 3500.0,
+      "stats": {
+        "dci_min": 0.9674016237258911,
+        "dci_max": 0.9707086682319641,
+        "ti_min": 344.0,
+        "ti_max": 369.0,
+        "fractions": {
+          "green": 1.0,
+          "yellow": 0.0,
+          "red": 0.0,
+          "none": 0.0
+        }
+      }
     }
   ],
   "context": {

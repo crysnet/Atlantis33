@@ -609,7 +609,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rulesCrew =>
-      'Assumed: the EVA is done by two astronauts; consumables and dose are computed for one. No rover is modeled.';
+      'Assumed: the EVA is done by two astronauts; consumables and dose are computed for one.';
 
   @override
   String get rulesNote =>
@@ -1175,4 +1175,166 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get siteReachNote =>
       'Long-range routes: the grid is 16 m over a real DEM, so it does not see small obstacles and the roughness is unknown. The 4 km site has the detail; this one reaches the whole EVA range (about 12 km).';
+
+  @override
+  String get probeTitle => 'POINT INFO';
+
+  @override
+  String get probeClose => 'Close';
+
+  @override
+  String get probeCoords => 'Coordinates';
+
+  @override
+  String get probeLocal => 'Local position';
+
+  @override
+  String get probeSlope => 'Slope';
+
+  @override
+  String get probeRough => 'Roughness';
+
+  @override
+  String get probeTerrain => 'Terrain';
+
+  @override
+  String get probeTerrainOk => 'Passable on foot';
+
+  @override
+  String get probeTerrainBlocked => 'Forbidden or no data (slope over limit)';
+
+  @override
+  String get probeToHabitat => 'Distance to habitat';
+
+  @override
+  String get probeToRoute => 'Distance to selected route';
+
+  @override
+  String get probeNoRoute => 'No route calculated';
+
+  @override
+  String get probeGeology => 'Geologic unit';
+
+  @override
+  String get probeDune => 'Dune field';
+
+  @override
+  String get probeNearName => 'Nearest named feature';
+
+  @override
+  String get probeCuriosity => 'Curiosity track';
+
+  @override
+  String get probeMineral => 'Nearest mineral detection';
+
+  @override
+  String get probeCreate => 'Create objective here';
+
+  @override
+  String get probeOutside =>
+      'Outside the route window: no terrain data here, only the image.';
+
+  @override
+  String get probeMineralSulfate => 'Sulfate';
+
+  @override
+  String get probeMineralPhyllo => 'Phyllosilicate';
+
+  @override
+  String get probeMineralHydrous => 'Hydrated mineral';
+
+  @override
+  String get probeNoData => 'no data';
+
+  @override
+  String get probeNearObjective => 'Nearest objective';
+
+  @override
+  String get probeMeasureFrom => 'Measure from here';
+
+  @override
+  String get probeMeasureClear => 'Clear measurement';
+
+  @override
+  String get probeMeasured => 'From the measure point';
+
+  @override
+  String get probePhoto => 'Rover photo';
+
+  @override
+  String get layerOpportunity => 'Opportunity track';
+
+  @override
+  String get probeOpportunity => 'Opportunity track';
+
+  @override
+  String get legendOpportunity =>
+      'Opportunity track (MER-B, corrected position)';
+
+  @override
+  String get rulesRoverNone => 'No rover is modeled in this mode.';
+
+  @override
+  String get rulesRoverUsed =>
+      'The rover legs of this mode use the rover model (see the assumptions in Plan).';
+
+  @override
+  String get kindAssumption => 'ASSUMPTION';
+
+  @override
+  String get missionSuit => 'SUIT';
+
+  @override
+  String get errNameRequired => 'Enter a name.';
+
+  @override
+  String get errNonNegative => 'Enter a number of 0 or more (up to 100000).';
+
+  @override
+  String errRange(int min, int max) {
+    return 'Enter a whole number from $min to $max.';
+  }
+
+  @override
+  String get o2Depleted => 'depleted';
+
+  @override
+  String get layerAqueousPts => 'Aqueous minerals · biosignatures';
+
+  @override
+  String get layerHydrousPts => 'Hydrous minerals (CRISM, OMEGA)';
+
+  @override
+  String get layerValleys => 'Valley networks (Hynek 2010)';
+
+  @override
+  String get legendBiosigTitle => 'Biosignature search (from orbit)';
+
+  @override
+  String get legendValleys => 'Valley network (ancient water)';
+
+  @override
+  String get legendBiosigNote =>
+      'Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. Sulfates are in the layer «Aqueous and hydrous minerals».';
+
+  @override
+  String get helmetBackdropTerrain =>
+      'Backdrop: view of the terrain drawn from the elevation model (NASA / USGS) at the simulated position and heading; it is not a photo.';
+
+  @override
+  String get zonePhotoTitle => 'The area, seen by Opportunity';
+
+  @override
+  String get zonePhotoNext => 'Next photo of the area';
+
+  @override
+  String get zonePhotoNote =>
+      'Real photos of Perseverance Valley (Endeavour rim). They show the area, not this exact point. Tap for the next one.';
+
+  @override
+  String get cmpVsFast => 'Versus the fastest route';
+
+  @override
+  String get cmpSame =>
+      'Same objective and almost the same path as the fastest route: in this terrain the two profiles give nearly the same result.';
 }

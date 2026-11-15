@@ -611,7 +611,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get rulesCrew =>
-      'Supuesto: la salida es de dos astronautas; los consumibles y la dosis se calculan para uno. No se modela un rover.';
+      'Supuesto: la salida es de dos astronautas; los consumibles y la dosis se calculan para uno.';
 
   @override
   String get rulesNote =>
@@ -1177,4 +1177,167 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get siteReachNote =>
       'Rutas de largo alcance: la rejilla es de 16 m sobre un relieve real, así que no ve obstáculos pequeños y la rugosidad no se conoce. El sitio de 4 km tiene el detalle; este llega a todo el alcance de la EVA (unos 12 km).';
+
+  @override
+  String get probeTitle => 'INFO DEL PUNTO';
+
+  @override
+  String get probeClose => 'Cerrar';
+
+  @override
+  String get probeCoords => 'Coordenadas';
+
+  @override
+  String get probeLocal => 'Posición local';
+
+  @override
+  String get probeSlope => 'Pendiente';
+
+  @override
+  String get probeRough => 'Rugosidad';
+
+  @override
+  String get probeTerrain => 'Terreno';
+
+  @override
+  String get probeTerrainOk => 'Transitable a pie';
+
+  @override
+  String get probeTerrainBlocked =>
+      'Prohibido o sin dato (pendiente sobre el límite)';
+
+  @override
+  String get probeToHabitat => 'Distancia al hábitat';
+
+  @override
+  String get probeToRoute => 'Distancia a la ruta elegida';
+
+  @override
+  String get probeNoRoute => 'Sin ruta calculada';
+
+  @override
+  String get probeGeology => 'Unidad geológica';
+
+  @override
+  String get probeDune => 'Campo de dunas';
+
+  @override
+  String get probeNearName => 'Rasgo con nombre más cercano';
+
+  @override
+  String get probeCuriosity => 'Recorrido de Curiosity';
+
+  @override
+  String get probeMineral => 'Mineral detectado más cercano';
+
+  @override
+  String get probeCreate => 'Crear objetivo aquí';
+
+  @override
+  String get probeOutside =>
+      'Fuera de la ventana de rutas: aquí no hay datos de terreno, solo la imagen.';
+
+  @override
+  String get probeMineralSulfate => 'Sulfato';
+
+  @override
+  String get probeMineralPhyllo => 'Filosilicato';
+
+  @override
+  String get probeMineralHydrous => 'Mineral hidratado';
+
+  @override
+  String get probeNoData => 'sin dato';
+
+  @override
+  String get probeNearObjective => 'Objetivo más cercano';
+
+  @override
+  String get probeMeasureFrom => 'Medir desde aquí';
+
+  @override
+  String get probeMeasureClear => 'Quitar medida';
+
+  @override
+  String get probeMeasured => 'Desde el punto de medida';
+
+  @override
+  String get probePhoto => 'Foto del rover';
+
+  @override
+  String get layerOpportunity => 'Recorrido de Opportunity';
+
+  @override
+  String get probeOpportunity => 'Recorrido de Opportunity';
+
+  @override
+  String get legendOpportunity =>
+      'Recorrido de Opportunity (MER-B, posición corregida)';
+
+  @override
+  String get rulesRoverNone => 'En este modo no se modela un rover.';
+
+  @override
+  String get rulesRoverUsed =>
+      'Los tramos en rover de este modo usan el modelo de rover (ver los supuestos en Plan).';
+
+  @override
+  String get kindAssumption => 'SUPUESTO';
+
+  @override
+  String get missionSuit => 'TRAJE';
+
+  @override
+  String get errNameRequired => 'Escribe un nombre.';
+
+  @override
+  String get errNonNegative => 'Escribe un número de 0 o más (hasta 100000).';
+
+  @override
+  String errRange(int min, int max) {
+    return 'Escribe un número entero de $min a $max.';
+  }
+
+  @override
+  String get o2Depleted => 'agotado';
+
+  @override
+  String get layerAqueousPts => 'Minerales acuosos · biofirmas';
+
+  @override
+  String get layerHydrousPts => 'Minerales hidratados (CRISM, OMEGA)';
+
+  @override
+  String get layerValleys => 'Redes de valles (Hynek 2010)';
+
+  @override
+  String get legendBiosigTitle => 'Búsqueda de biofirmas (desde órbita)';
+
+  @override
+  String get legendValleys => 'Red de valles (agua antigua)';
+
+  @override
+  String get legendBiosigNote =>
+      'Filosilicatos y carbonatos: suelo con más probabilidad de conservar biofirmas. Detecciones orbitales de Mars Trek (NASA), no muestras. Los sulfatos están en la capa «Minerales acuosos e hidratados».';
+
+  @override
+  String get helmetBackdropTerrain =>
+      'Fondo: vista del terreno dibujada con el modelo de elevación (NASA / USGS) desde la posición y el rumbo simulados; no es una foto.';
+
+  @override
+  String get zonePhotoTitle => 'La zona, vista por Opportunity';
+
+  @override
+  String get zonePhotoNext => 'Siguiente foto de la zona';
+
+  @override
+  String get zonePhotoNote =>
+      'Fotos reales de Perseverance Valley (borde de Endeavour). Muestran la zona, no este punto exacto. Toca para ver la siguiente.';
+
+  @override
+  String get cmpVsFast => 'Frente a la ruta rápida';
+
+  @override
+  String get cmpSame =>
+      'Mismo objetivo y casi el mismo camino que la ruta rápida: en este terreno los dos perfiles dan casi lo mismo.';
 }
