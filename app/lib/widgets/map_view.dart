@@ -696,31 +696,28 @@ class _OverlayPainter extends CustomPainter {
     _frame(canvas, d);
     _vectors(canvas, d);
 
-    // Rutas: las no seleccionadas atenuadas, la activa y las conectadas al objetivo seleccionado resaltadas.
+    // Rutas: las no destacadas en verde, la activa en cian (o todas las vinculadas con colores propios al tocar un punto con >1 ruta).
     canvas.save();
     canvas.translate(origin.dx, origin.dy);
     canvas.scale(scale);
     if (model.tracedRoutes.isNotEmpty) {
-      final selObj = model.selectedObjective;
-      for (final pass in [0, 1, 2]) {
+      for (final hi in [false, true]) {
         for (final r in model.tracedRoutes) {
-          final isAct = r.id == model.activeRouteId;
-          final isConn = selObj != null && (r.fromId == selObj || r.toId == selObj);
-          final rank = isAct ? 2 : (isConn ? 1 : 0);
-          if (rank != pass || r.result.cells.isEmpty) continue;
-          final color = isAct ? AppColors.cyan : (isConn ? AppColors.green : AppColors.amber);
+          final isHi = isTracedRouteHighlighted(model, r);
+          if (isHi != hi || r.result.cells.isEmpty) continue;
+          final color = tracedRouteColor(model, r);
           final casing = Paint()
             ..color = AppColors.bg.withValues(alpha: 0.7)
             ..style = PaintingStyle.stroke
             ..strokeJoin = StrokeJoin.round
             ..strokeCap = StrokeCap.round
-            ..strokeWidth = (rank > 0 ? 7.0 : 4.5) / scale;
+            ..strokeWidth = (isHi ? 7.0 : 4.5) / scale;
           final stroke = Paint()
-            ..color = color.withValues(alpha: isAct ? 1.0 : (isConn ? 0.9 : 0.45))
+            ..color = color.withValues(alpha: isHi ? 1.0 : 0.65)
             ..style = PaintingStyle.stroke
             ..strokeJoin = StrokeJoin.round
             ..strokeCap = StrokeCap.round
-            ..strokeWidth = (isAct ? 3.5 : (isConn ? 3.0 : 2.0)) / scale;
+            ..strokeWidth = (isHi ? 3.5 : 2.2) / scale;
           final path = _routePath(r.result);
           canvas.drawPath(path, casing);
           canvas.drawPath(path, stroke);

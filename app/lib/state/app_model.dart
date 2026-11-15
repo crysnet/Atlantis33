@@ -7,6 +7,7 @@ import '../data/mission_store.dart';
 import '../data/site_data.dart';
 import '../data/site_registry.dart';
 import '../routing/routing.dart';
+import '../theme/app_theme.dart';
 
 /// Modo de salida: a pie, con rover aparcado en un punto de la ruta, a pie con un rover de apoyo en el hábitat, en pareja
 /// con los objetivos repartidos entre los dos astronautas, o por objetivo (cada objetivo trae su transporte).
@@ -212,6 +213,7 @@ class AppModel extends ChangeNotifier {
     routeEndId = null;
     traceMode = false;
     traceDraftStart = null;
+    highlightConnectedRoutes = false;
     pairResult = null;
     selectedObjective = null;
     addMode = false;
@@ -316,6 +318,7 @@ class AppModel extends ChangeNotifier {
   String? routeEndId;
   bool traceMode = false;
   String? traceDraftStart;
+  bool highlightConnectedRoutes = false;
   List<PlannedRoute> tracedRoutes = [];
   String? activeRouteId;
 
@@ -409,8 +412,9 @@ class AppModel extends ChangeNotifier {
 
   void selectObjective(String? id) {
     if (id == null) {
-      if (selectedObjective == null) return;
+      if (selectedObjective == null && !highlightConnectedRoutes) return;
       selectedObjective = null;
+      highlightConnectedRoutes = false;
       notifyListeners();
       return;
     }
@@ -423,12 +427,12 @@ class AppModel extends ChangeNotifier {
       if (selectedObjective == id && connected.length > 1) {
         final curIdx = connected.indexWhere((r) => r.id == activeRouteId);
         match = connected[(curIdx + 1) % connected.length];
-      } else if (selectedObjective != id) {
+      } else if (selectedObjective != id || !highlightConnectedRoutes) {
         match = connected.firstWhere((r) => r.toId == id, orElse: () => connected.first);
       }
     }
-    if (selectedObjective == id && match == null) return;
     selectedObjective = id;
+    highlightConnectedRoutes = true;
     if (match != null) {
       activeRouteId = match.id;
       routeStartId = match.fromId;
@@ -477,6 +481,7 @@ class AppModel extends ChangeNotifier {
         activeRouteId = id;
         routeStartId = r.fromId;
         routeEndId = r.toId;
+        highlightConnectedRoutes = false;
         selectedRoute = 'safe';
         routes = {'safe': r.result};
         if (r.toId != 'habitat') {
@@ -560,6 +565,7 @@ class AppModel extends ChangeNotifier {
     if (fromId == toId) return;
     routeStartId = fromId;
     routeEndId = toId;
+    highlightConnectedRoutes = false;
     final routeId = '$fromId->$toId';
     for (final existing in tracedRoutes) {
       if (existing.id == routeId) {
@@ -688,6 +694,47 @@ class AppModel extends ChangeNotifier {
     _persist();
     recompute();
   }
+}
+
+const _kLinkedRouteColors = [
+  Color(0xFFE040FB),
+  Color(0xFFFF5252),
+  Color(0xFF7C4DFF),
+  Color(0xFFFFEB3B),
+  Color(0xFFFF4081),
+  Color(0xFF69F0AE),
+];
+
+/// Indica si la ruta debe dibujarse destacada en el mapa y en la lista.
+bool isTracedRouteHighlighted(AppModel m, PlannedRoute r) {
+  final sel = m.selectedObjective;
+  if (m.highlightConnectedRoutes && sel != null) {
+    final connected = [
+      for (final x in m.tracedRoutes)
+        if (x.fromId == sel || x.toId == sel) x,
+    ];
+    if (connected.length > 1) {
+      return r.fromId == sel || r.toId == sel;
+    }
+  }
+  return r.id == m.activeRouteId;
+}
+
+/// Color único de cada tramo tanto en el mapa como en la lista de rutas trazadas.
+Color tracedRouteColor(AppModel m, PlannedRoute r) {
+  final sel = m.selectedObjective;
+  if (m.highlightConnectedRoutes && sel != null) {
+    final connected = [
+      for (final x in m.tracedRoutes)
+        if (x.fromId == sel || x.toId == sel) x,
+    ];
+    if (connected.length > 1) {
+      final idx = connected.indexWhere((x) => x.id == r.id);
+      if (idx >= 0) return _kLinkedRouteColors[idx % _kLinkedRouteColors.length];
+      return AppColors.green;
+    }
+  }
+  return r.id == m.activeRouteId ? AppColors.cyan : AppColors.green;
 }
 
 /// Entrega el [AppModel] a todo el árbol.

@@ -276,13 +276,13 @@ class _TracedRoutesBlock extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
               color: r.id == m.activeRouteId ? AppColors.panel2 : Colors.transparent,
               child: Row(children: [
-                Icon(Icons.route, size: 14, color: r.id == m.activeRouteId ? AppColors.cyan : AppColors.amber),
+                Icon(Icons.route, size: 14, color: tracedRouteColor(m, r)),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text(
                       '${_pointLabel(m, l, r.fromId)} → ${_pointLabel(m, l, r.toId)}',
-                      style: AppText.mono(11, color: r.id == m.activeRouteId ? AppColors.text : AppColors.textDim),
+                      style: AppText.mono(11, color: tracedRouteColor(m, r)),
                     ),
                     Text(
                       r.result.status == 'ok' && r.result.metrics != null
