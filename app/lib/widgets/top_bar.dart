@@ -13,7 +13,7 @@ class TopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final m = AppScope.of(context);
     final l = AppLocalizations.of(context)!;
-    final tabs = [l.navPlan, l.navSafety, l.navScience];
+    final tabs = [l.navPlan, l.navScience];
     return Container(
       height: 54,
       padding: const EdgeInsets.symmetric(horizontal: 14),

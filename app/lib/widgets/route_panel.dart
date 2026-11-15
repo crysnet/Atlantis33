@@ -45,10 +45,73 @@ class RoutePanel extends StatelessWidget {
               ),
               const SizedBox(height: 8),
             ],
+            const _RouteStartBlock(),
+            const SizedBox(height: 8),
             const _SelectedRouteCard(),
+            const SizedBox(height: 8),
+            const _TracedRoutesBlock(),
             const SizedBox(height: 8),
             const _ObjectivesBlock(),
           ]),
+        ),
+      ]),
+    );
+  }
+}
+
+String _pointLabel(AppModel m, AppLocalizations l, String id) {
+  if (id == 'habitat') return l.habitat.toUpperCase();
+  final o = m.objective(id);
+  return o == null ? id.toUpperCase() : o.id.toUpperCase();
+}
+
+class _RouteStartBlock extends StatelessWidget {
+  const _RouteStartBlock();
+
+  @override
+  Widget build(BuildContext context) {
+    final m = AppScope.of(context);
+    final l = AppLocalizations.of(context)!;
+    final items = <(String, String)>[
+      ('habitat', l.habitat),
+      for (final o in m.objectives) (o.id, '${o.id.toUpperCase()} · ${o.name}'),
+    ];
+    final current = items.any((e) => e.$1 == m.routeStartId) ? m.routeStartId : 'habitat';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(color: AppColors.panel, border: Border.all(color: AppColors.hairline)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Row(children: [
+          const Icon(Icons.trip_origin, size: 13, color: AppColors.orange),
+          const SizedBox(width: 6),
+          Text(l.routeStartLabel.toUpperCase(), style: AppText.label(color: AppColors.orange)),
+          const Spacer(),
+          if (current != 'habitat')
+            InkWell(
+              onTap: () => m.traceRoute(current, 'habitat'),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                decoration: BoxDecoration(border: Border.all(color: AppColors.green)),
+                child: Text(l.routeBackToHab.toUpperCase(), style: AppText.label(color: AppColors.green)),
+              ),
+            ),
+        ]),
+        const SizedBox(height: 4),
+        DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: current,
+            isExpanded: true,
+            isDense: true,
+            dropdownColor: AppColors.panel2,
+            style: AppText.body(12, color: AppColors.text),
+            items: [
+              for (final e in items)
+                DropdownMenuItem(value: e.$1, child: Text(e.$2, overflow: TextOverflow.ellipsis)),
+            ],
+            onChanged: (v) {
+              if (v != null) m.setRouteStart(v);
+            },
+          ),
         ),
       ]),
     );
@@ -115,10 +178,28 @@ class _SelectedRouteCard extends StatelessWidget {
                   ),
                 ]),
                 const SizedBox(height: 4),
-                Text(
-                  '${o.id.toUpperCase()} · ${l.priorityLabel(o.priority)} · ${typeName(l, o.type)}',
-                  style: AppText.mono(10.5, color: AppColors.cyan),
-                ),
+                Row(children: [
+                  Expanded(
+                    child: Text(
+                      '${o.id.toUpperCase()} · ${l.priorityLabel(o.priority)} · ${typeName(l, o.type)}',
+                      style: AppText.mono(10.5, color: AppColors.cyan),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: m.routeStartId == o.id ? null : () => m.setRouteStart(o.id),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: m.routeStartId == o.id ? AppColors.orange.withValues(alpha: 0.16) : Colors.transparent,
+                        border: Border.all(color: AppColors.orange),
+                      ),
+                      child: Text(
+                        (m.routeStartId == o.id ? l.routeActiveStart : l.routeSetStart).toUpperCase(),
+                        style: AppText.label(color: AppColors.orange),
+                      ),
+                    ),
+                  ),
+                ]),
                 const SizedBox(height: 8),
                 Text(f.latLon(lon, lat), style: AppText.mono(11, color: AppColors.textDim)),
                 const SizedBox(height: 10),
@@ -131,6 +212,13 @@ class _SelectedRouteCard extends StatelessWidget {
                   ),
                 ]),
                 const Divider(height: 20, color: AppColors.hairline),
+                if (m.activePlannedRoute != null) ...[
+                  Text(
+                    '${_pointLabel(m, l, m.activePlannedRoute!.fromId)} → ${_pointLabel(m, l, m.activePlannedRoute!.toId)}',
+                    style: AppText.mono(11, color: AppColors.cyan),
+                  ),
+                  const SizedBox(height: 4),
+                ],
                 Text(l.routeAutoHint, style: AppText.body(11, color: AppColors.textMute, height: 1.35)),
                 const SizedBox(height: 10),
                 if (blocked || r?.status == 'unreachable')
@@ -158,6 +246,68 @@ class _SelectedRouteCard extends StatelessWidget {
           ),
         ]),
       ),
+    );
+  }
+}
+
+class _TracedRoutesBlock extends StatelessWidget {
+  const _TracedRoutesBlock();
+
+  @override
+  Widget build(BuildContext context) {
+    final m = AppScope.of(context);
+    final l = AppLocalizations.of(context)!;
+    final f = Fmt(m.locale);
+    return Container(
+      decoration: BoxDecoration(color: AppColors.panel, border: Border.all(color: AppColors.hairline)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 6),
+          child: Row(children: [
+            Text(l.routeTracedTitle.toUpperCase(), style: AppText.label()),
+            const Spacer(),
+            Tag('${m.tracedRoutes.length}', color: AppColors.cyan),
+          ]),
+        ),
+        if (m.tracedRoutes.isEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 2, 12, 10),
+            child: Text(l.routeNoRoutes, style: AppText.body(11, color: AppColors.textMute)),
+          ),
+        for (final r in m.tracedRoutes)
+          InkWell(
+            onTap: () => m.selectTracedRoute(r.id),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              color: r.id == m.activeRouteId ? AppColors.panel2 : Colors.transparent,
+              child: Row(children: [
+                Icon(Icons.route, size: 14, color: r.id == m.activeRouteId ? AppColors.cyan : AppColors.amber),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(
+                      '${_pointLabel(m, l, r.fromId)} → ${_pointLabel(m, l, r.toId)}',
+                      style: AppText.mono(11, color: r.id == m.activeRouteId ? AppColors.text : AppColors.textDim),
+                    ),
+                    Text(
+                      r.result.status == 'ok' && r.result.metrics != null
+                          ? '${f.km(r.result.metrics!.distanceM)} · ${f.hours(r.result.metrics!.totalH)}'
+                          : l.statusUnreachable,
+                      style: AppText.body(10.5, color: r.result.status == 'ok' ? AppColors.textDim : AppColors.red),
+                    ),
+                  ]),
+                ),
+                InkWell(
+                  onTap: () => m.removeTracedRoute(r.id),
+                  child: const Padding(
+                    padding: EdgeInsets.all(4),
+                    child: Icon(Icons.close, size: 14, color: AppColors.textMute),
+                  ),
+                ),
+              ]),
+            ),
+          ),
+      ]),
     );
   }
 }

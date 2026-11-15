@@ -2388,6 +2388,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit'**
   String get objectiveEditBtn;
+
+  /// No description provided for @routeStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting point'**
+  String get routeStartLabel;
+
+  /// No description provided for @routeSetStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Set as start'**
+  String get routeSetStart;
+
+  /// No description provided for @routeActiveStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Active start'**
+  String get routeActiveStart;
+
+  /// No description provided for @routeTracedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'TRACED ROUTES'**
+  String get routeTracedTitle;
+
+  /// No description provided for @routeBackToHab.
+  ///
+  /// In en, this message translates to:
+  /// **'Trace return to habitat'**
+  String get routeBackToHab;
+
+  /// No description provided for @routeNoRoutes.
+  ///
+  /// In en, this message translates to:
+  /// **'No traced routes.'**
+  String get routeNoRoutes;
 }
 
 class _AppLocalizationsDelegate

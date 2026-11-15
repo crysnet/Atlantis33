@@ -1233,4 +1233,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get objectiveEditBtn => 'Edit';
+
+  @override
+  String get routeStartLabel => 'Starting point';
+
+  @override
+  String get routeSetStart => 'Set as start';
+
+  @override
+  String get routeActiveStart => 'Active start';
+
+  @override
+  String get routeTracedTitle => 'TRACED ROUTES';
+
+  @override
+  String get routeBackToHab => 'Trace return to habitat';
+
+  @override
+  String get routeNoRoutes => 'No traced routes.';
 }

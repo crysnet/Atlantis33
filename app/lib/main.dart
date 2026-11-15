@@ -8,7 +8,6 @@ import 'data/site_data.dart';
 import 'data/site_registry.dart';
 import 'l10n/app_localizations.dart';
 import 'screens/plan_screen.dart';
-import 'screens/safety_screen.dart';
 import 'screens/science_screen.dart';
 import 'state/app_model.dart';
 import 'theme/app_theme.dart';
@@ -124,7 +123,6 @@ class _Home extends StatelessWidget {
         Expanded(
           child: switch (m.tab) {
             0 => const PlanScreen(),
-            1 => const SafetyScreen(),
             _ => const ScienceScreen(),
           },
         ),

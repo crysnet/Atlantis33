@@ -33,15 +33,12 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
     expect(tester.takeException(), isNull, reason: 'capas nuevas');
     expect(find.text('Transit zones (TES, 3.5 km per pixel)'), findsOneWidget);
-    for (final tab in ['PLAN', 'SAFETY', 'SCIENCE']) {
+    for (final tab in ['PLAN', 'SCIENCE']) {
       await tester.tap(find.text(tab));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
       final e = tester.takeException();
       expect(e, isNull, reason: 'Meridiani, pestaña $tab: $e');
-      if (tab == 'SAFETY') {
-        expect(find.textContaining('No radiation or weather measurements at this site'), findsOneWidget, reason: 'aviso de que no hay mediciones');
-      }
     }
 
     // Fuentes: el diálogo se abre desde el pie de la pantalla y separa datos reales, calculados y supuestos.

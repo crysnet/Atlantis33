@@ -496,6 +496,12 @@
   "objectiveSlope": "Local slope",
   "metricElevRange": "Ascent / descent",
   "objectiveEditBtn": "Edit",
+  "routeStartLabel": "Starting point",
+  "routeSetStart": "Set as start",
+  "routeActiveStart": "Active start",
+  "routeTracedTitle": "TRACED ROUTES",
+  "routeBackToHab": "Trace return to habitat",
+  "routeNoRoutes": "No traced routes.",
   "@mapTraceLegend": {
     "placeholders": {
       "viewW": {

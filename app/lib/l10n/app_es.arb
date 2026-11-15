@@ -461,6 +461,12 @@
   "objectiveSlope": "Pendiente local",
   "metricElevRange": "Ascenso / descenso",
   "objectiveEditBtn": "Editar",
+  "routeStartLabel": "Punto de partida",
+  "routeSetStart": "Usar como partida",
+  "routeActiveStart": "Partida activa",
+  "routeTracedTitle": "RUTAS TRAZADAS",
+  "routeBackToHab": "Trazar regreso al hábitat",
+  "routeNoRoutes": "Sin rutas trazadas.",
   "@mapTraceLegend": {
     "placeholders": {
       "viewW": {

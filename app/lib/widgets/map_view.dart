@@ -125,6 +125,9 @@ class _MapViewState extends State<MapView> {
     return best;
   }
 
+  bool _hitHabitat(AppModel m, Offset p) =>
+      (_toScreen(m.data.habitatX, m.data.habitatY) - p).distance < 22.0;
+
   @override
   Widget build(BuildContext context) {
     final m = AppScope.of(context);
@@ -187,7 +190,13 @@ class _MapViewState extends State<MapView> {
                 return;
               }
               final hit = _hitObjective(m, d.localPosition);
-              m.selectObjective(hit);
+              if (hit != null) {
+                m.selectObjective(hit);
+              } else if (_hitHabitat(m, d.localPosition) && m.routeStartId != 'habitat') {
+                m.traceRoute(m.routeStartId, 'habitat');
+              } else {
+                m.selectObjective(null);
+              }
             },
             child: ClipRect(
               child: Stack(
@@ -645,30 +654,55 @@ class _OverlayPainter extends CustomPainter {
     _frame(canvas, d);
     _vectors(canvas, d);
 
-    // Rutas: las no seleccionadas atenuadas.
+    // Rutas: las no seleccionadas atenuadas, la activa resaltada.
     canvas.save();
     canvas.translate(origin.dx, origin.dy);
     canvas.scale(scale);
-    for (final sel in [false, true]) {
-      for (final e in model.routes.entries) {
-        final isSel = e.key == model.selectedRoute;
-        if (isSel != sel || e.value.cells.isEmpty) continue;
-        final color = routeColor(e.key);
-        final casing = Paint()
-          ..color = AppColors.bg.withValues(alpha: 0.7)
-          ..style = PaintingStyle.stroke
-          ..strokeJoin = StrokeJoin.round
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = (isSel ? 7.0 : 5.0) / scale;
-        final stroke = Paint()
-          ..color = color.withValues(alpha: isSel ? 1.0 : 0.55)
-          ..style = PaintingStyle.stroke
-          ..strokeJoin = StrokeJoin.round
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = (isSel ? 3.5 : 2.2) / scale;
-        final path = _routePath(e.value);
-        canvas.drawPath(path, casing);
-        canvas.drawPath(path, stroke);
+    if (model.tracedRoutes.isNotEmpty) {
+      for (final sel in [false, true]) {
+        for (final r in model.tracedRoutes) {
+          final isSel = r.id == model.activeRouteId;
+          if (isSel != sel || r.result.cells.isEmpty) continue;
+          final color = isSel ? AppColors.cyan : AppColors.amber;
+          final casing = Paint()
+            ..color = AppColors.bg.withValues(alpha: 0.7)
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeCap = StrokeCap.round
+            ..strokeWidth = (isSel ? 7.0 : 4.5) / scale;
+          final stroke = Paint()
+            ..color = color.withValues(alpha: isSel ? 1.0 : 0.55)
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeCap = StrokeCap.round
+            ..strokeWidth = (isSel ? 3.5 : 2.0) / scale;
+          final path = _routePath(r.result);
+          canvas.drawPath(path, casing);
+          canvas.drawPath(path, stroke);
+        }
+      }
+    } else {
+      for (final sel in [false, true]) {
+        for (final e in model.routes.entries) {
+          final isSel = e.key == model.selectedRoute;
+          if (isSel != sel || e.value.cells.isEmpty) continue;
+          final color = routeColor(e.key);
+          final casing = Paint()
+            ..color = AppColors.bg.withValues(alpha: 0.7)
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeCap = StrokeCap.round
+            ..strokeWidth = (isSel ? 7.0 : 5.0) / scale;
+          final stroke = Paint()
+            ..color = color.withValues(alpha: isSel ? 1.0 : 0.55)
+            ..style = PaintingStyle.stroke
+            ..strokeJoin = StrokeJoin.round
+            ..strokeCap = StrokeCap.round
+            ..strokeWidth = (isSel ? 3.5 : 2.2) / scale;
+          final path = _routePath(e.value);
+          canvas.drawPath(path, casing);
+          canvas.drawPath(path, stroke);
+        }
       }
     }
     canvas.restore();
@@ -681,6 +715,9 @@ class _OverlayPainter extends CustomPainter {
     canvas.drawRect(hr, Paint()..color = AppColors.panel.withValues(alpha: 0.9));
     canvas.drawRect(hr, Paint()..color = AppColors.green..style = PaintingStyle.stroke..strokeWidth = 2);
     canvas.drawCircle(h, 2.5, Paint()..color = AppColors.green);
+    if (model.routeStartId == 'habitat') {
+      canvas.drawCircle(h, 16, Paint()..color = AppColors.orange.withValues(alpha: 0.75)..style = PaintingStyle.stroke..strokeWidth = 1.5);
+    }
     _label(canvas, habitatLabel, h + const Offset(14, -9), color: AppColors.green, border: AppColors.green);
 
     // Objetivos.
@@ -689,6 +726,7 @@ class _OverlayPainter extends CustomPainter {
       final c = _p(o.xM, o.yM);
       final blocked = d.isBlocked(o.xM, o.yM);
       final sel = model.selectedObjective == o.id;
+      final isStart = model.routeStartId == o.id;
       final color = blocked ? AppColors.red : AppColors.cyan;
       final dia = Path()
         ..moveTo(c.dx, c.dy - 10)
@@ -700,6 +738,7 @@ class _OverlayPainter extends CustomPainter {
       canvas.drawPath(dia, Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = sel ? 3 : 2);
       if (visited.contains(o.id)) canvas.drawCircle(c, 3, Paint()..color = color);
       if (sel) canvas.drawCircle(c, 16, Paint()..color = color.withValues(alpha: 0.6)..style = PaintingStyle.stroke..strokeWidth = 1);
+      if (isStart) canvas.drawCircle(c, 19, Paint()..color = AppColors.orange.withValues(alpha: 0.85)..style = PaintingStyle.stroke..strokeWidth = 1.5);
       _label(canvas, '${o.id.toUpperCase()} · P${o.priority}', c + const Offset(14, -9), color: color, border: color);
     }
   }
