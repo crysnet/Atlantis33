@@ -1,0 +1,13 @@
+# Descargas e intermedios de datos (se regeneran con tools/, ver RETOMAR.md)
+data/
+
+# Instaladores y compilaciones
+dist/*.apk
+app/build/
+
+# Python
+__pycache__/
+*.pyc
+
+# Registros sueltos
+*.log

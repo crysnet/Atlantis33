@@ -1,0 +1,61 @@
+{
+  "_nota": "Los cuatro objetivos de ejemplo del sitio de Endeavour de 4 km desplazados a esta ventana y uno lejano de ejemplo. Elegidos por reglas sobre el relieve; no son objetivos científicos.",
+  "kind": "suggested",
+  "objectives": [
+    {
+      "id": "e1",
+      "name": "Highest reachable point (example)",
+      "type": "image",
+      "priority": 4,
+      "work_min": 30,
+      "x_m": 12679.0,
+      "y_m": 12917.0,
+      "transport": "hybrid",
+      "source": "Example point chosen by the team from the terrain (not a science target)"
+    },
+    {
+      "id": "e2",
+      "name": "Flat bench (example)",
+      "type": "measurement",
+      "priority": 3,
+      "work_min": 25,
+      "x_m": 11101.0,
+      "y_m": 12059.0,
+      "transport": "vehicle",
+      "source": "Example point chosen by the team from the terrain (not a science target)"
+    },
+    {
+      "id": "e3",
+      "name": "Steep slope base (example)",
+      "type": "sample",
+      "priority": 5,
+      "work_min": 40,
+      "x_m": 11465.0,
+      "y_m": 12717.0,
+      "transport": "foot",
+      "source": "Example point chosen by the team from the terrain (not a science target)"
+    },
+    {
+      "id": "e4",
+      "name": "Plain site (example)",
+      "type": "equipment",
+      "priority": 2,
+      "work_min": 20,
+      "x_m": 11101.0,
+      "y_m": 12219.0,
+      "transport": "vehicle",
+      "source": "Example point chosen by the team from the terrain (not a science target)"
+    },
+    {
+      "id": "f1",
+      "name": "Far plain site (example)",
+      "type": "equipment",
+      "priority": 2,
+      "work_min": 20,
+      "x_m": 11096.0,
+      "y_m": 7176.0,
+      "transport": "vehicle",
+      "source": "Example point chosen by the team from the terrain (not a science target)"
+    }
+  ]
+}

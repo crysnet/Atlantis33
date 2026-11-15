@@ -1,0 +1,50 @@
+{
+  "_nota": "Objetivos sugeridos de ejemplo. Las posiciones son paradas reales de Curiosity en la campaña boxwork (waypoints de la NASA). El tipo, la prioridad y el tiempo de trabajo son supuestos del equipo para la demo; no son los objetivos científicos de la misión. Coordenadas locales: x al este, y al sur, desde la esquina noroeste del recuadro. El campo transport (foot, vehicle, hybrid) de cada objetivo solo cuenta en el modo «según objetivo»; los valores de aquí son supuestos de demostración.",
+  "kind": "suggested",
+  "objectives": [
+    {
+      "id": "t1",
+      "name": "Boxwork stop, sol 4548",
+      "type": "sample",
+      "priority": 5,
+      "work_min": 40,
+      "x_m": 1998.0,
+      "y_m": 1697.0,
+      "source": "Curiosity waypoint, sol 4548",
+      "transport": "hybrid"
+    },
+    {
+      "id": "t2",
+      "name": "Boxwork stop, sol 4609",
+      "type": "image",
+      "priority": 3,
+      "work_min": 20,
+      "x_m": 1718.0,
+      "y_m": 2050.0,
+      "source": "Curiosity waypoint, sol 4609",
+      "transport": "foot"
+    },
+    {
+      "id": "t3",
+      "name": "Boxwork stop, sol 4500",
+      "type": "measurement",
+      "priority": 2,
+      "work_min": 25,
+      "x_m": 2326.0,
+      "y_m": 1387.0,
+      "source": "Curiosity waypoint, sol 4500",
+      "transport": "vehicle"
+    },
+    {
+      "id": "t4",
+      "name": "Boxwork stop, sol 4889",
+      "type": "equipment",
+      "priority": 4,
+      "work_min": 30,
+      "x_m": 1867.0,
+      "y_m": 2625.0,
+      "source": "Curiosity waypoint, sol 4889",
+      "transport": "hybrid"
+    }
+  ]
+}

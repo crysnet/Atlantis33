@@ -1,0 +1,199 @@
+{
+  "id": "gale_reach",
+  "name": "Gale crater: EVA reach (24 km)",
+  "frame": {
+    "description": "Local plane in metres. x grows east, y grows south, origin at the north-west corner of the box.",
+    "size_m": 24000.0
+  },
+  "georeference": {
+    "projection": "Mars equirectangular, sphere radius 3396190 m, central meridian 0, planetocentric latitude",
+    "radius_m": 3396190.0,
+    "origin_easting_m": 8131400.0,
+    "origin_northing_m": -272750.0,
+    "easting_m": "origin_easting_m + x_m",
+    "northing_m": "origin_northing_m - y_m",
+    "lon_deg": "degrees(easting_m / radius_m)",
+    "lat_deg": "degrees(northing_m / radius_m)",
+    "center_lon_deg": 137.38408360157547,
+    "center_lat_deg": -4.8039047333483085
+  },
+  "grid": {
+    "cell_m": 16.0,
+    "width": 1500,
+    "height": 1500,
+    "order": "row-major, north to south, west to east",
+    "components": {
+      "slope": {
+        "file": "slope.bin",
+        "dtype": "uint8",
+        "unit_deg": 0.5,
+        "nodata": 255
+      },
+      "rough": {
+        "file": "rough.bin",
+        "dtype": "uint8",
+        "unit_cm": 0.5,
+        "nodata": 255,
+        "saturates_at": 254
+      },
+      "forbidden": {
+        "file": "forbidden.bin",
+        "dtype": "uint8",
+        "values": {
+          "0": "walkable",
+          "1": "forbidden"
+        }
+      },
+      "elev": {
+        "file": "elev.bin",
+        "dtype": "uint16-le",
+        "unit_m": 0.1,
+        "offset_m": -4610.0,
+        "nodata": 65535
+      }
+    }
+  },
+  "tiles": {
+    "template": "ortho/{z}/{x}/{y}.jpg",
+    "tile_px": 512,
+    "min_zoom": 0,
+    "max_zoom": 4,
+    "world_size_m": 24576.0,
+    "m_per_px": [
+      48.0,
+      24.0,
+      12.0,
+      6.0,
+      3.0
+    ],
+    "covered_size_m": 24000.0
+  },
+  "habitat": {
+    "x_m": 11160.0,
+    "y_m": 10888.0,
+    "col": 697,
+    "row": 680,
+    "lon": 137.36991229349465,
+    "lat": -4.785144620746085,
+    "elevation_m": -3839.488525390625,
+    "flat_radius_m": 45.254833995939045,
+    "kind": "assumption",
+    "note": "Habitation zone of NASA's first Exploration Zone workshop (EZMars layer of Mars Trek), moved to the nearest walkable cell."
+  },
+  "layers": [
+    {
+      "id": "optical",
+      "kind": "measured",
+      "file": "tiles",
+      "source": "HiRISE (MRO) mosaic of the Curiosity roving site, via NASA Mars Trek (WMTS level 14, 2.5 m/px)",
+      "resolution_m": 2.54
+    },
+    {
+      "id": "hillshade",
+      "kind": "measured",
+      "file": "layers/hillshade.png",
+      "source": "USGS Gale merged DEM (HiRISE, CTX, HRSC) at 1 m, read at 16 m: local slopes are smoothed, roughness unknown",
+      "resolution_m": 16.0
+    },
+    {
+      "id": "slope",
+      "kind": "modeled",
+      "file": "layers/slope.png",
+      "source": "Computed from the DEM above",
+      "resolution_m": 16.0
+    },
+    {
+      "id": "forbidden",
+      "kind": "modeled",
+      "file": "grid/forbidden.bin",
+      "source": "Slope above limit",
+      "resolution_m": 16.0
+    },
+    {
+      "id": "slope15",
+      "kind": "modeled",
+      "file": "layers/slope15.png",
+      "source": "Slope above 15 % (8.5 deg), computed from the DEM above",
+      "resolution_m": 16.0
+    },
+    {
+      "id": "curiosity",
+      "kind": "measured",
+      "file": "curiosity_waypoints.json",
+      "source": "NASA/JPL-Caltech, Curiosity rover waypoints",
+      "resolution_m": null
+    },
+    {
+      "id": "minerals_pts",
+      "kind": "measured",
+      "file": "vectors.json",
+      "source": "Aqueous mineral distribution and hydrous mineral detections (CRISM, OMEGA) via NASA Mars Trek",
+      "resolution_m": null
+    },
+    {
+      "id": "zones",
+      "kind": "measured",
+      "file": "vectors.json",
+      "source": "Exploration zones, habitation zones, landing sites and regions of interest (NASA EMC workshop, 2015) via NASA Mars Trek",
+      "resolution_m": null
+    },
+    {
+      "id": "names",
+      "kind": "measured",
+      "file": "vectors.json",
+      "source": "IAU place names via NASA Mars Trek",
+      "resolution_m": null
+    },
+    {
+      "id": "craters",
+      "kind": "measured",
+      "file": "vectors.json",
+      "source": "Robbins crater database, craters of 1 km and larger (USGS Astrogeology)",
+      "resolution_m": null
+    },
+    {
+      "id": "geology",
+      "kind": "measured",
+      "file": "vectors.json",
+      "source": "Global geologic map SIM 3292 (USGS Astrogeology) and dune field database (via NASA Mars Trek); global scale",
+      "resolution_m": null
+    }
+  ],
+  "quality": "reach",
+  "regional": false,
+  "context": {
+    "x_m": -8000.0,
+    "y_m": -8000.0,
+    "size_m": 40000.0,
+    "template": "context/{z}/{x}/{y}.jpg",
+    "tile_px": 512,
+    "min_zoom": 0,
+    "max_zoom": 2,
+    "world_size_m": 40960.0,
+    "m_per_px": [
+      80.0,
+      40.0,
+      20.0
+    ],
+    "source": "CTX (MRO) mosaic of Gale crater, via NASA Mars Trek (WMTS level 11, 20 m/px)",
+    "resolution_m": 20.35
+  },
+  "base": {
+    "asset_dir": "base_gale",
+    "x_m": -161916.91799147986,
+    "y_m": -158349.833780019,
+    "size_m": 327680.0,
+    "tile_px": 512,
+    "max_zoom": 4,
+    "world_size_m": 327680.0,
+    "m_per_px": [
+      640.0,
+      320.0,
+      160.0,
+      80.0,
+      40.0
+    ],
+    "source": "CTX (MRO) mosaic of Gale crater, via NASA Mars Trek (WMTS level 10, 40 m/px)",
+    "resolution_m": 40.7
+  }
+}

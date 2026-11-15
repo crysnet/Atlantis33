@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARES PATH — Helmet HUD</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-fixed": "#370e00",
+            "surface-container-high": "#2c2928",
+            "primary": "#ffb59a",
+            "on-tertiary": "#472a00",
+            "on-surface": "#e8e1df",
+            "surface-bright": "#3c3837",
+            "surface-variant": "#373433",
+            "outline-variant": "#584239",
+            "secondary-fixed-dim": "#26dcdd",
+            "on-primary-container": "#4f1700",
+            "surface": "#151312",
+            "surface-tint": "#ffb59a",
+            "outline": "#a78b81",
+            "surface-container-low": "#1d1b1a",
+            "on-error": "#690005",
+            "inverse-on-surface": "#33302e",
+            "on-tertiary-fixed-variant": "#663e00",
+            "secondary-fixed": "#56f9f9",
+            "surface-container-highest": "#373433",
+            "on-secondary-fixed-variant": "#004f50",
+            "on-error-container": "#ffdad6",
+            "on-secondary-container": "#005455",
+            "tertiary-fixed": "#ffddb9",
+            "surface-container-lowest": "#100e0d",
+            "primary-container": "#ec6932",
+            "inverse-surface": "#e8e1df",
+            "tertiary": "#ffb961",
+            "on-tertiary-container": "#3e2400",
+            "on-tertiary-fixed": "#2b1700",
+            "secondary-container": "#00d0d1",
+            "tertiary-container": "#cb8000",
+            "on-secondary": "#003737",
+            "on-background": "#e8e1df",
+            "primary-fixed-dim": "#ffb59a",
+            "on-primary-fixed-variant": "#802a00",
+            "inverse-primary": "#a73a00",
+            "on-secondary-fixed": "#002020",
+            "error-container": "#93000a",
+            "secondary": "#45edee",
+            "on-primary": "#5a1b00",
+            "surface-container": "#221f1e",
+            "error": "#ffb4ab",
+            "surface-dim": "#151312",
+            "on-surface-variant": "#e0c0b5",
+            "background": "#151312",
+            "primary-fixed": "#ffdbce",
+            "tertiary-fixed-dim": "#ffb961"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "gutter-desktop": "0.5rem",
+            "space-lg": "1rem",
+            "space-xs": "0.25rem",
+            "space-xl": "1.5rem",
+            "space-md": "0.75rem",
+            "margin-mobile": "0.5rem",
+            "margin-desktop": "1rem",
+            "gutter-tablet": "0.375rem",
+            "gutter": "0.5rem",
+            "margin": "0.75rem"
+          },
+          "fontFamily": {
+            "mono-md": ["JetBrains Mono"],
+            "mono-sm": ["JetBrains Mono"],
+            "body-sm": ["IBM Plex Sans"],
+            "headline-sm": ["Space Grotesk"],
+            "mono-lg": ["JetBrains Mono"],
+            "headline-md": ["Space Grotesk"],
+            "headline-lg-mobile": ["Space Grotesk"],
+            "label-caps": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "body-md": ["IBM Plex Sans"],
+            "headline-xl-mobile": ["Space Grotesk"],
+            "headline-lg": ["Space Grotesk"],
+            "body-lg": ["IBM Plex Sans"]
+          },
+          "fontSize": {
+            "mono-md": ["0.8125rem", { "lineHeight": "1rem", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "mono-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.04em", "fontWeight": "500" }],
+            "body-sm": ["0.75rem", { "lineHeight": "1rem", "fontWeight": "400" }],
+            "headline-sm": ["0.875rem", { "lineHeight": "1.125rem", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "mono-lg": ["1rem", { "lineHeight": "1.25rem", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "headline-md": ["1.125rem", { "lineHeight": "1.375rem", "letterSpacing": "0em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["1.25rem", { "lineHeight": "1.5rem", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-caps": ["0.625rem", { "lineHeight": "0.75rem", "letterSpacing": "0.08em", "fontWeight": "600" }],
+            "headline-xl": ["2rem", { "lineHeight": "2.25rem", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["0.8125rem", { "lineHeight": "1.125rem", "fontWeight": "400" }],
+            "headline-xl-mobile": ["1.5rem", { "lineHeight": "1.75rem", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg": ["1.5rem", { "lineHeight": "1.75rem", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["0.9375rem", { "lineHeight": "1.375rem", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    
+    /* Visor curvature & tactical HUD scanline effects */
+    .visor-vignette {
+      box-shadow: inset 0 0 100px 30px rgba(0,0,0,0.85), inset 0 0 200px 80px rgba(10,8,7,0.7);
+    }
+    
+    .hud-glass-panel {
+      background: rgba(16, 14, 13, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(88, 66, 57, 0.45);
+    }
+    
+    .hud-reticle-glow {
+      filter: drop-shadow(0 0 4px rgba(236, 105, 50, 0.7));
+    }
+    
+    .hud-cyan-glow {
+      filter: drop-shadow(0 0 4px rgba(69, 237, 238, 0.7));
+    }
+
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.65; }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2.4s ease-in-out infinite;
+    }
+
+    @keyframes scan-radar {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .radar-sweep {
+      transform-origin: 50% 50%;
+      animation: scan-radar 5s linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface m-0 p-0 overflow-hidden w-screen h-screen select-none font-mono-sm">
+<!-- ==================== BACKGROUND FIRST-PERSON POV CAMERA ==================== -->
+<div class="fixed inset-0 w-full h-full overflow-hidden z-0">
+<img alt="First-person POV wide angle view through an astronaut helmet visor standing on Mars surface in Gale Crater" class="w-full h-full object-cover object-center scale-[1.02] filter contrast-[1.04] brightness-[0.98]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoiTR0qvquTSBG1QnlN6w6Dyf42-VPeEf3mTs1LBufzo3o0ZjStARc5EtPXDxKFkmFdPAqfYQSKOjKoSOZAjLNPV44PR7RREGEulbhRRynw00f6p0-5gt8bkPVVxf18zlH8G7cIyofXm2Y6BbCP1NlNdQgnSl2IFYZRn299ToWEZjYCcYKX9C6IWAo6cCmG2PpufWyuJxMmOfSZrh1zWjAsV9UYcO-0LJRTOwo9Cyzs1-v9hzN3Qd4bsOa5wMAFWAmY4oMM3cl"/>
+<!-- Helmet Glass Curvature Overlay, Rim Vignette & Subtle Reflection Sheen -->
+<div class="absolute inset-0 pointer-events-none visor-vignette"></div>
+<div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/40 via-transparent to-black/50"></div>
+<!-- Curved Visor Peripheral Boundary Frame -->
+<div class="absolute inset-2 md:inset-4 rounded-[40px] md:rounded-[64px] border border-outline-variant/30 pointer-events-none opacity-40"></div>
+<div class="absolute inset-3 md:inset-6 rounded-[36px] md:rounded-[60px] border-t border-l border-primary/20 pointer-events-none opacity-30"></div>
+<!-- Helmet Internal Frame Corner Accents -->
+<div class="absolute top-4 left-6 text-outline-variant/60 font-mono-sm text-[9px] tracking-widest pointer-events-none">HELMET_EXT_VISOR // POLARIZED UV-400</div>
+<div class="absolute top-4 right-6 text-outline-variant/60 font-mono-sm text-[9px] tracking-widest pointer-events-none">DISP_LAYER_01 // 60 Hz SYNCED</div>
+</div>
+<!-- ==================== IN-FIELD AR PERSPECTIVE OVERLAYS (PROJECTED ONTO TERRAIN) ==================== -->
+<div class="fixed inset-0 pointer-events-none z-10 overflow-hidden">
+<!-- SVG AR Traverse Trajectory & Hazard Boundaries -->
+<svg class="w-full h-full absolute inset-0" preserveaspectratio="none" viewbox="0 0 1920 1080">
+<defs>
+<!-- Gradient for Traverse Path -->
+<lineargradient id="pathGradient" x1="50%" x2="55%" y1="100%" y2="48%">
+<stop offset="0%" stop-color="#ec6932" stop-opacity="0.85"></stop>
+<stop offset="60%" stop-color="#ec6932" stop-opacity="0.55"></stop>
+<stop offset="100%" stop-color="#ec6932" stop-opacity="0.1"></stop>
+</lineargradient>
+<!-- Red Hazard Diagonal Stripe Pattern -->
+<pattern height="16" id="hazardPattern" patterntransform="rotate(45 0 0)" patternunits="userSpaceOnUse" width="16">
+<line stroke="#ef4444" stroke-opacity="0.35" stroke-width="2" x1="0" x2="0" y1="0" y2="16"></line>
+</pattern>
+</defs></svg>
+<!-- Hazard Polygon on Left Talus Slope -->
+<polygon class="opacity-80" fill="url(#hazardPattern)" points="120,840 380,720 460,790 290,920 80,940" stroke="#ef4444" stroke-dasharray="6,4" stroke-width="1.5"></polygon>
+<!-- Traverse Route Projection Line Leading to Boxwork Ridge Ahead -->
+<path class="hud-reticle-glow" d="M 880 1080 Q 940 850 990 730 T 1035 565" fill="none" stroke="url(#pathGradient)" stroke-dasharray="10,6" stroke-width="3.5"></path>
+<!-- Breadcrumb Waypoint Dots Along Traverse -->
+<circle cx="910" cy="940" fill="#ec6932" r="3.5"></circle>
+<circle cx="952" cy="815" fill="#ec6932" r="3"></circle>
+<circle cx="985" cy="710" fill="#ec6932" r="2.5"></circle>
+<circle cx="1015" cy="625" fill="#ec6932" r="2"></circle>
+<!-- Vertical Tether to Main Waypoint (WP3) -->
+<line stroke="#ec6932" stroke-dasharray="3,3" stroke-width="1.5" x1="1035" x2="1035" y1="565" y2="520"></line>
+<!-- Tether to Science Target ST-1 Outcrop (Cyan) -->
+<line stroke="#00d0d1" stroke-dasharray="2,2" stroke-width="1.5" x1="680" x2="680" y1="640" y2="590"></line>
+<!-- AR Element: Hazard Label Overlay (Left Ground) -->
+<div class="absolute left-[14%] top-[72%] -translate-y-1/2 p-space-xs border border-error/50 bg-black/60 backdrop-blur-sm rounded">
+<div class="flex items-center gap-space-xs text-error font-mono-sm text-[10px] font-bold tracking-wider">
+<span class="material-symbols-outlined text-sm">warning</span>
+<span>NO-GO // SLOPE 24° UNSTABLE TALUS</span>
+</div>
+<div class="text-[9px] text-on-surface-variant font-mono-sm pl-4">SLIP RISK: HIGH · DETOUR +45m</div>
+</div>
+<!-- AR Element: Forward Waypoint Reticle (WP3 Boxwork Ridge A) -->
+<div class="absolute left-[54%] top-[48%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<!-- Outer Pulsing Diamond -->
+<div class="relative w-8 h-8 flex items-center justify-center animate-pulse-subtle">
+<div class="w-6 h-6 border-2 border-primary-container rotate-45 hud-reticle-glow"></div>
+<div class="w-1.5 h-1.5 bg-primary-container rounded-full absolute"></div>
+<div class="absolute -top-1 w-2 h-0.5 bg-primary-container"></div>
+<div class="absolute -bottom-1 w-2 h-0.5 bg-primary-container"></div>
+<div class="absolute -left-1 w-0.5 h-2 bg-primary-container"></div>
+<div class="absolute -right-1 w-0.5 h-2 bg-primary-container"></div>
+</div>
+<!-- Tactical Tag Data Plaque -->
+<div class="mt-1 hud-glass-panel px-space-xs py-0.5 rounded border border-primary-container/60 shadow-lg text-center">
+<div class="text-primary-container font-headline-sm text-xs font-bold tracking-wide flex items-center gap-1 justify-center">
+<span>WP3 BOXWORK RIDGE A</span>
+</div>
+<div class="flex items-center gap-2 text-[10px] text-on-surface font-mono-sm">
+<span class="text-primary">ETA 21 MIN</span>
+<span class="text-outline">|</span>
+<span class="text-on-surface font-semibold">380 m</span>
+</div>
+</div>
+<!-- Ground Projection Arrow -->
+<div class="text-primary-container text-xs mt-0.5 animate-bounce">▼</div>
+</div>
+<!-- AR Element: Science Target Marker ST-1 (Cyan) -->
+<div class="absolute left-[35%] top-[54%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-start">
+<div class="flex items-center gap-1 hud-glass-panel px-space-xs py-0.5 rounded border border-secondary/60 hud-cyan-glow">
+<span class="w-2.5 h-2.5 bg-secondary-container/30 border border-secondary rotate-45 inline-block"></span>
+<span class="text-secondary font-mono-sm text-[10px] font-bold">ST-1: SAMPLE SITE</span>
+</div>
+<div class="hud-glass-panel px-space-xs py-0.5 rounded border-l-2 border-l-secondary border-t-0 border-r-0 border-b-0 mt-0.5 text-[9px] font-mono-sm text-on-surface-variant">
+<div>SULFATE VEIN · HYDRATED MINERALS</div>
+<div class="text-secondary font-semibold">SCIENCE PRIORITY 1</div>
+</div>
+</div>
+<!-- AR Element: EV2 Buddy Tracking Brackets (Astronaut Ahead on Right) -->
+<div class="absolute right-[29%] top-[45%] w-28 md:w-36 pointer-events-none">
+<!-- Target Corner Brackets -->
+<div class="relative w-full h-56 border border-secondary/20">
+<!-- Top Left Bracket -->
+<div class="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-secondary"></div>
+<!-- Top Right Bracket -->
+<div class="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-secondary"></div>
+<!-- Bottom Left Bracket -->
+<div class="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-secondary"></div>
+<!-- Bottom Right Bracket -->
+<div class="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-secondary"></div>
+<!-- Center Target Pip -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full border border-secondary/50"></div>
+<!-- Buddy Data Overlay Tag -->
+<div class="absolute -top-7 left-0 hud-glass-panel px-space-xs py-0.5 rounded border border-secondary/40 whitespace-nowrap">
+<div class="flex items-center gap-1.5 text-[9px] font-mono-sm text-secondary font-bold">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
+<span>EV2 · DR. CHEN</span>
+<span class="text-on-surface-variant font-normal">| 12 m</span>
+</div>
+</div>
+<div class="absolute -bottom-6 left-0 hud-glass-panel px-space-xs py-0.5 rounded text-[8px] font-mono-sm text-on-surface-variant flex gap-2">
+<span>HR <strong class="text-on-surface">92</strong></span>
+<span>O2 <strong class="text-secondary">89%</strong></span>
+<span>SUIT <strong class="text-emerald-400">NOM</strong></span>
+</div>
+</div>
+</div>
+<!-- Visual Perspective Chevrons on Trajectory (> > >) -->
+<div class="absolute left-[50.5%] top-[64%] text-primary-container/80 text-xs font-bold tracking-widest rotate-[-12deg] pointer-events-none">
+      ▲ ▲ ▲
+    </div>
+<div class="absolute left-[49%] top-[78%] text-primary-container/70 text-sm font-bold tracking-widest rotate-[-8deg] pointer-events-none">
+      ▲ ▲ ▲
+    </div>
+</div>
+<!-- ==================== TOP BAR HUD (COMPASS TAPE & BEARING) ==================== -->
+<header class="fixed top-2 md:top-4 inset-x-0 z-30 flex flex-col items-center pointer-events-none px-4">
+<!-- Pitch Ladder / Artificial Horizon Center Hashmarks -->
+<div class="flex items-center justify-center gap-1 mb-1 opacity-70">
+<div class="w-12 h-[1px] bg-primary-container/60"></div>
+<div class="w-1.5 h-3 border-l border-primary-container"></div>
+<div class="w-2 h-2 rounded-full border border-primary-container/80 flex items-center justify-center">
+<div class="w-0.5 h-0.5 bg-primary-container"></div>
+</div>
+<div class="w-1.5 h-3 border-r border-primary-container"></div>
+<div class="w-12 h-[1px] bg-primary-container/60"></div>
+</div>
+<!-- Horizontal Compass Ribbon -->
+<div class="hud-glass-panel px-4 py-1.5 rounded border border-outline-variant/60 flex flex-col items-center shadow-2xl relative w-full max-w-xl">
+<!-- Current Heading Indicator Pip (Top) -->
+<div class="absolute -top-1 left-1/2 -translate-x-1/2 text-primary-container text-[10px]">▼</div>
+<!-- Compass Scale Degree Ticks -->
+<div class="w-full flex items-center justify-between text-on-surface-variant font-mono-sm text-[10px] tracking-wider pt-0.5">
+<div class="flex flex-col items-center opacity-40"><span>110°</span><div class="h-1.5 w-[1px] bg-outline-variant mt-0.5"></div></div>
+<div class="flex flex-col items-center opacity-60"><span>120°</span><div class="h-2 w-[1px] bg-outline-variant mt-0.5"></div></div>
+<div class="flex flex-col items-center opacity-70"><span>130°</span><div class="h-2 w-[1px] bg-outline-variant mt-0.5"></div></div>
+<div class="flex flex-col items-center text-primary-container font-bold text-xs scale-110">
+<span class="flex items-center gap-1">
+<span class="text-[9px] bg-primary-container/20 px-1 py-0.2 rounded border border-primary-container/40">SE</span>
+<span>142°</span>
+</span>
+<div class="h-3 w-[2px] bg-primary-container mt-0.5"></div>
+</div>
+<div class="flex flex-col items-center opacity-70"><span>150°</span><div class="h-2 w-[1px] bg-outline-variant mt-0.5"></div></div>
+<div class="flex flex-col items-center opacity-60"><span>160°</span><div class="h-2 w-[1px] bg-outline-variant mt-0.5"></div></div>
+<div class="flex flex-col items-center opacity-40"><span>170°</span><div class="h-1.5 w-[1px] bg-outline-variant mt-0.5"></div></div>
+</div>
+<!-- Bearing Marker Pinned Below Tape -->
+<div class="mt-1 pt-1 border-t border-outline-variant/30 w-full flex items-center justify-between text-[10px] font-mono-sm">
+<div class="flex items-center gap-1 text-primary-container font-semibold">
+<span class="material-symbols-outlined text-[12px]">near_me</span>
+<span>PINNED BEARING: 142° SE</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface">
+<span class="text-on-surface-variant">WAYPOINT TARGET:</span>
+<span class="text-primary font-bold">WP3 · 380 m</span>
+<span class="bg-surface-container-high px-1 py-0.2 rounded text-[9px] text-tertiary">Δ -1.2°</span>
+</div>
+</div>
+</div>
+</header>
+<!-- ==================== TOP LEFT: MISSION CLOCK & PROGRESSION ==================== -->
+<aside class="fixed top-4 left-4 md:left-6 z-30 pointer-events-auto max-w-[280px]">
+<div class="hud-glass-panel p-space-sm rounded border border-outline-variant/70 shadow-2xl relative overflow-hidden">
+<!-- Panel Header Bar with Mini Decorative Accent -->
+<div class="flex items-center justify-between border-b border-outline-variant/40 pb-1 mb-2">
+<div class="flex items-center gap-1.5">
+<span class="inline-block w-2 h-2 bg-primary-container rounded-sm"></span>
+<span class="font-headline-sm text-xs font-bold tracking-wider text-primary">ARES PATH // HUD v4.2</span>
+</div>
+<span class="text-[9px] text-tertiary font-mono-sm uppercase tracking-widest">GALE CRATER</span>
+</div>
+<!-- Realtime EVA Elapsed Stopwatch -->
+<div class="mb-2">
+<div class="text-[9px] text-on-surface-variant font-label-caps tracking-widest">MISSION ELAPSED TIME (MET)</div>
+<div class="text-2xl font-mono-lg font-bold tracking-tight text-on-surface flex items-baseline gap-1">
+<span class="text-primary-container text-base">EVA</span>
+<span id="evaClock">01:32:10</span>
+<span class="text-[10px] text-on-surface-variant font-normal">UTC+0</span>
+</div>
+</div>
+<!-- Sol & Local Mean Solar Time (LMST) -->
+<div class="grid grid-cols-2 gap-2 py-1 px-1.5 bg-black/40 rounded border border-outline-variant/30 mb-2">
+<div>
+<div class="text-[8px] text-on-surface-variant font-label-caps">MARTIAN SOL</div>
+<div class="text-xs font-mono-md text-on-surface font-semibold">SOL 4521</div>
+</div>
+<div>
+<div class="text-[8px] text-on-surface-variant font-label-caps">LMST (LOCAL SUN)</div>
+<div class="text-xs font-mono-md text-secondary font-semibold">11:17:42</div>
+</div>
+</div>
+<!-- Leg Progression Tracker -->
+<div>
+<div class="flex items-center justify-between text-[10px] mb-1">
+<span class="text-on-surface-variant font-mono-sm">TRAVERSE PROGRESS</span>
+<span class="text-primary font-bold font-mono-sm">LEG 3 OF 6</span>
+</div>
+<div class="text-[9px] text-on-surface truncate mb-1">WP2 → WP3 Boxwork Ridge A</div>
+<!-- Segmented 6-Part Progress Bar -->
+<div class="grid grid-cols-6 gap-1 h-1.5 w-full">
+<div class="bg-primary-container rounded-sm"></div>
+<div class="bg-primary-container rounded-sm"></div>
+<div class="bg-primary-container/80 rounded-sm relative overflow-hidden">
+<div class="absolute inset-0 bg-primary w-[60%]"></div>
+</div>
+<div class="bg-outline-variant/30 rounded-sm"></div>
+<div class="bg-outline-variant/30 rounded-sm"></div>
+<div class="bg-outline-variant/30 rounded-sm"></div>
+</div>
+<div class="flex justify-between items-center text-[8px] text-outline mt-1 font-mono-sm">
+<span>HAB (START)</span>
+<span>REACH: 60%</span>
+<span>ST-4 RIDGE (END)</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- ==================== TOP RIGHT: ENVIRONMENTAL SENSORS & BUDDY LINK ==================== -->
+<aside class="fixed top-4 right-4 md:right-6 z-30 pointer-events-auto max-w-[300px]">
+<div class="hud-glass-panel p-space-sm rounded border border-outline-variant/70 shadow-2xl">
+<!-- Section Title -->
+<div class="flex items-center justify-between border-b border-outline-variant/40 pb-1 mb-2">
+<span class="font-headline-sm text-xs font-bold tracking-wider text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">thermostat</span>
+          ENV SENSORS // METEOROLOGY
+        </span>
+<span class="text-[9px] text-emerald-400 font-mono-sm flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          REALTIME
+        </span>
+</div>
+<!-- Telemetry Chip Grid (2x2) -->
+<div class="grid grid-cols-2 gap-1.5 mb-2.5">
+<!-- Temp -->
+<div class="p-1.5 bg-black/40 rounded border border-outline-variant/30 flex flex-col">
+<span class="text-[8px] text-on-surface-variant font-label-caps">AMB TEMPERATURE</span>
+<span class="text-sm font-mono-md font-bold text-on-surface">-24.2 °C</span>
+<span class="text-[8px] text-outline">DIURNAL PEAK -19°</span>
+</div>
+<!-- Wind -->
+<div class="p-1.5 bg-black/40 rounded border border-outline-variant/30 flex flex-col">
+<span class="text-[8px] text-on-surface-variant font-label-caps">ATMOSPHERIC WIND</span>
+<span class="text-sm font-mono-md font-bold text-on-surface">7.1 m/s NW</span>
+<span class="text-[8px] text-tertiary">GUSTS TO 11 m/s</span>
+</div>
+<!-- Dust Optical Depth -->
+<div class="p-1.5 bg-black/40 rounded border border-outline-variant/30 flex flex-col">
+<span class="text-[8px] text-on-surface-variant font-label-caps">DUST TAU (OPACITY)</span>
+<span class="text-sm font-mono-md font-bold text-emerald-400">0.60 <span class="text-[9px] font-normal text-on-surface-variant">TAU</span></span>
+<span class="text-[8px] text-outline">CLEAR VISIBILITY</span>
+</div>
+<!-- Rad Flux -->
+<div class="p-1.5 bg-black/40 rounded border border-outline-variant/30 flex flex-col">
+<span class="text-[8px] text-on-surface-variant font-label-caps">GCR / RAD FLUX</span>
+<span class="text-sm font-mono-md font-bold text-secondary">0.64 <span class="text-[9px] font-normal text-on-surface-variant">mSv/d</span></span>
+<span class="text-[8px] text-emerald-400">NOMINAL BACKGROUND</span>
+</div>
+</div>
+<!-- EVA-2 Buddy Telemetry Badge -->
+<div class="p-2 rounded bg-black/50 border border-secondary/40 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="relative">
+<div class="w-7 h-7 rounded-sm border border-secondary/60 bg-secondary/10 flex items-center justify-center text-secondary font-bold text-xs">
+              EV2
+            </div>
+<div class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400"></div>
+</div>
+<div>
+<div class="text-[10px] font-bold text-on-surface font-mono-sm leading-tight">DR. CHEN (MISSION SPEC)</div>
+<div class="text-[9px] text-on-surface-variant font-mono-sm">RANGE: <span class="text-secondary font-bold">12 m</span> · REL SPEED: 0.1 m/s</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-[9px] font-mono-sm text-emerald-400 font-bold">LINK 100%</div>
+<div class="text-[8px] text-outline">UWB-RELAY 5.8G</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- ==================== BOTTOM LEFT: LIFE SUPPORT & SUIT TELEMETRY (PLSS) ==================== -->
+<aside class="fixed bottom-4 left-4 md:left-6 z-30 pointer-events-auto w-[320px] max-w-[calc(100vw-2rem)]">
+<div class="hud-glass-panel p-space-sm rounded border border-outline-variant/70 shadow-2xl">
+<!-- Header -->
+<div class="flex items-center justify-between border-b border-outline-variant/40 pb-1 mb-2">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary-container">vital_signs</span>
+<span class="font-headline-sm text-xs font-bold tracking-wider text-on-surface">PLSS // LIFE SUPPORT VITALS</span>
+</div>
+<span class="text-[9px] px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">SUIT OK</span>
+</div>
+<!-- Primary Gauge Row: O2 & Battery (Arcs & Bars) -->
+<div class="grid grid-cols-2 gap-2 mb-2">
+<!-- O2 Reserve Arc / Metric -->
+<div class="p-2 bg-black/40 rounded border border-outline-variant/30 flex items-center gap-2">
+<!-- Circular Mini Arc SVG -->
+<div class="relative w-11 h-11 flex-shrink-0">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 36 36">
+<path class="text-outline-variant/40" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-secondary stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="71, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-secondary font-mono-md">
+              71%
+            </div>
+</div>
+<div>
+<div class="text-[8px] text-on-surface-variant font-label-caps">O2 PRIMARY</div>
+<div class="text-xs font-bold text-on-surface">5.1h REM</div>
+<div class="text-[8px] text-outline">FLOW 0.42 kg/h</div>
+</div>
+</div>
+<!-- Battery Bar / Metric -->
+<div class="p-2 bg-black/40 rounded border border-outline-variant/30 flex items-center gap-2">
+<!-- Circular Mini Arc SVG -->
+<div class="relative w-11 h-11 flex-shrink-0">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 36 36">
+<path class="text-outline-variant/40" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-primary-container stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="78, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-primary font-mono-md">
+              78%
+            </div>
+</div>
+<div>
+<div class="text-[8px] text-on-surface-variant font-label-caps">BATT CELL</div>
+<div class="text-xs font-bold text-on-surface">6.4h REM</div>
+<div class="text-[8px] text-outline">DRAW: 185 W</div>
+</div>
+</div>
+</div>
+<!-- Suit Pressure, CO2 & Biometrics Sub-Grid -->
+<div class="grid grid-cols-3 gap-1 text-center mb-2">
+<div class="bg-black/40 p-1 rounded border border-outline-variant/30">
+<div class="text-[7.5px] text-on-surface-variant font-label-caps">SUIT PRESS</div>
+<div class="text-xs font-bold text-on-surface font-mono-md">29.6 <span class="text-[8px] font-normal text-outline">kPa</span></div>
+<div class="text-[7px] text-emerald-400">NOMINAL</div>
+</div>
+<div class="bg-black/40 p-1 rounded border border-outline-variant/30">
+<div class="text-[7.5px] text-on-surface-variant font-label-caps">CO2 SCRUB</div>
+<div class="text-xs font-bold text-emerald-400 font-mono-md">0.04 <span class="text-[8px] font-normal text-outline">kPa</span></div>
+<div class="text-[7px] text-emerald-400">AMINE-BED A</div>
+</div>
+<div class="bg-black/40 p-1 rounded border border-outline-variant/30">
+<div class="text-[7.5px] text-on-surface-variant font-label-caps">MET RATE</div>
+<div class="text-xs font-bold text-tertiary font-mono-md">280 <span class="text-[8px] font-normal text-outline">W</span></div>
+<div class="text-[7px] text-on-surface-variant">1.4 km/h</div>
+</div>
+</div>
+<!-- Live Heart Rate Strip with Micro-ECG Waveform -->
+<div class="p-1.5 bg-black/40 rounded border border-outline-variant/30 flex items-center justify-between mb-2">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs text-rose-400 animate-pulse">favorite</span>
+<span class="text-xs font-mono-md font-bold text-on-surface">96 <span class="text-[9px] font-normal text-outline">BPM</span></span>
+</div>
+<!-- SVG Micro ECG Waveform Line -->
+<div class="w-32 h-4 overflow-hidden">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 120 20">
+<path d="M 0 10 L 20 10 L 25 2 L 30 18 L 35 10 L 45 10 L 50 4 L 55 16 L 60 10 L 80 10 L 85 1 L 90 19 L 95 10 L 120 10" fill="none" stroke="#ffb59a" stroke-linecap="round" stroke-width="1.2"></path>
+</svg>
+</div>
+<span class="text-[8px] text-emerald-400 font-mono-sm">RHYTHM SINUS</span>
+</div>
+<!-- Return Margin Safety Banner -->
+<div class="px-2 py-1 rounded bg-emerald-950/40 border border-emerald-500/40 flex items-center justify-between text-[9px] font-mono-sm">
+<div class="flex items-center gap-1 text-emerald-300 font-bold">
+<span class="material-symbols-outlined text-xs">verified_user</span>
+<span>RETURN MARGIN: +38%</span>
+</div>
+<span class="text-emerald-400 font-bold uppercase tracking-wider">GO FOR TRAVERSE</span>
+</div>
+</div>
+</aside>
+<!-- ==================== BOTTOM RIGHT: TACTICAL GIS RADAR / MINI-MAP ==================== -->
+<aside class="fixed bottom-4 right-4 md:right-6 z-30 pointer-events-auto w-[290px] max-w-[calc(100vw-2rem)]">
+<div class="hud-glass-panel p-space-sm rounded border border-outline-variant/70 shadow-2xl flex flex-col items-center">
+<!-- Mini-map Header -->
+<div class="w-full flex items-center justify-between border-b border-outline-variant/40 pb-1 mb-2">
+<span class="font-headline-sm text-xs font-bold tracking-wider text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">radar</span>
+          TACTICAL GIS RADAR
+        </span>
+<span class="text-[9px] text-on-surface-variant font-mono-sm">RANGE: 500m</span>
+</div>
+<!-- Circular Radar Display -->
+<div class="relative w-44 h-44 rounded-full border border-primary-container/40 bg-black/60 overflow-hidden flex items-center justify-center my-1">
+<!-- Concentric Distance Range Rings -->
+<div class="absolute w-36 h-36 rounded-full border border-outline-variant/30"></div>
+<div class="absolute w-24 h-24 rounded-full border border-outline-variant/30"></div>
+<div class="absolute w-12 h-12 rounded-full border border-outline-variant/40"></div>
+<!-- Crosshairs (N-S-E-W) -->
+<div class="absolute inset-x-0 top-1/2 h-[1px] bg-outline-variant/25"></div>
+<div class="absolute inset-y-0 left-1/2 w-[1px] bg-outline-variant/25"></div>
+<!-- Cardinal Orientation Marker -->
+<span class="absolute top-1 text-[8px] font-bold text-primary font-mono-sm">N</span>
+<span class="absolute bottom-1 text-[7px] text-outline font-mono-sm">S</span>
+<span class="absolute left-1.5 text-[7px] text-outline font-mono-sm">W</span>
+<span class="absolute right-1.5 text-[7px] text-outline font-mono-sm">E</span>
+<!-- Rotating Radar Sweep Line -->
+<div class="radar-sweep absolute inset-0 pointer-events-none">
+<div class="w-1/2 h-1/2 bg-gradient-to-br from-primary-container/20 to-transparent origin-bottom-right"></div>
+</div>
+<!-- Point of No Return (PNR) Safety Ring Indicator (Dotted Amber) -->
+<div class="absolute w-40 h-40 rounded-full border border-dashed border-amber-500/40 pointer-events-none"></div>
+<!-- Trajectory Vector SVG overlay -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" viewbox="0 0 176 176">
+<!-- Trajectory from HAB (SW) to Current Pos -->
+<line stroke="#ec6932" stroke-dasharray="3,3" stroke-width="1.5" x1="45" x2="88" y1="135" y2="88"></line>
+<!-- Traverse from Current Pos to WP3 (Ahead) -->
+<line stroke="#ec6932" stroke-width="1.8" x1="88" x2="115" y1="88" y2="52"></line>
+<!-- HAB Dot -->
+<circle cx="45" cy="135" fill="#38bdf8" r="3"></circle>
+<!-- WP3 Marker on Radar -->
+<circle cx="115" cy="52" fill="#ec6932" r="3"></circle>
+<!-- Science ST-1 on Radar -->
+<circle cx="68" cy="62" fill="#45edee" r="2.5"></circle>
+<!-- EV2 Buddy Position Dot (12m ahead) -->
+<circle class="animate-ping" cx="94" cy="78" fill="#45edee" r="2.5"></circle>
+<circle cx="94" cy="78" fill="#45edee" r="2.5"></circle>
+</svg>
+<!-- Current Astronaut Position Marker (Center) with Heading Cone -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[8px] border-b-primary-container"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+</div>
+<!-- Range Ring Label Overlays -->
+<div class="absolute bottom-5 right-6 text-[7px] text-outline font-mono-sm">250m</div>
+<div class="absolute bottom-2 right-10 text-[7px] text-outline font-mono-sm">500m</div>
+</div>
+<!-- HAB Walk-Back Sortie Vector Readout -->
+<div class="w-full mt-1.5 p-1.5 bg-black/40 rounded border border-outline-variant/30 text-[9px] font-mono-sm flex flex-col gap-0.5">
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            HAB ALPHA: 1.6 km
+          </span>
+<span class="text-emerald-400 font-bold">SORTIE SAFE</span>
+</div>
+<div class="flex items-center justify-between text-outline">
+<span>WALK-BACK TIME: 54 min</span>
+<span class="text-tertiary">PNR: 2h 15m</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- ==================== BOTTOM CENTER: ADVISORY TOAST & AUDIO HUD ==================== -->
+<footer class="fixed bottom-4 inset-x-0 z-30 pointer-events-none flex flex-col items-center px-4">
+<!-- Amber Caution Warning Toast -->
+<div class="pointer-events-auto hud-glass-panel px-3 py-1.5 rounded border border-tertiary/60 flex items-center gap-2.5 shadow-2xl mb-1.5 max-w-md animate-pulse-subtle">
+<div class="w-5 h-5 rounded bg-tertiary/20 flex items-center justify-center text-tertiary flex-shrink-0">
+<span class="material-symbols-outlined text-sm">warning</span>
+</div>
+<div class="text-[10px] font-mono-sm text-on-surface leading-tight">
+<span class="text-tertiary font-bold tracking-wide">CAUTION: SLOPE 17° AHEAD (90 m)</span>
+<span class="text-on-surface-variant block text-[9px]">RECOMMEND: DEPLOY EXTENDED TREKKING POLES · REDUCE PACE TO 1.1 km/h</span>
+</div>
+<button class="text-outline hover:text-on-surface ml-1 p-0.5" title="Acknowledge caution">
+<span class="material-symbols-outlined text-xs">close</span>
+</button>
+</div>
+<!-- Micro Voice Command & Radio Link Pill -->
+<div class="pointer-events-auto flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-black/70 border border-outline-variant/40 text-[9px] font-mono-sm text-on-surface-variant backdrop-blur-md">
+<div class="flex items-center gap-1 text-emerald-400">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+<span class="font-bold">MIC ACTIVE</span>
+</div>
+<span class="text-outline">|</span>
+<span>VOICE PROMPT: "Ares, next task" · "Ares, sample scan"</span>
+<span class="text-outline">|</span>
+<span class="text-secondary font-semibold">UHF CH-04</span>
+</div>
+</footer>
+<!-- ==================== LIGHTWEIGHT VANILLA JS HUD ENGINE ==================== -->
+<script>
+    // Live Mission Elapsed Time (EVA Stopwatch) Clock Simulation
+    let totalSeconds = 5530; // 01:32:10 start
+    const evaClockEl = document.getElementById('evaClock');
+
+    setInterval(() => {
+      totalSeconds++;
+      const hrs = Math.floor(totalSeconds / 3600);
+      const mins = Math.floor((totalSeconds % 3600) / 60);
+      const secs = totalSeconds % 60;
+      
+      const pad = (n) => n.toString().padStart(2, '0');
+      if (evaClockEl) {
+        evaClockEl.textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+      }
+    }, 1000);
+
+    // Subtle audio feedback simulation on keypress (tactical HUD interaction)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        const toast = document.querySelector('footer');
+        if (toast) {
+          toast.classList.add('opacity-40');
+          setTimeout(() => toast.classList.remove('opacity-40'), 150);
+        }
+      }
+    });
+  </script>
+</body></html>

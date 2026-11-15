@@ -1,0 +1,50 @@
+{
+  "_nota": "Objetivos de ejemplo elegidos por reglas sobre el relieve (tools/11_sitio_meridiani.py). No son objetivos científicos. Coordenadas locales: x al este, y al sur, desde la esquina noroeste de la ventana.",
+  "kind": "suggested",
+  "objectives": [
+    {
+      "id": "e1",
+      "name": "Highest reachable point (example)",
+      "type": "image",
+      "priority": 4,
+      "work_min": 30,
+      "x_m": 3179.0,
+      "y_m": 2917.0,
+      "transport": "hybrid",
+      "source": "Example point chosen by the team from the terrain (not a science target)"
+    },
+    {
+      "id": "e2",
+      "name": "Flat bench (example)",
+      "type": "measurement",
+      "priority": 3,
+      "work_min": 25,
+      "x_m": 1601.0,
+      "y_m": 2059.0,
+      "transport": "vehicle",
+      "source": "Example point chosen by the team from the terrain (not a science target)"
+    },
+    {
+      "id": "e3",
+      "name": "Steep slope base (example)",
+      "type": "sample",
+      "priority": 5,
+      "work_min": 40,
+      "x_m": 1965.0,
+      "y_m": 2717.0,
+      "transport": "foot",
+      "source": "Example point chosen by the team from the terrain (not a science target)"
+    },
+    {
+      "id": "e4",
+      "name": "Plain site (example)",
+      "type": "equipment",
+      "priority": 2,
+      "work_min": 20,
+      "x_m": 1601.0,
+      "y_m": 2219.0,
+      "transport": "vehicle",
+      "source": "Example point chosen by the team from the terrain (not a science target)"
+    }
+  ]
+}
