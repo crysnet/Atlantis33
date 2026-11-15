@@ -8,7 +8,6 @@ import 'data/site_data.dart';
 import 'data/site_registry.dart';
 import 'l10n/app_localizations.dart';
 import 'screens/plan_screen.dart';
-import 'screens/science_screen.dart';
 import 'state/app_model.dart';
 import 'theme/app_theme.dart';
 import 'widgets/sources_dialog.dart';
@@ -120,12 +119,7 @@ class _Home extends StatelessWidget {
     return Scaffold(
       body: Column(children: [
         const TopBar(),
-        Expanded(
-          child: switch (m.tab) {
-            0 => const PlanScreen(),
-            _ => const ScienceScreen(),
-          },
-        ),
+        const Expanded(child: PlanScreen()),
         Container(
           height: 24,
           padding: const EdgeInsets.symmetric(horizontal: 14),
