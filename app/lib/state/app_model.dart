@@ -46,7 +46,9 @@ const List<LayerDef> kLayers = [
   LayerDef('slope15', LayerKind.modeled, '> 15 %'),
   LayerDef('transit', LayerKind.modeled, 'TES 3.5 km'),
   LayerDef('thermal_night', LayerKind.measured, 'THEMIS-IR 100 m'),
-  LayerDef('minerals_pts', LayerKind.measured, 'CRISM · OMEGA'),
+  LayerDef('aqueous_pts', LayerKind.measured, 'Mars Trek'),
+  LayerDef('hydrous_pts', LayerKind.measured, 'CRISM · OMEGA'),
+  LayerDef('valleys', LayerKind.measured, 'Hynek 2010', hasOpacity: true),
   LayerDef('zones', LayerKind.measured, 'NASA EMC 2015'),
   LayerDef('names', LayerKind.measured, 'UAI · Trek'),
   LayerDef('craters', LayerKind.measured, 'Robbins ≥ 1 km'),
@@ -80,8 +82,8 @@ class AppModel extends ChangeNotifier {
     _nextId = _nextUserId();
   }
 
-  static const _defaultVisible = {'optical': true, 'slope': true, 'curiosity': true};
-  static const _defaultOpacity = {'optical': 1.0, 'hillshade': 0.6, 'slope': 0.4, 'forbidden': 0.6, 'curiosity': 0.9, 'thermal': 0.6, 'slope15': 0.55, 'transit': 0.55, 'thermal_night': 0.6, 'geology': 0.9};
+  static const _defaultVisible = {'optical': true, 'slope': true, 'curiosity': true, 'aqueous_pts': true, 'hydrous_pts': true, 'valleys': true};
+  static const _defaultOpacity = {'optical': 1.0, 'hillshade': 0.6, 'slope': 0.4, 'forbidden': 0.6, 'curiosity': 0.9, 'thermal': 0.6, 'slope15': 0.55, 'transit': 0.55, 'thermal_night': 0.6, 'geology': 0.9, 'valleys': 0.9};
 
   /// Datos del sitio abierto. Cambian al llamar a [switchSite].
   SiteData data;

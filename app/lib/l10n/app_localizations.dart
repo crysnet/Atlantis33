@@ -2060,6 +2060,48 @@ abstract class AppLocalizations {
   /// **'Aqueous and hydrous minerals'**
   String get layerMineralsPts;
 
+  /// No description provided for @layerAqueousPts.
+  ///
+  /// In en, this message translates to:
+  /// **'Aqueous minerals · biosignatures'**
+  String get layerAqueousPts;
+
+  /// No description provided for @layerHydrousPts.
+  ///
+  /// In en, this message translates to:
+  /// **'Hydrous minerals (CRISM, OMEGA)'**
+  String get layerHydrousPts;
+
+  /// No description provided for @layerValleys.
+  ///
+  /// In en, this message translates to:
+  /// **'Valley networks (Hynek 2010)'**
+  String get layerValleys;
+
+  /// No description provided for @legendBiosigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Biosignature search (from orbit)'**
+  String get legendBiosigTitle;
+
+  /// No description provided for @legendCarbonate.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbonate'**
+  String get legendCarbonate;
+
+  /// No description provided for @legendValleys.
+  ///
+  /// In en, this message translates to:
+  /// **'Valley network (ancient water)'**
+  String get legendValleys;
+
+  /// No description provided for @legendBiosigNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Phyllosilicates and carbonates: ground more likely to preserve biosignatures. Orbital detections from Mars Trek (NASA), not samples. No carbonates are recorded in Meridiani; sulfates are not shown.'**
+  String get legendBiosigNote;
+
   /// No description provided for @layerZones.
   ///
   /// In en, this message translates to:

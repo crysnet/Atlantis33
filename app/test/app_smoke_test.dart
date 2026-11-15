@@ -33,12 +33,12 @@ void main() {
 
     // Capas de contexto de Gale (minerales, zonas, nombres, cráteres, geología): se dibujan sin errores con el marco de contexto.
     final gale = AppScope.of(tester.element(find.byType(Scaffold).first));
-    for (final id in ['minerals_pts', 'zones', 'names', 'craters', 'geology']) {
+    for (final id in ['aqueous_pts', 'hydrous_pts', 'zones', 'names', 'craters', 'geology']) {
       gale.toggleLayer(id, true);
     }
     await tester.pump(const Duration(milliseconds: 500));
     expect(tester.takeException(), isNull, reason: 'capas de contexto en Gale');
-    for (final id in ['minerals_pts', 'zones', 'names', 'craters', 'geology']) {
+    for (final id in ['aqueous_pts', 'hydrous_pts', 'zones', 'names', 'craters', 'geology']) {
       gale.toggleLayer(id, false);
     }
 

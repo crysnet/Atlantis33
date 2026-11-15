@@ -1,5 +1,5 @@
 # Descargas e intermedios de datos (se regeneran con tools/, ver RETOMAR.md)
-data/
+/data/
 
 # Instaladores y compilaciones
 dist/*.apk
